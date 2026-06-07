@@ -91,3 +91,44 @@ docker compose --profile production up -d
 ```bash
 docker compose down
 ```
+
+## Docker images — מה בפנים?
+
+| Service | Image | Built by you? |
+|---------|-------|---------------|
+| **backend** | `wine-knot-backend:latest` | Yes — only custom image |
+| mysql | `mysql:8.0` | No — official Docker Hub |
+| nginx | `nginx:alpine` | No — frontend is mounted as files |
+| cloudflare-ddns | `oznu/cloudflare-ddns` | No — third-party |
+
+The `<none>` images you saw are old rebuild leftovers — safe to delete:
+
+```bash
+docker image prune -f
+```
+
+### Push backend to Docker Hub
+
+```bash
+docker login
+export DOCKERHUB_USER=yourusername
+docker tag wine-knot-backend:latest $DOCKERHUB_USER/wine-knot-backend:latest
+docker push $DOCKERHUB_USER/wine-knot-backend:latest
+```
+
+On the server, set in `.env`:
+
+```
+DOCKER_IMAGE_BACKEND=yourusername/wine-knot-backend:latest
+```
+
+Then `docker compose pull backend && docker compose up -d` (no local build needed).
+
+### Push code to GitHub
+
+```bash
+git remote add origin https://github.com/YOUR_USER/wine-knot.git
+git push -u origin cursor/initial-wine-knot-setup
+```
+
+Do **not** commit `.env`, `mysql_data`, or `.venv`.

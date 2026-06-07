@@ -10,13 +10,34 @@ const router = express.Router();
 const IMG_DIR = process.env.IMAGE_DIR || path.join(__dirname, '..', 'uploads', 'images', 'wines');
 fs.mkdirSync(IMG_DIR, { recursive: true });
 
+function wineImageLabel(wine) {
+  const winery = (wine.winery || '').split('/')[0].split('(')[0].trim().replace(/\s+/g, ' ');
+  const name = (wine.name || '').trim().replace(/\s+/g, ' ');
+  const years = [];
+  if (wine.vintage) years.push(String(wine.vintage).trim());
+  const yearInName = name.match(/20\d{2}/);
+  if (yearInName) years.push(yearInName[0]);
+  const uniqueYears = [...new Set(years)];
+  let label = winery ? `${winery} - ${name}` : name;
+  if (uniqueYears.length && !/20\d{2}/.test(name)) {
+    label += ` ${uniqueYears[0]}`;
+  }
+  return label.replace(/[<>:"/\\|?*]/g, '-').replace(/\s+/g, ' ').trim();
+}
+
+function wineImageFilename(wine, ext = '.jpg') {
+  return `${wineImageLabel(wine)}${ext === '.jpeg' ? '.jpg' : ext}`;
+}
+
+function wineImageUrl(wine) {
+  return `/images/wines/${wineImageFilename(wine)}`;
+}
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: (_req, _file, cb) => cb(null, IMG_DIR),
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
-      const safe = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext) ? ext : '.jpg';
-      cb(null, `${req.params.id}${safe === '.jpeg' ? '.jpg' : safe}`);
+    filename: (req, _file, cb) => {
+      cb(null, req.wineImageName || `${req.params.id}.jpg`);
     },
   }),
   limits: { fileSize: 8 * 1024 * 1024 },
@@ -81,11 +102,10 @@ router.post('/wines', async (req, res) => {
       [
         name, category_id, winery || '', country || 'ישראל', vintage || '', grape || '',
         rating || null, shelf_price || sale_price, sale_price, notes || '',
-        `/images/wines/${0}.jpg`, out_of_stock ? 1 : 0,
+        wineImageUrl({ name, winery, vintage }), out_of_stock ? 1 : 0,
       ]
     );
     const id = result.insertId;
-    await pool.query('UPDATE wines SET image_url = ? WHERE id = ?', [`/images/wines/${id}.jpg`, id]);
     const [rows] = await pool.query(
       `SELECT w.*, c.slug AS category, c.name_he AS category_he
        FROM wines w JOIN categories c ON c.id = w.category_id WHERE w.id = ?`,
@@ -138,7 +158,19 @@ router.patch('/wines/:id/stock', async (req, res) => {
   }
 });
 
-router.post('/wines/:id/image', upload.single('image'), async (req, res) => {
+router.post('/wines/:id/image', async (req, res, next) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT id, name, winery, vintage FROM wines WHERE id = ?',
+      [req.params.id]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'לא נמצא' });
+    req.wineImageName = wineImageFilename(rows[0]);
+    next();
+  } catch (err) {
+    next(err);
+  }
+}, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'לא נבחרה תמונה' });
     const imageUrl = `/images/wines/${req.file.filename}`;

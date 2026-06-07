@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch product bottle images matching each wine by name."""
+"""Fetch product bottle images matching each wine by name and vintage."""
 import json
 import re
 import sys
@@ -8,6 +8,12 @@ from io import BytesIO
 from pathlib import Path
 
 import requests
+from ddgs import DDGS
+from PIL import Image
+
+from wine_image_names import extract_years, wine_image_filename, winery_short, normalize as normalize_name
+from wine_bottle_validate import is_wine_bottle
+from wine_image_normalize import normalize_bottle_image
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / 'wines_data.json'
@@ -15,12 +21,12 @@ IMG_DIR = ROOT / 'frontend' / 'public' / 'images' / 'wines'
 CACHE_PATH = ROOT / 'scripts' / 'image_cache.json'
 MANUAL_DIR = ROOT / 'scripts' / 'manual_images'
 
-# Wines with hand-picked product photos — never auto-overwrite
-MANUAL_IDS = {40}
+MANUAL_IDS = set()
 
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+    'Accept-Language': 'he-IL,he;q=0.9,en-US;q=0.8,en;q=0.8',
 }
 
 WINERY_EN = {
@@ -33,173 +39,162 @@ WINERY_EN = {
     'רזיאל': 'Raziel', 'כרם שבו': 'Kerem Shavo', 'אלונה': 'Alona', 'קטן': 'Katten',
 }
 
-GRAPE_EN = {
-    'שרדונה': 'Chardonnay', 'סוביניון': 'Sauvignon Blanc', 'קברנה': 'Cabernet Sauvignon',
-    'מרלו': 'Merlot', 'סירה': 'Syrah', 'רוזה': 'Rose', 'רוז': 'Rose',
-    'גוורצ': 'Gewurztraminer', 'ריזלינג': 'Riesling', 'פינו': 'Pinot Noir',
-    'מוסקט': 'Muscat', 'שיראז': 'Shiraz', 'קברנה סוביניון': 'Cabernet Sauvignon',
-}
-
-GOOD_HOSTS = (
-    'wineroute', 'wines.co.il', 'wine21', 'gate2wine', 'thewineshop', 'castel',
-    'dalton', 'psagot', 'golanwines', 'recanati', 'carmelwinery', 'teperberg',
-    'yarden', 'shilo-wines', 'barkan', 'vitkin', 'wolt', 'amazon', 'wikipedia',
+GOOD = (
+    'wineconnection', 'alcoholmarket', 'paneco', 'wineroute', 'alcohome', 'vivino',
+    'winebuyers', 'gate2wine', 'wines.co.il', 'wine21', 'mashkaot', 'banamashkaot',
+    'eretzhagalil', 'winehouse', 'wine-club', 'manovino', 'grape-man', 'hibur',
+    'gmp.ae', 'winewarehouse', 'dalton', 'carmel', 'tulip', 'castel', 'golanwines',
+    'recanati', 'teperberg', 'barkan', 'shilo', 'psagot', 'vitkin', 'yarden',
+    'adir-winery', 'winedepot', 'manwithwine',
 )
-
-BAD_HOSTS = (
-    'pinterest', 'facebook', 'instagram', 'tiktok', 'heavyhaul', 'ideacdn',
-    'clipart', 'icon', 'logo', 'emoji', 'avatar', 'banner', 'blogspot',
+BAD = (
+    'pinterest', 'facebook', 'instagram', 'tiktok', 'flower2u', 'coloring',
+    'clipart', 'calendar', 'kalender', 'dogbreed', 'template.net', 'ftcdn',
+    'shutterstock', 'pngtree', 'lovepik', 'coffeco', 'travelourplanet', 'cq.ru',
+    'batshonfish', 'pokemon', 'imdb', 'poster', 'wallpaper', 'deviantart',
+    'fanpop', 'zerochan', 'wikia', 'fandom', 'grave', 'cemetery',
 )
 
 
 def winery_english(winery):
-    if not winery:
-        return ''
-    w = winery.split('/')[0].split('(')[0].strip()
+    w = winery_short(winery)
     for he, en in WINERY_EN.items():
         if he in w:
             return en
     return w
 
 
-def grapes_in_name(name):
-    found = []
-    for he, en in GRAPE_EN.items():
-        if he in name:
-            found.append(en)
-    return found
-
-
-def normalize_name(name):
-    n = re.sub(r'\s+', ' ', name.strip())
-    # keep product codes like "C", "VAT2"
-    return n
-
-
 def build_queries(wine):
-    name = normalize_name(wine.get('name', ''))
-    winery = wine.get('winery', '')
+    name = normalize_name(wine.get('name', '')).rstrip(',').strip()
+    base_name = normalize_name(re.sub(r'\s*20\d{2}\s*|\s*19\d{2}\s*', ' ', name)).strip()
+    winery = winery_short(wine.get('winery', ''))
     w_en = winery_english(winery)
-    grapes = grapes_in_name(name)
+    years = extract_years(wine)
 
     queries = []
 
-    # Specific product patterns
+    for year in years:
+        queries.extend([
+            f'{base_name} {winery} {year}',
+            f'{winery} {base_name} {year}',
+            f'{name} {winery} {year} בקבוק',
+            f'{winery} {base_name} {year} בקבוק יין',
+        ])
+        if w_en:
+            queries.extend([
+                f'{w_en} {base_name} {year} bottle wine',
+                f'{w_en} {base_name} {year} bottle Israel',
+            ])
+
+    queries.extend([
+        f'{name} {winery} בקבוק יין',
+        f'{winery} {name} בקבוק',
+        f'{name} {winery}',
+        f'{winery} {name}',
+    ])
+    if w_en:
+        queries.extend([
+            f'{w_en} {base_name} bottle wine',
+            f'{w_en} {base_name} wine bottle Israel',
+        ])
+
     if 'קסטל C' in name or 'קסטל  C' in name:
-        queries.append('Castel C Chardonnay bottle')
-        queries.append('Domaine du Castel C Blanc bottle')
-        queries.append('קסטל C שרדונה בקבוק')
+        for q in ['קסטל C שרדונה בקבוק', 'Castel C Chardonnay bottle']:
+            queries.insert(0, q)
 
-    if w_en and name:
-        queries.append(f'{w_en} {name} bottle')
-        queries.append(f'{w_en} {name} wine bottle product')
+    if 'קולומבארד' in name or 'קולומברד' in name:
+        for q in [
+            f'Adir Winery Colombard {years[0] if years else ""} bottle'.strip(),
+            f'אדיר קולומבארד בקבוק יין',
+            f'Adir Colombard white wine bottle Israel',
+        ]:
+            queries.insert(0, q)
 
-    if w_en and grapes:
-        queries.append(f'{w_en} {grapes[0]} bottle')
-        for g in grapes[:2]:
-            queries.append(f'{w_en} {g} wine Israel bottle')
-
-    if name:
-        queries.append(f'{name} בקבוק יין')
-        queries.append(f'{name} wine bottle')
-
-    # dedupe preserving order
-    seen = set()
-    out = []
+    seen, out = set(), []
     for q in queries:
-        q = q.strip()
+        q = re.sub(r'\s+', ' ', q).strip()
         if q and q.lower() not in seen:
             seen.add(q.lower())
             out.append(q)
-    return out[:6]
+    return out
 
 
-def score_url(url, query):
+def score_url(url, years=()):
     u = url.lower()
     score = 0
-    if any(g in u for g in GOOD_HOSTS):
-        score += 30
-    if any(b in u for b in BAD_HOSTS):
-        score -= 50
-    q_words = [w for w in re.split(r'\W+', query.lower()) if len(w) > 2]
-    for w in q_words[:4]:
-        if w in u:
-            score += 5
-    if u.endswith(('.jpg', '.jpeg', '.png', '.webp')):
+    if any(g in u for g in GOOD):
+        score += 60
+    if any(b in u for b in BAD):
+        score -= 300
+    for year in years:
+        if year in u:
+            score += 45
+    if any(w in u for w in ('bottle', 'wine', 'catalog/product', 'upload', 'product')):
+        score += 8
+    if u.endswith(('.jpg', '.jpeg', '.webp', '.png')):
         score += 3
-    if 'product' in u or 'bottle' in u or 'wine' in u:
-        score += 2
     return score
 
 
-def search_image_urls(query):
+def search_urls(query, years=(), limit=20):
     urls = []
-    try:
-        resp = requests.get(
-            'https://www.bing.com/images/search',
-            params={'q': query, 'qft': '+filterui:photo-photo', 'form': 'HDRSC2', 'first': 1},
-            headers=HEADERS,
-            timeout=15,
-        )
-        found = re.findall(r'murl&quot;:&quot;(https?://[^&]+?)&quot;', resp.text)
-        urls.extend(found[:12])
-    except Exception:
-        pass
-
-    if len(urls) < 4:
-        try:
-            from duckduckgo_search import DDGS
-            with DDGS() as ddgs:
-                for r in ddgs.images(query, max_results=8):
-                    u = r.get('image') or r.get('thumbnail')
-                    if u:
-                        urls.append(u)
-        except Exception:
-            pass
-
-    ranked = sorted(
-        dict.fromkeys(urls),
-        key=lambda u: score_url(u, query),
-        reverse=True,
-    )
-    return [u for u in ranked if score_url(u, query) > -20]
+    with DDGS() as ddgs:
+        for r in ddgs.images(query, max_results=limit):
+            u = r.get('image') or r.get('thumbnail')
+            if u:
+                urls.append(u)
+    ranked = sorted(dict.fromkeys(urls), key=lambda u: score_url(u, years), reverse=True)
+    return [u for u in ranked if score_url(u, years) > 5]
 
 
-def validate_image(data):
-    try:
-        from PIL import Image
-        img = Image.open(BytesIO(data))
-        w, h = img.size
-        if w < 120 or h < 200:
-            return False, 'too small'
-        if w > h * 1.5:  # reject very wide banners
-            return False, 'too wide'
-        return True, f'{w}x{h}'
-    except Exception as e:
-        return False, str(e)
+def save_image(data, dest):
+    normalized = normalize_bottle_image(data)
+    dest.write_bytes(normalized)
 
 
 def download_image(url, dest):
-    resp = requests.get(url, headers=HEADERS, timeout=25)
+    resp = requests.get(url, headers=HEADERS, timeout=30)
     resp.raise_for_status()
     data = resp.content
     if len(data) < 4000:
         raise ValueError('file too small')
-    ok, info = validate_image(data)
+    ok, info = is_wine_bottle(data)
     if not ok:
-        raise ValueError(f'bad image: {info}')
-    # normalize to JPEG
-    from PIL import Image
-    img = Image.open(BytesIO(data)).convert('RGB')
-    img.save(dest, 'JPEG', quality=90)
+        raise ValueError(info)
+    save_image(data, dest)
+    ok2, info2 = is_wine_bottle(dest.read_bytes())
+    if not ok2:
+        dest.unlink(missing_ok=True)
+        raise ValueError(f'saved image invalid: {info2}')
+    return info2
+
+
+def audit_wines(wines):
+    bad = []
+    for wine in wines:
+        dest = IMG_DIR / wine_image_filename(wine)
+        if not dest.exists():
+            bad.append(wine)
+            continue
+        ok, _ = is_wine_bottle(dest.read_bytes())
+        if not ok:
+            bad.append(wine)
+    return bad
 
 
 def main():
     force = '--force' in sys.argv
-    args = [a for a in sys.argv[1:] if a != '--force']
-    limit = int(args[0]) if len(args) > 0 and args[0].isdigit() else 0
-    offset = int(args[1]) if len(args) > 1 and args[1].isdigit() else 0
-    only_id = int(args[0]) if len(args) == 1 and args[0].isdigit() and limit else 0
+    fix_bad = '--fix-bad' in sys.argv
+    args = [a for a in sys.argv[1:] if a not in ('--force', '--fix-bad')]
+    only_id = 0
+    limit = 0
+    offset = 0
+    if len(args) == 1 and args[0].isdigit():
+        only_id = int(args[0])
+    elif len(args) >= 1 and args[0].isdigit():
+        limit = int(args[0])
+        if len(args) > 1 and args[1].isdigit():
+            offset = int(args[1])
 
     IMG_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -213,6 +208,10 @@ def main():
     wines = data['wines']
     if only_id:
         wines = [w for w in wines if w['id'] == only_id]
+    elif fix_bad:
+        wines = audit_wines(data['wines'])
+        print(f'Re-fetching {len(wines)} non-bottle images')
+        force = True
     else:
         wines = wines[offset:]
         if limit:
@@ -221,9 +220,13 @@ def main():
     ok = skip = fail = 0
     for wine in wines:
         wid = wine['id']
-        dest = IMG_DIR / f'{wid}.jpg'
+        dest = IMG_DIR / wine_image_filename(wine)
+        years = extract_years(wine)
 
         manual = MANUAL_DIR / f'{wid}.jpg'
+        named_manual = MANUAL_DIR / wine_image_filename(wine)
+        if named_manual.exists():
+            manual = named_manual
         if manual.exists():
             from shutil import copy2
             copy2(manual, dest)
@@ -234,36 +237,41 @@ def main():
             print(f'[{wid}] keeping manual image')
             skip += 1
             continue
-
         if not force and dest.exists() and dest.stat().st_size > 4000:
             skip += 1
             continue
 
-        queries = build_queries(wine)
-        cache_key = f"{wid}:{wine.get('name','')}"
-        urls = cache.get(cache_key, [])
+        if force and dest.exists():
+            dest.unlink()
+
+        cache_key = f"{wid}:{wine.get('name', '')}:{','.join(years)}"
+        urls = [] if fix_bad else cache.get(cache_key, [])
         if isinstance(urls, str):
             urls = [urls]
 
+        print(f'[{wid}] {wine["name"]} / {wine["winery"]}' + (f' ({years[0]})' if years else ''))
+
         if not urls:
-            print(f'[{wid}] {wine["name"]} / {wine["winery"]}')
-            for q in queries:
-                print(f'  query: {q}')
-                found = search_image_urls(q)
-                urls.extend(found)
-                time.sleep(1.0)
-                if len(urls) >= 8:
+            for q in build_queries(wine):
+                print(f'  q: {q}')
+                try:
+                    found = search_urls(q, years=years)
+                    urls.extend(found)
+                    print(f'    +{len(found)} urls')
+                except Exception as e:
+                    print(f'    search error: {e}')
+                urls = list(dict.fromkeys(urls))
+                if len(urls) >= 18:
                     break
-            # dedupe + rank
-            urls = list(dict.fromkeys(urls))
+                time.sleep(0.8)
             cache[cache_key] = urls
             CACHE_PATH.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding='utf-8')
 
         saved = False
-        for url in urls:
+        for url in urls[:35]:
             try:
-                download_image(url, dest)
-                print(f'[{wid}] OK -> {dest.name}')
+                info = download_image(url, dest)
+                print(f'[{wid}] OK ({info})')
                 ok += 1
                 saved = True
                 break
@@ -272,9 +280,9 @@ def main():
                 continue
 
         if not saved:
-            print(f'[{wid}] FAILED - no matching product image')
+            print(f'[{wid}] FAILED')
             fail += 1
-        time.sleep(0.5)
+        time.sleep(0.4)
 
     print(f'Done: {ok} downloaded, {skip} skipped, {fail} failed')
 

@@ -17,6 +17,7 @@ services:
       retries: 10
 
   backend:
+    image: ${DOCKER_IMAGE_BACKEND:-wine-knot-backend:latest}
     build: ./backend
     restart: unless-stopped
     environment:

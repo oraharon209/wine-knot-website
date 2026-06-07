@@ -5,3 +5,8 @@ mysql_data/
 *.log
 .DS_Store
 scripts/image_cache.json
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/terraform.tfvars
+terraform/.terraform.lock.hcl

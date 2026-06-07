@@ -7,6 +7,8 @@ from pathlib import Path
 
 import openpyxl
 
+from wine_image_names import assign_image_urls
+
 ROOT = Path(__file__).resolve().parent.parent
 EXCEL_DEFAULT = Path('/home/or/Downloads/מחירון מעודכן יוני 2026.xlsx')
 
@@ -98,10 +100,10 @@ def parse_excel(path):
             'shelf_price': int(shelf) if isinstance(shelf, (int, float)) else int(sale),
             'sale_price': int(sale),
             'notes': clean_notes(notes),
-            'image_url': f'/images/wines/{wid}.jpg',
         })
         wid += 1
 
+    wines = assign_image_urls(wines)
     return {'categories': CATEGORIES, 'wines': wines}
 
 
