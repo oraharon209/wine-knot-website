@@ -148,6 +148,23 @@ router.put('/wines/:id', async (req, res) => {
   }
 });
 
+router.delete('/wines/:id', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT id, image_url FROM wines WHERE id = ?', [req.params.id]);
+    if (!rows.length) return res.status(404).json({ error: 'לא נמצא' });
+    const imageUrl = rows[0].image_url;
+    await pool.query('DELETE FROM wines WHERE id = ?', [req.params.id]);
+    if (imageUrl && imageUrl.startsWith('/images/wines/')) {
+      const filePath = path.join(IMG_DIR, path.basename(imageUrl));
+      fs.unlink(filePath, () => {});
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'שגיאה במחיקה' });
+  }
+});
+
 router.patch('/wines/:id/stock', async (req, res) => {
   try {
     const out = req.body.out_of_stock ? 1 : 0;

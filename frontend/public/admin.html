@@ -157,6 +157,7 @@
     <div class="actions">
       <button onclick="saveWine()">שמור שינויים</button>
       <button class="danger" onclick="toggleStock()">סמן כאזל / חזר למלאי</button>
+      <button class="danger" onclick="deleteWine()">מחק יין</button>
     </div>
   </div>
 </div>
@@ -184,8 +185,10 @@ function showMsg(text, ok = true) {
 
 async function api(url, opts = {}) {
   const res = await fetch(url, { ...opts, headers: { ...headers(), ...opts.headers } });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || 'שגיאה');
+  const text = await res.text();
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch { /* HTML error page from server */ }
+  if (!res.ok) throw new Error(data.error || (res.status === 404 ? 'הפעולה לא זמינה בשרת' : 'שגיאה'));
   return data;
 }
 
@@ -327,6 +330,20 @@ async function toggleStock() {
     showMsg(next ? 'סומן כאזל מהמלאי' : 'חזר למלאי');
     await loadWines($('search').value);
     selectWine(selectedId);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function deleteWine() {
+  if (!selectedId) return;
+  const w = wines.find(x => x.id === selectedId);
+  if (!w) return;
+  if (!confirm(`למחוק את "${w.name}"? פעולה זו בלתי הפיכה.`)) return;
+  try {
+    await api(`${API}/wines/${selectedId}`, { method: 'DELETE' });
+    showMsg(`נמחק: ${w.name}`);
+    selectedId = null;
+    $('editPanel').classList.add('hidden');
+    await loadWines($('search').value);
   } catch (e) { showMsg(e.message, false); }
 }
 
