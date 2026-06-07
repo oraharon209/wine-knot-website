@@ -1,8 +1,8 @@
-# Wine Knot 🍷
+# Wine Knot
 
-חנות יין אונליין בעברית — Node.js + MySQL + Nginx + Cloudflare DDNS
+Hebrew online wine shop — Node.js + MySQL + Nginx + Cloudflare DDNS
 
-## הרצה מקומית
+## Local setup
 
 ```bash
 cd wine-knot
@@ -10,75 +10,93 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-פתחו בדפדפן: **http://localhost:8080**
+Open in your browser: **http://localhost:8080**
 
-### פאנל ניהול (לאבא)
+### Admin panel
 
 **http://localhost:8080/admin.html**
 
-סיסמה: ערך `ADMIN_PASSWORD` בקובץ `.env` (ברירת מחדל: `wineknot`)
+Password: the value of `ADMIN_PASSWORD` in `.env` (default: `wineknot`)
 
-- עדכון מחירים
-- העלאת תמונות
-- הוספת יין חדש
-- סימון "אזל מהמלאי"
+- Update prices
+- Upload images
+- Add new wines
+- Mark wines as out of stock
 
-## מבנה הפרויקט
+## Project structure
 
 ```
 wine-knot/
-├── docker-compose.yml      # MySQL + Backend + Nginx (+ Cloudflare DDNS בפרודקשן)
-├── wines_data.json         # 177 יינות (נתוני דוגמה)
-├── frontend/public/        # אתר בעברית RTL
+├── docker-compose.yml      # MySQL + Backend + Nginx (+ Cloudflare DDNS in production)
+├── wines_data.json         # Wine catalog (seed data)
+├── frontend/public/        # Hebrew RTL storefront
 ├── backend/                # Express REST API
-├── nginx/                  # הגדרות פרוקסי
-└── scripts/                # יצירת נתונים מ-Excel/JSON
+├── nginx/                  # Reverse proxy config
+├── terraform/              # AWS deployment (optional)
+└── scripts/                # Data import and image tooling
 ```
 
 ## API
 
-| Method | Endpoint | תיאור |
-|--------|----------|--------|
-| GET | `/api/health` | בדיקת תקינות |
-| GET | `/api/categories` | כל הקטגוריות |
-| GET | `/api/wines` | רשימת יינות (עם סינון) |
-| GET | `/api/wines/:id` | יין בודד |
-| POST | `/api/wines` | הוספת יין |
-| PUT | `/api/wines/:id` | עדכון יין |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/health` | Health check |
+| GET | `/api/categories` | All categories |
+| GET | `/api/wines` | Wine list (with filters) |
+| GET | `/api/wines/:id` | Single wine |
+| POST | `/api/wines` | Add wine |
+| PUT | `/api/wines/:id` | Update wine |
 
-### פרמטרי סינון
+### Query parameters
 
-- `category` — slug (לדוגמה: `red`, `white`)
-- `search` — חיפוש חופשי
-- `max_price` — מחיר מקסימלי
-- `min_rating` — דירוג מינימלי
+- `category` — slug (e.g. `red`, `white`)
+- `search` — free-text search
+- `max_price` — maximum price
+- `min_rating` — minimum rating
 - `sort` — `price_asc`, `price_desc`, `rating_desc`, `name_asc`
 
-## עדכון נתוני יין מ-Excel
+## Update wine data from Excel
 
 ```bash
-.venv/bin/python scripts/import_excel.py "/path/to/מחירון.xlsx"
+.venv/bin/python scripts/import_excel.py "/path/to/pricelist.xlsx"
 .venv/bin/python scripts/build_init_sql.py
 docker compose down -v && docker compose up -d --build
 ```
 
-## הוספת תמונות בקבוקים
+## Wine bottle images
 
-הסקריפט מחפש תמונת מוצר לפי שם היין + יקב (לא תמונה אקראית):
+Images are stored in `frontend/public/images/wines/` and served at `/images/wines/`.
+
+### Fetch images automatically
+
+The fetch script searches for product bottle shots by wine name and winery:
 
 ```bash
-PYTHONUNBUFFERED=1 .venv/bin/python scripts/fetch_wine_images.py --force   # הכל מחדש
-PYTHONUNBUFFERED=1 .venv/bin/python scripts/fetch_wine_images.py 40      # יין בודד לפי ID
+PYTHONUNBUFFERED=1 .venv/bin/python scripts/fetch_wine_images.py          # skip existing
+PYTHONUNBUFFERED=1 .venv/bin/python scripts/fetch_wine_images.py --force # re-fetch all
+PYTHONUNBUFFERED=1 .venv/bin/python scripts/fetch_wine_images.py --fix-bad # re-fetch bad images
+PYTHONUNBUFFERED=1 .venv/bin/python scripts/fetch_wine_images.py 40       # single wine by ID
 ```
 
-**תמונה ידנית** (כמו הדוגמה של קסטל C): שימו קובץ ב-`scripts/manual_images/{id}.jpg`
+### Normalize existing images
 
-התמונות נשמרות ב-`frontend/public/images/wines/` ומוצגות באתר.
-
-## Cloudflare DDNS (פרודקשן)
+Standardize all images to clean white-background 600×900 product shots:
 
 ```bash
-# הוסיפו ל-.env:
+.venv/bin/python scripts/fix_wine_images.py --audit
+.venv/bin/python scripts/fix_wine_images.py --normalize
+```
+
+Requires `rembg` and `onnxruntime` in the Python venv for background removal.
+
+### Manual override
+
+Place a file at `scripts/manual_images/{id}.jpg` (or the expected filename), then re-run fetch for that wine.
+
+## Cloudflare DDNS (production)
+
+```bash
+# Add to .env:
 CLOUDFLARE_API_TOKEN=your_token
 CLOUDFLARE_ZONE=wine-knot.co.il
 CLOUDFLARE_SUBDOMAIN=@
@@ -86,13 +104,13 @@ CLOUDFLARE_SUBDOMAIN=@
 docker compose --profile production up -d
 ```
 
-## עצירה
+## Stop
 
 ```bash
 docker compose down
 ```
 
-## Docker images — מה בפנים?
+## Docker images
 
 | Service | Image | Built by you? |
 |---------|-------|---------------|
@@ -101,7 +119,7 @@ docker compose down
 | nginx | `nginx:alpine` | No — frontend is mounted as files |
 | cloudflare-ddns | `oznu/cloudflare-ddns` | No — third-party |
 
-The `<none>` images you saw are old rebuild leftovers — safe to delete:
+Old dangling `<none>` images from rebuilds are safe to remove:
 
 ```bash
 docker image prune -f
@@ -127,7 +145,7 @@ Then `docker compose pull backend && docker compose up -d` (no local build neede
 ### Push code to GitHub
 
 ```bash
-git remote add origin https://github.com/YOUR_USER/wine-knot.git
+git remote add origin https://github.com/oraharon209/wine-know-website.git
 git push -u origin cursor/initial-wine-knot-setup
 ```
 
