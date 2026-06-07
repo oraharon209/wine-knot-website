@@ -7,7 +7,7 @@ from PIL import Image
 CANVAS_W = 600
 CANVAS_H = 900
 BG = (255, 255, 255)
-PADDING = 0.08
+PADDING = 0.04
 
 _rembg = None
 
@@ -28,6 +28,27 @@ def _trim_transparent(img):
     if not bbox:
         return img
     return img.crop(bbox)
+
+
+def _content_bbox(img, threshold=248):
+    """Bounding box of non-white pixels (for re-padding canonical canvases)."""
+    rgb = img.convert('RGB')
+    w, h = rgb.size
+    pixels = rgb.load()
+    min_x, min_y, max_x, max_y = w, h, 0, 0
+    found = False
+    for y in range(h):
+        for x in range(w):
+            r, g, b = pixels[x, y]
+            if r < threshold or g < threshold or b < threshold:
+                found = True
+                min_x = min(min_x, x)
+                min_y = min(min_y, y)
+                max_x = max(max_x, x)
+                max_y = max(max_y, y)
+    if not found:
+        return None
+    return (min_x, min_y, max_x + 1, max_y + 1)
 
 
 def _fit_on_canvas(img):
@@ -70,10 +91,20 @@ def needs_background_removal(data):
 
 def normalize_bottle_image(data, remove_bg=None):
     """Return JPEG bytes for a standardized bottle product shot."""
+    src = Image.open(BytesIO(data))
+    w, h = src.size
     if remove_bg is None:
         remove_bg = needs_background_removal(data)
 
-    img = Image.open(BytesIO(data)).convert('RGBA' if remove_bg else 'RGB')
+    if w == CANVAS_W and h == CANVAS_H and not remove_bg:
+        bbox = _content_bbox(src)
+        if bbox and (bbox[2] - bbox[0]) > 40 and (bbox[3] - bbox[1]) > 80:
+            result = _fit_on_canvas(src.crop(bbox))
+            buf = BytesIO()
+            result.save(buf, 'JPEG', quality=92)
+            return buf.getvalue()
+
+    img = src.convert('RGBA' if remove_bg else 'RGB')
 
     if remove_bg:
         out = _get_rembg()(img)

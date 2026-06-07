@@ -102,6 +102,39 @@ def build_queries(wine):
         for q in ['קסטל C שרדונה בקבוק', 'Castel C Chardonnay bottle']:
             queries.insert(0, q)
 
+    if 'סדרת אסטייט' in name:
+        grape = 'cabernet' if 'קברנה' in name else 'merlot' if 'מרלו' in name else 'shiraz' if 'שירז' in name else 'petit'
+        for q in [
+            f'Dalton Estate {grape} bottle Israel',
+            f'דלתון אסטייט {base_name} בקבוק',
+            f'dalton-winery.com estate {grape}',
+        ]:
+            queries.insert(0, q)
+
+    if 'family collection' in name.lower():
+        grape = 'shiraz' if 'שירז' in name else 'cabernet'
+        for q in [
+            f'Dalton Family Collection {grape} bottle',
+            f'דלתון Family Collection {grape} בקבוק',
+        ]:
+            queries.insert(0, q)
+
+    if 'מסע' in name and 'ויתקין' in winery:
+        for q in [
+            'Vitkin Masa Red wine bottle Israel',
+            'ויתקין מסע אדום בקבוק יין',
+            'vitkin-winery.com masa red bottle',
+        ]:
+            queries.insert(0, q)
+
+    if 'tomasi' in name.lower() or 'טומסי' in name:
+        variant = 'amarone classico' if 'המהולל' in name else 'il sestante amarone'
+        for q in [
+            f'Tommasi {variant} bottle',
+            f'Tommasi {variant} wine bottle',
+        ]:
+            queries.insert(0, q)
+
     if 'קולומבארד' in name or 'קולומברד' in name:
         for q in [
             f'Adir Winery Colombard {years[0] if years else ""} bottle'.strip(),
@@ -119,7 +152,34 @@ def build_queries(wine):
     return out
 
 
-def score_url(url, years=()):
+HINT_EN = {
+    'קברנה': ('cabernet', 'cab-sauv', 'cabernet-sauvignon'),
+    'מרלו': ('merlot',),
+    'שירז': ('shiraz', 'syrah'),
+    'פטיט סירה': ('petit', 'sirah', 'syrah'),
+    'סנסר': ('sancerre',),
+    'שבלי': ('chablis',),
+    'אמרונה': ('amarone',),
+    'ססטנט': ('sestante', 'sestante'),
+    'המהולל': ('amarone', 'classico'),
+    'family collection': ('family', 'collection'),
+    'מארה': ('mare', 'red'),
+}
+
+
+def _url_hints(wine):
+    name = normalize_name(wine.get('name', '')).lower()
+    hints = set()
+    for he, tokens in HINT_EN.items():
+        if he in name:
+            hints.update(tokens)
+    for token in re.split(r'[\s\-_/]+', name):
+        if len(token) >= 4 and token.isascii():
+            hints.add(token)
+    return hints
+
+
+def score_url(url, years=(), hints=()):
     u = url.lower()
     score = 0
     if any(g in u for g in GOOD):
@@ -129,6 +189,10 @@ def score_url(url, years=()):
     for year in years:
         if year in u:
             score += 45
+    for hint in hints:
+        h = hint.lower()
+        if h in u:
+            score += 35
     if any(w in u for w in ('bottle', 'wine', 'catalog/product', 'upload', 'product')):
         score += 8
     if u.endswith(('.jpg', '.jpeg', '.webp', '.png')):
@@ -136,15 +200,19 @@ def score_url(url, years=()):
     return score
 
 
-def search_urls(query, years=(), limit=20):
+def search_urls(query, years=(), hints=(), limit=20):
     urls = []
     with DDGS() as ddgs:
         for r in ddgs.images(query, max_results=limit):
             u = r.get('image') or r.get('thumbnail')
             if u:
                 urls.append(u)
-    ranked = sorted(dict.fromkeys(urls), key=lambda u: score_url(u, years), reverse=True)
-    return [u for u in ranked if score_url(u, years) > 5]
+    ranked = sorted(dict.fromkeys(urls), key=lambda u: score_url(u, years, hints), reverse=True)
+    return [u for u in ranked if score_url(u, years, hints) > 5]
+
+
+def rank_urls(urls, years=(), hints=()):
+    return sorted(dict.fromkeys(urls), key=lambda u: score_url(u, years, hints), reverse=True)
 
 
 def save_image(data, dest):
@@ -249,13 +317,14 @@ def main():
         if isinstance(urls, str):
             urls = [urls]
 
+        hints = _url_hints(wine)
         print(f'[{wid}] {wine["name"]} / {wine["winery"]}' + (f' ({years[0]})' if years else ''))
 
         if not urls:
             for q in build_queries(wine):
                 print(f'  q: {q}')
                 try:
-                    found = search_urls(q, years=years)
+                    found = search_urls(q, years=years, hints=hints)
                     urls.extend(found)
                     print(f'    +{len(found)} urls')
                 except Exception as e:
@@ -267,6 +336,7 @@ def main():
             cache[cache_key] = urls
             CACHE_PATH.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding='utf-8')
 
+        urls = rank_urls(urls, years=years, hints=hints)
         saved = False
         for url in urls[:35]:
             try:

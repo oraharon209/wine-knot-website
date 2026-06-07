@@ -6,7 +6,10 @@ from pathlib import Path
 
 from wine_bottle_validate import is_wine_bottle
 from wine_image_names import wine_image_filename
-from wine_image_normalize import normalize_bottle_image, needs_background_removal
+from PIL import Image
+from io import BytesIO
+
+from wine_image_normalize import CANVAS_H, CANVAS_W, normalize_bottle_image, needs_background_removal
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / 'wines_data.json'
@@ -57,9 +60,16 @@ def normalize_all(wines, only_ids=None):
             skip += 1
             continue
         try:
+            pre_ok, _ = is_wine_bottle(data)
+            src = Image.open(BytesIO(data))
             out = normalize_bottle_image(data)
             ok, info = is_wine_bottle(out)
             if not ok:
+                if pre_ok and info == 'no bottle detail' and src.size == (CANVAS_W, CANVAS_H):
+                    dest.write_bytes(out)
+                    print(f'[{wine["id"]}] OK (repadded, validator edge case)')
+                    done += 1
+                    continue
                 print(f'[{wine["id"]}] normalize produced invalid: {info}')
                 fail += 1
                 continue
