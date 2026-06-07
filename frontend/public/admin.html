@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניהול יינות | Wine Knot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f4f4;
+      --card: #fff;
+      --border: #ddd;
+      --primary: #5c1a32;
+      --danger: #c0392b;
+      --ok: #27ae60;
+      --muted: #777;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Heebo, sans-serif; background: var(--bg); color: #222; font-size: 17px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+    h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 1rem; }
+    h2 { font-size: 1.15rem; margin-bottom: .75rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .row { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: .75rem; }
+    label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: .25rem; }
+    input, select, textarea {
+      width: 100%;
+      padding: .65rem .75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font: inherit;
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    .field { flex: 1; min-width: 140px; }
+    .field.sm { max-width: 120px; flex: 0 0 120px; }
+    button, .btn {
+      padding: .7rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+    }
+    button:hover { opacity: .9; }
+    button.secondary { background: #666; }
+    button.danger { background: var(--danger); }
+    button.ok { background: var(--ok); }
+    button.ghost { background: #eee; color: #333; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: .75rem; margin-bottom: 1rem;
+    }
+    .msg { padding: .75rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
+    .msg.show { display: block; }
+    .msg.ok { background: #d4edda; color: #155724; }
+    .msg.err { background: #f8d7da; color: #721c24; }
+    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    th, td { padding: .6rem .5rem; border-bottom: 1px solid var(--border); text-align: right; }
+    th { background: #fafafa; font-weight: 600; }
+    tr { cursor: pointer; }
+    tr:hover { background: #f9f9f9; }
+    tr.selected { background: #fdeef2; }
+    tr.oos { opacity: .55; }
+    tr.oos td:first-child::after { content: ' · אזל'; color: var(--danger); font-size: .8rem; }
+    .thumb { width: 44px; height: 56px; object-fit: contain; background: #fff; border: 1px solid #eee; }
+    .login-box { max-width: 360px; margin: 4rem auto; }
+    .hidden { display: none !important; }
+    .img-preview {
+      width: 120px; height: 150px; object-fit: contain;
+      border: 1px solid var(--border); background: #fff; display: block; margin-bottom: .5rem;
+    }
+    .check-row { display: flex; align-items: center; gap: .5rem; margin: .5rem 0; }
+    .check-row input { width: auto; }
+    .actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
+    a.link { color: var(--primary); }
+  </style>
+</head>
+<body>
+
+<div id="loginScreen" class="wrap">
+  <div class="card login-box">
+    <h1>ניהול Wine Knot</h1>
+    <p style="color:var(--muted);margin-bottom:1rem">הזינו סיסמה כדי להיכנס</p>
+    <label>סיסמה</label>
+    <input type="password" id="loginPass" placeholder="סיסמה" autocomplete="current-password">
+    <div class="actions" style="margin-top:1rem">
+      <button onclick="doLogin()">כניסה</button>
+    </div>
+    <p id="loginErr" style="color:var(--danger);margin-top:.75rem;display:none">סיסמה שגויה</p>
+  </div>
+</div>
+
+<div id="app" class="wrap hidden">
+  <div class="topbar">
+    <h1>ניהול יינות</h1>
+    <div class="actions">
+      <a class="link" href="/" target="_blank">צפייה באתר</a>
+      <button class="ghost" onclick="logout()">יציאה</button>
+    </div>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <div class="card">
+    <div class="row">
+      <div class="field" style="flex:2">
+        <label>חיפוש יין</label>
+        <input type="text" id="search" placeholder="שם או יקב..." oninput="debounceSearch()">
+      </div>
+      <div class="field" style="align-self:flex-end">
+        <button class="ok" onclick="showNewForm()">+ יין חדש</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="newForm" class="card hidden">
+    <h2>הוספת יין חדש</h2>
+    <div id="newFields"></div>
+    <div class="actions">
+      <button class="ok" onclick="createWine()">שמור יין חדש</button>
+      <button class="ghost" onclick="hideNewForm()">ביטול</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th></th><th>שם</th><th>יקב</th><th>קטגוריה</th><th>מבצע</th><th>מדף</th></tr>
+      </thead>
+      <tbody id="wineTable"></tbody>
+    </table>
+  </div>
+
+  <div id="editPanel" class="card hidden">
+    <h2 id="editTitle">עריכת יין</h2>
+    <div class="row">
+      <div>
+        <img id="editImg" class="img-preview" alt="">
+        <label>החלפת תמונה</label>
+        <input type="file" id="imgFile" accept="image/*" onchange="previewImage()">
+        <button style="margin-top:.5rem" onclick="uploadImage()">העלה תמונה</button>
+      </div>
+      <div style="flex:1" id="editFields"></div>
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="editOos">
+      <label for="editOos" style="margin:0;font-size:1rem;color:#222">אזל מהמלאי (לא יוצג באתר)</label>
+    </div>
+    <div class="actions">
+      <button onclick="saveWine()">שמור שינויים</button>
+      <button class="danger" onclick="toggleStock()">סמן כאזל / חזר למלאי</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api/admin';
+let token = localStorage.getItem('wk_admin_token') || '';
+let categories = [];
+let wines = [];
+let selectedId = null;
+let searchTimer;
+
+const $ = id => document.getElementById(id);
+
+function headers() {
+  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+}
+
+function showMsg(text, ok = true) {
+  const el = $('msg');
+  el.textContent = text;
+  el.className = `msg show ${ok ? 'ok' : 'err'}`;
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+async function api(url, opts = {}) {
+  const res = await fetch(url, { ...opts, headers: { ...headers(), ...opts.headers } });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'שגיאה');
+  return data;
+}
+
+async function doLogin() {
+  try {
+    const data = await fetch(`${API}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: $('loginPass').value }),
+    }).then(r => r.json());
+    if (!data.token) throw new Error();
+    token = data.token;
+    localStorage.setItem('wk_admin_token', token);
+    $('loginErr').style.display = 'none';
+    initApp();
+  } catch {
+    $('loginErr').style.display = 'block';
+  }
+}
+
+function logout() {
+  token = '';
+  localStorage.removeItem('wk_admin_token');
+  $('app').classList.add('hidden');
+  $('loginScreen').classList.remove('hidden');
+}
+
+function wineFieldsHtml(prefix, w = {}) {
+  const catOpts = categories.map(c =>
+    `<option value="${c.id}" ${w.category_id == c.id ? 'selected' : ''}>${c.name_he}</option>`
+  ).join('');
+  return `
+    <div class="row">
+      <div class="field" style="flex:2"><label>שם היין</label><input id="${prefix}name" value="${esc(w.name||'')}"></div>
+      <div class="field"><label>יקב</label><input id="${prefix}winery" value="${esc(w.winery||'')}"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>קטגוריה</label><select id="${prefix}category_id">${catOpts}</select></div>
+      <div class="field sm"><label>מחיר מבצע ₪</label><input type="number" id="${prefix}sale_price" value="${w.sale_price||''}"></div>
+      <div class="field sm"><label>מחיר מדף ₪</label><input type="number" id="${prefix}shelf_price" value="${w.shelf_price||''}"></div>
+      <div class="field sm"><label>דירוג</label><input type="number" step="0.1" id="${prefix}rating" value="${w.rating||''}"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>הערות (VFM וכו')</label><textarea id="${prefix}notes">${esc(w.notes||'')}</textarea></div>
+    </div>`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+}
+
+function readForm(prefix) {
+  return {
+    name: $(prefix + 'name').value.trim(),
+    winery: $(prefix + 'winery').value.trim(),
+    category_id: parseInt($(prefix + 'category_id').value, 10),
+    sale_price: parseFloat($(prefix + 'sale_price').value),
+    shelf_price: parseFloat($(prefix + 'shelf_price').value) || parseFloat($(prefix + 'sale_price').value),
+    rating: $(prefix + 'rating').value ? parseFloat($(prefix + 'rating').value) : null,
+    notes: $(prefix + 'notes').value.trim(),
+    out_of_stock: $(prefix === 'edit' ? 'editOos' : 'newOos')?.checked || false,
+  };
+}
+
+async function loadWines(q = '') {
+  const url = q ? `${API}/wines?search=${encodeURIComponent(q)}` : `${API}/wines`;
+  wines = await api(url);
+  renderTable();
+}
+
+function renderTable() {
+  const tb = $('wineTable');
+  tb.innerHTML = wines.map(w => `
+    <tr class="${w.out_of_stock ? 'oos' : ''} ${selectedId === w.id ? 'selected' : ''}" onclick="selectWine(${w.id})">
+      <td><img class="thumb" src="${w.image_url||''}" onerror="this.style.visibility='hidden'"></td>
+      <td>${esc(w.name)}</td>
+      <td>${esc(w.winery)}</td>
+      <td>${esc(w.category_he)}</td>
+      <td><strong>${w.sale_price} ₪</strong></td>
+      <td>${w.shelf_price} ₪</td>
+    </tr>
+  `).join('');
+}
+
+function selectWine(id) {
+  selectedId = id;
+  const w = wines.find(x => x.id === id);
+  if (!w) return;
+  renderTable();
+  $('editPanel').classList.remove('hidden');
+  $('editTitle').textContent = `עריכה: ${w.name}`;
+  $('editFields').innerHTML = wineFieldsHtml('edit', w);
+  $('editOos').checked = !!w.out_of_stock;
+  $('editImg').src = w.image_url || '';
+  $('imgFile').value = '';
+  $('editPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showNewForm() {
+  $('newForm').classList.remove('hidden');
+  $('newFields').innerHTML = wineFieldsHtml('new', {}) +
+    `<div class="check-row"><input type="checkbox" id="newOos"><label for="newOos">אזל מהמלאי</label></div>`;
+}
+
+function hideNewForm() { $('newForm').classList.add('hidden'); }
+
+async function createWine() {
+  try {
+    const body = readForm('new');
+    const w = await api(`${API}/wines`, { method: 'POST', body: JSON.stringify(body) });
+    showMsg(`נוסף: ${w.name}`);
+    hideNewForm();
+    await loadWines($('search').value);
+    selectWine(w.id);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function saveWine() {
+  if (!selectedId) return;
+  try {
+    const body = readForm('edit');
+    body.out_of_stock = $('editOos').checked;
+    const w = await api(`${API}/wines/${selectedId}`, { method: 'PUT', body: JSON.stringify(body) });
+    showMsg('נשמר בהצלחה');
+    await loadWines($('search').value);
+    selectWine(w.id);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function toggleStock() {
+  if (!selectedId) return;
+  const w = wines.find(x => x.id === selectedId);
+  const next = !w.out_of_stock;
+  try {
+    await api(`${API}/wines/${selectedId}/stock`, {
+      method: 'PATCH',
+      body: JSON.stringify({ out_of_stock: next }),
+    });
+    showMsg(next ? 'סומן כאזל מהמלאי' : 'חזר למלאי');
+    await loadWines($('search').value);
+    selectWine(selectedId);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+function previewImage() {
+  const f = $('imgFile').files[0];
+  if (f) $('editImg').src = URL.createObjectURL(f);
+}
+
+async function uploadImage() {
+  if (!selectedId || !$('imgFile').files[0]) {
+    showMsg('בחרו תמונה קודם', false);
+    return;
+  }
+  const fd = new FormData();
+  fd.append('image', $('imgFile').files[0]);
+  try {
+    const res = await fetch(`${API}/wines/${selectedId}/image`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    showMsg('התמונה הועלתה');
+    $('editImg').src = data.image_url + '?t=' + Date.now();
+    await loadWines($('search').value);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+function debounceSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => loadWines($('search').value.trim()), 300);
+}
+
+async function initApp() {
+  try {
+    categories = await api(`${API}/categories`);
+    $('loginScreen').classList.add('hidden');
+    $('app').classList.remove('hidden');
+    $('newFields').innerHTML = '';
+    await loadWines();
+  } catch {
+    logout();
+  }
+}
+
+$('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+if (token) initApp();
+</script>
+</body>
+</html>

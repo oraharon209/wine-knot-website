@@ -1,0 +1,61 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${DB_NAME:-wineknot}
+      MYSQL_USER: ${DB_USER:-wineknot}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-wineknot_pass}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/config/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-wineknot}
+      DB_PASSWORD: ${DB_PASSWORD:-wineknot_pass}
+      DB_NAME: ${DB_NAME:-wineknot}
+      PORT: 3000
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-wineknot}
+      IMAGE_DIR: /app/uploads/images/wines
+    volumes:
+      - ./frontend/public/images/wines:/app/uploads/images/wines
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - backend
+
+  cloudflare-ddns:
+    image: oznu/cloudflare-ddns:latest
+    restart: unless-stopped
+    profiles:
+      - production
+    environment:
+      API_KEY: ${CLOUDFLARE_API_TOKEN:-}
+      ZONE: ${CLOUDFLARE_ZONE:-wine-knot.co.il}
+      SUBDOMAIN: ${CLOUDFLARE_SUBDOMAIN:-@}
+      PROXIED: ${CLOUDFLARE_PROXIED:-false}
+
+volumes:
+  mysql_data:

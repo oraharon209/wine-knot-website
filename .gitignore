@@ -1,0 +1,7 @@
+.env
+.venv/
+node_modules/
+mysql_data/
+*.log
+.DS_Store
+scripts/image_cache.json
