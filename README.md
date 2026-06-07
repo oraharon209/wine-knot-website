@@ -145,7 +145,7 @@ Then `docker compose pull backend && docker compose up -d` (no local build neede
 ### Push code to GitHub
 
 ```bash
-git remote add origin https://github.com/oraharon209/wine-know-website.git
+git remote add origin https://github.com/oraharon209/wine-knot-website.git
 git push -u origin cursor/initial-wine-knot-setup
 ```
 
