@@ -21,7 +21,7 @@ fi
 
 # --- AWS CLI v2 for SSM secrets ---
 apt-get update -qq
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl git unzip ca-certificates
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl git unzip ca-certificates openssl
 curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
 unzip -q /tmp/awscliv2.zip -d /tmp
 /tmp/aws/install
@@ -80,6 +80,7 @@ DB_USER=wineknot
 DB_PASSWORD=$DB_PASS
 DB_NAME=wineknot
 HTTP_PORT=${http_port}
+HTTPS_PORT=443
 ADMIN_PASSWORD=$ADMIN_PASS
 CLOUDFLARE_API_TOKEN=$CF_TOKEN
 CLOUDFLARE_ZONE=${cloudflare_zone}

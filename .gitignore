@@ -5,6 +5,8 @@ mysql_data/
 *.log
 .DS_Store
 scripts/image_cache.json
+nginx/ssl/*.key
+nginx/ssl/*.crt
 terraform/.terraform/
 terraform/*.tfstate
 terraform/*.tfstate.*
