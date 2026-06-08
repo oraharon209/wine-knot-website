@@ -27,7 +27,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-wineknot_pass}
       DB_NAME: ${DB_NAME:-wineknot}
       PORT: 3000
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-wineknot}
       IMAGE_DIR: /app/uploads/images/wines
       IMAGE_STORAGE: ${IMAGE_STORAGE:-local}
       S3_BUCKET: ${S3_BUCKET:-}

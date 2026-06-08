@@ -23,7 +23,7 @@ cloudflare_api_token = "your_cloudflare_api_token_here"
 # Cloudflare Access — email OTP before /admin.html (who may log in)
 admin_allowed_emails = ["doronchick@gmail.com", "or.aharon209@gmail.com"]
 
-# In-app password for /admin.html (SSM → EC2 .env ADMIN_PASSWORD). Uncomment to set your own:
+# Legacy SSM admin_password (no longer used by the app; CF Access is the admin gate).
 # admin_password = "choose-a-strong-password"
 
 cloudflare_zone      = "wineknot.co.il"

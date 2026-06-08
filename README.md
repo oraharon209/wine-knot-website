@@ -16,9 +16,9 @@ Local dev uses HTTP only (no SSL certs). On the server, use `docker compose -f d
 
 ### Admin panel
 
-**http://localhost:8080/admin.html**
+**http://localhost:8080/admin.html** (local dev — no login gate)
 
-Password: the value of `ADMIN_PASSWORD` in `.env` (default: `wineknot`)
+Production (`wineknot.co.il/admin.html`): Cloudflare Access email OTP for allowlisted addresses only (see `terraform/access.tf`).
 
 - Update prices
 - Upload images
