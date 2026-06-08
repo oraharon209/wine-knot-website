@@ -38,20 +38,25 @@ resource "cloudflare_record" "apex" {
   ttl     = 1
 }
 
-resource "cloudflare_zone_settings_override" "tls" {
-  zone_id = data.cloudflare_zone.main.id
+# cloudflare_zone_settings_override fails on destroy (read-only prefetch_preload).
+# TLS/HSTS is applied via scripts/configure_cloudflare_ssl.sh after apply.
+removed {
+  from = cloudflare_zone_settings_override.tls
 
-  settings {
-    min_tls_version  = "1.2"
-    tls_1_3          = "on"
-    always_use_https = "on"
+  lifecycle {
+    destroy = false
+  }
+}
 
-    security_header {
-      enabled            = true
-      max_age            = 31536000
-      include_subdomains = true
-      preload            = true
-      nosniff            = true
+resource "terraform_data" "cloudflare_tls" {
+  input = {
+    zone = var.cloudflare_zone
+  }
+
+  provisioner "local-exec" {
+    command     = "bash ${path.module}/../scripts/configure_cloudflare_ssl.sh ${var.cloudflare_zone}"
+    environment = {
+      CF_API_TOKEN = var.cloudflare_api_token
     }
   }
 }
