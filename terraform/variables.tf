@@ -16,16 +16,9 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
-variable "key_name" {
-  description = "Existing EC2 key pair name (e.g. WIne-knot-test-key). Leave empty to create from ssh_public_key."
-  type        = string
-  default     = ""
-}
-
 variable "ssh_public_key" {
-  description = "SSH public key — only used when key_name is empty"
+  description = "SSH public key for the Terraform-managed EC2 key pair (cat ~/.ssh/id_ed25519.pub)"
   type        = string
-  default     = ""
 }
 
 variable "ssh_cidr_blocks" {

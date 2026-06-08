@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.0"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
   }
 }
 
@@ -21,11 +25,8 @@ provider "aws" {
   region = var.aws_region
 }
 
-check "key_pair_configured" {
-  assert {
-    condition     = var.key_name != "" || var.ssh_public_key != ""
-    error_message = "Set key_name (existing EC2 key pair) or ssh_public_key."
-  }
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }
 
 data "aws_vpc" "default" {
@@ -55,7 +56,6 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_key_pair" "deploy" {
-  count      = var.key_name == "" ? 1 : 0
   key_name   = "${var.project_name}-deploy"
   public_key = var.ssh_public_key
 
@@ -63,10 +63,6 @@ resource "aws_key_pair" "deploy" {
     Name    = "${var.project_name}-deploy"
     Project = var.project_name
   }
-}
-
-locals {
-  key_name = var.key_name != "" ? var.key_name : aws_key_pair.deploy[0].key_name
 }
 
 resource "aws_security_group" "web" {
@@ -130,7 +126,7 @@ resource "aws_security_group" "web" {
 resource "aws_instance" "web" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  key_name                    = local.key_name
+  key_name                    = aws_key_pair.deploy.key_name
   vpc_security_group_ids      = [aws_security_group.web.id]
   subnet_id                   = data.aws_subnets.default.ids[0]
   iam_instance_profile        = aws_iam_instance_profile.ec2.name

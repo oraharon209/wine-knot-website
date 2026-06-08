@@ -10,7 +10,12 @@ output "public_ip" {
 
 output "ssh_command" {
   description = "SSH into the server (must come from an IP in ssh_cidr_blocks)"
-  value       = "ssh -i ~/.ssh/YOUR_PRIVATE_KEY.pem ubuntu@${aws_eip.web.public_ip}"
+  value       = "ssh -i ~/.ssh/id_ed25519 ubuntu@${aws_eip.web.public_ip}"
+}
+
+output "key_pair_name" {
+  description = "Terraform-managed EC2 key pair (matches ssh_public_key in tfvars)"
+  value       = aws_key_pair.deploy.key_name
 }
 
 output "website_url" {
