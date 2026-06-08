@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
-const path = require('path');
 const pool = require('../config/db');
+const { requireAdmin, checkPassword, adminToken } = require('../middleware/auth');
 const storage = require('../lib/storage');
 
 const router = express.Router();
@@ -37,6 +37,16 @@ const upload = multer({
     else cb(new Error('רק קבצי תמונה'));
   },
 });
+
+router.post('/login', (req, res) => {
+  const { password } = req.body;
+  if (!checkPassword(password)) {
+    return res.status(401).json({ error: 'סיסמה שגויה' });
+  }
+  res.json({ token: adminToken(), ok: true });
+});
+
+router.use(requireAdmin);
 
 router.get('/wines', async (req, res) => {
   try {
