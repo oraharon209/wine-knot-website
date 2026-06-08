@@ -91,7 +91,7 @@ AWS_REGION=$REGION
 S3_PUBLIC_BASE_URL=${s3_public_base_url}
 CONTACT_PHONE=050-0000000
 CONTACT_WHATSAPP=972500000000
-CONTACT_EMAIL=info@wine-knot.co.il
+CONTACT_EMAIL=info@wineknot.co.il
 EOF
 chmod 600 .env
 chown ubuntu:ubuntu .env
@@ -134,7 +134,7 @@ AWS_REGION=$REGION
 S3_PUBLIC_BASE_URL=${s3_public_base_url}
 CONTACT_PHONE=050-0000000
 CONTACT_WHATSAPP=972500000000
-CONTACT_EMAIL=info@wine-knot.co.il
+CONTACT_EMAIL=info@wineknot.co.il
 EOF
 chmod 600 .env
 chown ubuntu:ubuntu .env

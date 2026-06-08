@@ -60,7 +60,7 @@ variable "cloudflare_api_token" {
 variable "cloudflare_zone" {
   description = "Cloudflare zone for DDNS"
   type        = string
-  default     = "wine-knot.co.il"
+  default     = "wineknot.co.il"
 }
 
 variable "cloudflare_subdomain" {

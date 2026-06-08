@@ -98,7 +98,7 @@ Place a file at `scripts/manual_images/{id}.jpg` (or the expected filename), the
 ```bash
 # Add to .env:
 CLOUDFLARE_API_TOKEN=your_token
-CLOUDFLARE_ZONE=wine-knot.co.il
+CLOUDFLARE_ZONE=wineknot.co.il
 CLOUDFLARE_SUBDOMAIN=@
 
 docker compose --profile production up -d

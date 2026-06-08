@@ -58,7 +58,7 @@ services:
       - production
     environment:
       API_KEY: ${CLOUDFLARE_API_TOKEN:-}
-      ZONE: ${CLOUDFLARE_ZONE:-wine-knot.co.il}
+      ZONE: ${CLOUDFLARE_ZONE:-wineknot.co.il}
       SUBDOMAIN: ${CLOUDFLARE_SUBDOMAIN:-@}
       PROXIED: ${CLOUDFLARE_PROXIED:-false}
 
