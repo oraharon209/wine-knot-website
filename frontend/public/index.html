@@ -689,6 +689,7 @@ let categories = [];
 let activeCategory = '';
 let debounceTimer;
 let winesCache = {};
+let recommendedWines = [];
 let cart = loadCart();
 
 const $ = id => document.getElementById(id);
@@ -931,21 +932,37 @@ function bindWineCards(container) {
   });
 }
 
-async function loadRecommended() {
+function isHomeView() {
+  return !activeCategory
+    && !$('search').value.trim()
+    && !$('maxPrice').value
+    && !$('minRating').value;
+}
+
+function updateRecommendedVisibility() {
   const section = $('recommendedSection');
+  if (!recommendedWines.length || !isHomeView()) {
+    section.classList.add('hidden');
+  } else {
+    section.classList.remove('hidden');
+  }
+}
+
+async function loadRecommended() {
   const grid = $('recommendedGrid');
   try {
-    const wines = await fetchJSON(`${API}/wines/recommended`);
-    if (!wines.length) {
-      section.classList.add('hidden');
+    recommendedWines = await fetchJSON(`${API}/wines/recommended`);
+    if (!recommendedWines.length) {
+      updateRecommendedVisibility();
       return;
     }
-    wines.forEach(w => { winesCache[w.id] = w; });
-    grid.innerHTML = wines.map(w => wineCardHtml(w, { showRecommendedBadge: true })).join('');
+    recommendedWines.forEach(w => { winesCache[w.id] = w; });
+    grid.innerHTML = recommendedWines.map(w => wineCardHtml(w, { showRecommendedBadge: true })).join('');
     bindWineCards(grid);
-    section.classList.remove('hidden');
+    updateRecommendedVisibility();
   } catch {
-    section.classList.add('hidden');
+    recommendedWines = [];
+    updateRecommendedVisibility();
   }
 }
 
@@ -1008,6 +1025,7 @@ async function loadWines() {
     }
     container.innerHTML = `<div class="wines-grid">${wines.map(w => wineCardHtml(w)).join('')}</div>`;
     bindWineCards(container);
+    updateRecommendedVisibility();
   } catch {
     container.innerHTML = '<div class="loading">שגיאה בטעינת היינות. ודאו שהשרת פועל.</div>';
   }

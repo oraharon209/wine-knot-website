@@ -8,6 +8,6 @@ services:
     volumes:
       - ./frontend/public:/usr/share/nginx/html:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d/common.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/conf.d/redirect.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx/conf.d/ssl.conf:/etc/nginx/conf.d/ssl.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
