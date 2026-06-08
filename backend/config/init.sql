@@ -215,3 +215,8 @@ INSERT INTO wines (name, category_id, winery, country, vintage, grape, rating, s
   ('Chateau LYNCH BAGES 94', 8, 'לנש באג''', '', '', '', 98.0, 650, 650, 'מציאה בשיאו', '/images/wines/לנש באג - Chateau LYNCH BAGES 94.jpg', 0),
   ('Cos D''Estournel 1983', 8, 'קוס דה אסטורנל', '', '1983', '', 98.0, 700, 700, 'מציאה בשיאו ציון 91 RP', '/images/wines/קוס דה אסטורנל - Cos D''Estournel 1983.jpg', 0),
   ('Cos D''Estournel 2012', 8, 'קוס דה אסטורנל', '', '2012', '', 99.0, 1300, 1300, 'יחיד ומיוחד ציון 93 RP', '/images/wines/קוס דה אסטורנל - Cos D''Estournel 2012.jpg', 0);
+
+INSERT INTO recommended_wines (wine_id, sort_order) VALUES
+  (89, 1),
+  (90, 2),
+  (32, 3);

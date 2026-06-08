@@ -26,6 +26,25 @@ async function migrate() {
     `);
     console.log('Migration: created recommended_wines table');
   }
+
+  const [recCount] = await pool.query('SELECT COUNT(*) AS n FROM recommended_wines');
+  if (recCount[0].n === 0) {
+    const seed = [
+      [89, 1],
+      [90, 2],
+      [32, 3],
+    ];
+    for (const [wineId, sortOrder] of seed) {
+      const [exists] = await pool.query('SELECT id FROM wines WHERE id = ?', [wineId]);
+      if (exists.length) {
+        await pool.query(
+          'INSERT INTO recommended_wines (wine_id, sort_order) VALUES (?, ?)',
+          [wineId, sortOrder]
+        );
+      }
+    }
+    console.log('Migration: seeded recommended_wines');
+  }
 }
 
 module.exports = migrate;

@@ -155,7 +155,7 @@
       margin: 0 auto 2rem;
       padding: 0 1.5rem;
     }
-    .recommended.hidden { visibility: hidden; height: 0; margin: 0; overflow: hidden; }
+    .recommended.hidden { display: none; }
     .recommended-header {
       display: flex;
       align-items: baseline;
@@ -667,6 +667,16 @@
   <p>חנות היין שלך — מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.</p>
 </section>
 
+<section class="recommended hidden" id="recommendedSection">
+  <div class="recommended-header">
+    <div>
+      <h2>מומלצים</h2>
+      <p>הבחירות שלנו — יינות שאנחנו אוהבים במיוחד</p>
+    </div>
+  </div>
+  <div class="recommended-grid" id="recommendedGrid"></div>
+</section>
+
 <div class="controls">
   <div class="search-box">
     <input type="text" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off">
@@ -710,16 +720,6 @@
     <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
   </div>
 </div>
-
-<section class="recommended hidden" id="recommendedSection">
-  <div class="recommended-header">
-    <div>
-      <h2>מומלצים</h2>
-      <p>הבחירות שלנו — יינות שאנחנו אוהבים במיוחד</p>
-    </div>
-  </div>
-  <div class="recommended-grid" id="recommendedGrid"></div>
-</section>
 </main>
 
 <section class="contact" id="contact">
@@ -1305,8 +1305,7 @@ async function init() {
     renderCategoryCards();
     setupFilters();
     setupCart();
-    await loadWines();
-    await loadRecommended();
+    await Promise.all([loadRecommended(), loadWines()]);
   } catch {
     $('winesContainer').innerHTML = '<div class="loading">לא ניתן להתחבר לשרת. הריצו: docker compose up -d --build</div>';
   }
