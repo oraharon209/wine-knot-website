@@ -42,7 +42,16 @@ resource "cloudflare_zone_settings_override" "tls" {
   zone_id = data.cloudflare_zone.main.id
 
   settings {
-    min_tls_version = "1.2"
-    tls_1_3         = "on"
+    min_tls_version  = "1.2"
+    tls_1_3          = "on"
+    always_use_https = "on"
+
+    security_header {
+      enabled            = true
+      max_age            = 31536000
+      include_subdomains = true
+      preload            = true
+      nosniff            = true
+    }
   }
 }

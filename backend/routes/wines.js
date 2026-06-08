@@ -20,7 +20,7 @@ const SORT_MAP = {
 
 router.get('/', async (req, res) => {
   try {
-    const { category, search, max_price, min_rating, sort, include_oos } = req.query;
+    const { category, search, max_price, min_rating, sort, include_oos, limit, offset } = req.query;
     const conditions = ['w.out_of_stock = 0'];
     const params = [];
 
@@ -50,13 +50,29 @@ router.get('/', async (req, res) => {
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
     const orderBy = SORT_MAP[sort] || 'w.sale_price ASC';
+    const baseFrom = `FROM wines w JOIN categories c ON c.id = w.category_id ${where}`;
+
+    const limitNum = limit ? parseInt(limit, 10) : 0;
+    const offsetNum = offset ? parseInt(offset, 10) : 0;
+
+    if (limitNum > 0) {
+      const [countRows] = await pool.query(`SELECT COUNT(*) AS total ${baseFrom}`, params);
+      const pageParams = [...params];
+      let sql = `SELECT w.*, c.slug AS category, c.name_he AS category_he ${baseFrom} ORDER BY ${orderBy} LIMIT ?`;
+      pageParams.push(limitNum);
+      if (offsetNum > 0) {
+        sql += ' OFFSET ?';
+        pageParams.push(offsetNum);
+      }
+      const [rows] = await pool.query(sql, pageParams);
+      return res.json({
+        wines: withResolvedImages(rows),
+        total: countRows[0].total,
+      });
+    }
 
     const [rows] = await pool.query(
-      `SELECT w.*, c.slug AS category, c.name_he AS category_he
-       FROM wines w
-       JOIN categories c ON c.id = w.category_id
-       ${where}
-       ORDER BY ${orderBy}`,
+      `SELECT w.*, c.slug AS category, c.name_he AS category_he ${baseFrom} ORDER BY ${orderBy}`,
       params
     );
     res.json(withResolvedImages(rows));

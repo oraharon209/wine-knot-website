@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wine Knot | חנות יין אונליין</title>
   <meta name="description" content="Wine Knot — חנות יין אונליין. מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"></noscript>
+  <link rel="dns-prefetch" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com">
+  <link rel="preconnect" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com" crossorigin>
   <style>
     :root {
       --wine: #6b1d3a;
@@ -23,7 +21,7 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Heebo', system-ui, sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       background: var(--cream);
       color: var(--text);
       line-height: 1.6;
@@ -157,7 +155,7 @@
       margin: 0 auto 2rem;
       padding: 0 1.5rem;
     }
-    .recommended.hidden { display: none; }
+    .recommended.hidden { visibility: hidden; height: 0; margin: 0; overflow: hidden; }
     .recommended-header {
       display: flex;
       align-items: baseline;
@@ -220,6 +218,24 @@
       color: #fff;
     }
     .cat-card .count { font-size: .8rem; opacity: .7; }
+    .skeleton {
+      pointer-events: none;
+      color: transparent !important;
+      user-select: none;
+      background: linear-gradient(90deg, #ece7e1 25%, #f5f1ec 50%, #ece7e1 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+      border-color: #ece7e1 !important;
+    }
+    .cat-card.skeleton { min-height: 72px; }
+    .wine-card.skeleton { min-height: 360px; content-visibility: visible; }
+    .wine-card.skeleton .wine-img,
+    .wine-card.skeleton .wine-body > * { visibility: hidden; }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .nav { min-height: 2.2rem; }
 
     /* Wine grid */
     .wines-grid {
@@ -240,6 +256,8 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      contain-intrinsic-size: 360px;
+      content-visibility: auto;
     }
     .wine-card:hover {
       border-color: #bbb;
@@ -607,6 +625,7 @@
       color: var(--muted);
       font-size: 1.1rem;
     }
+    .categories.is-loading { min-height: 88px; }
     .spinner {
       display: inline-block;
       width: 40px; height: 40px;
@@ -648,16 +667,6 @@
   <p>חנות היין שלך — מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.</p>
 </section>
 
-<section class="recommended hidden" id="recommendedSection">
-  <div class="recommended-header">
-    <div>
-      <h2>מומלצים</h2>
-      <p>הבחירות שלנו — יינות שאנחנו אוהבים במיוחד</p>
-    </div>
-  </div>
-  <div class="recommended-grid" id="recommendedGrid"></div>
-</section>
-
 <div class="controls">
   <div class="search-box">
     <input type="text" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off">
@@ -676,11 +685,41 @@
   <div class="results-count" id="resultsCount"></div>
 </div>
 
-<div class="categories" id="categories"></div>
+<div class="categories is-loading" id="categories">
+  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
+  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
+  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
+  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
+  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
+  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
+</div>
 
 <div id="winesContainer">
-  <div class="loading"><div class="spinner"></div><br>טוען יינות...</div>
+  <div class="wines-grid" id="winesGridSkeleton" aria-hidden="true">
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
+  </div>
 </div>
+
+<section class="recommended hidden" id="recommendedSection">
+  <div class="recommended-header">
+    <div>
+      <h2>מומלצים</h2>
+      <p>הבחירות שלנו — יינות שאנחנו אוהבים במיוחד</p>
+    </div>
+  </div>
+  <div class="recommended-grid" id="recommendedGrid"></div>
+</section>
 </main>
 
 <section class="contact" id="contact">
@@ -728,7 +767,8 @@
 const API = '/api';
 const CONTACT = { phone: '050-8496666', whatsapp: '972508496666', email: 'doronchick@gmail.com' };
 const CART_KEY = 'wineknot_cart';
-const HOME_WINES_PAGE_SIZE = 45;
+const HOME_WINES_PAGE_SIZE = 12;
+const INITIAL_FETCH_LIMIT = 12;
 
 let categories = [];
 let activeCategory = '';
@@ -737,6 +777,7 @@ let winesCache = {};
 let recommendedWines = [];
 let homeWinesFullList = [];
 let homeWinesShown = 0;
+let homeWinesTotal = 0;
 let cart = loadCart();
 
 const $ = id => document.getElementById(id);
@@ -927,6 +968,17 @@ async function fetchJSON(url) {
   return res.json();
 }
 
+async function fetchWines(url) {
+  const data = await fetchJSON(url);
+  if (Array.isArray(data)) return { wines: data, total: data.length };
+  return { wines: data.wines || [], total: data.total ?? (data.wines || []).length };
+}
+
+function winesSkeletonHtml(count = 12) {
+  const card = '<div class="wine-card skeleton" aria-hidden="true"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>';
+  return `<div class="wines-grid">${card.repeat(count)}</div>`;
+}
+
 function discountPct(shelf, sale) {
   if (!shelf || shelf <= sale) return 0;
   return Math.round((1 - sale / shelf) * 100);
@@ -1037,6 +1089,7 @@ function renderNav() {
 
 function renderCategoryCards() {
   const el = $('categories');
+  el.classList.remove('is-loading');
   el.innerHTML = categories.map(c => `
     <div class="cat-card ${activeCategory === c.slug ? 'active' : ''}" data-cat="${c.slug}">
       <div>${c.name_he}</div>
@@ -1098,10 +1151,9 @@ function showMoreButtonHtml(remaining) {
 }
 
 function renderAllSectionWines(container, wines) {
-  homeWinesFullList = wines;
   homeWinesShown = Math.min(HOME_WINES_PAGE_SIZE, wines.length);
   const visible = wines.slice(0, homeWinesShown);
-  const remaining = wines.length - homeWinesShown;
+  const remaining = homeWinesTotal - homeWinesShown;
 
   container.innerHTML =
     `<div class="wines-grid" id="winesGrid">${visible.map((w, i) => wineCardHtml(w, { eagerImage: i < 6 })).join('')}</div>` +
@@ -1112,43 +1164,80 @@ function renderAllSectionWines(container, wines) {
   if (showMoreBtn) showMoreBtn.addEventListener('click', showMoreHomeWines);
 }
 
-function showMoreHomeWines() {
+async function showMoreHomeWines() {
   const grid = $('winesGrid');
-  const prevShown = homeWinesShown;
-  homeWinesShown = Math.min(homeWinesShown + HOME_WINES_PAGE_SIZE, homeWinesFullList.length);
-  const newWines = homeWinesFullList.slice(prevShown, homeWinesShown);
-  grid.insertAdjacentHTML('beforeend', newWines.map(w => wineCardHtml(w)).join(''));
-  bindWineCards(grid);
-
-  const remaining = homeWinesFullList.length - homeWinesShown;
   const btn = $('showMoreBtn');
-  if (!btn) return;
-  if (remaining <= 0) {
-    btn.closest('.show-more-wrap').remove();
-  } else {
-    btn.textContent = `הצג עוד (${remaining} נוספים)`;
+  if (!grid || !btn) return;
+
+  btn.disabled = true;
+  try {
+    const prevShown = homeWinesShown;
+    let nextEnd = Math.min(homeWinesShown + HOME_WINES_PAGE_SIZE, homeWinesFullList.length);
+
+    if (nextEnd === homeWinesShown && homeWinesFullList.length < homeWinesTotal) {
+      const { wines } = await fetchWines(buildWinesUrl({
+        limit: HOME_WINES_PAGE_SIZE,
+        offset: homeWinesFullList.length,
+      }));
+      wines.forEach(w => { winesCache[w.id] = w; });
+      homeWinesFullList.push(...wines);
+      nextEnd = Math.min(homeWinesShown + HOME_WINES_PAGE_SIZE, homeWinesFullList.length);
+    }
+
+    homeWinesShown = nextEnd;
+    const newWines = homeWinesFullList.slice(prevShown, homeWinesShown);
+    grid.insertAdjacentHTML('beforeend', newWines.map(w => wineCardHtml(w)).join(''));
+    bindWineCards(grid);
+
+    const remaining = homeWinesTotal - homeWinesShown;
+    if (remaining <= 0) {
+      btn.closest('.show-more-wrap').remove();
+    } else {
+      btn.textContent = `הצג עוד (${remaining} נוספים)`;
+      btn.disabled = false;
+    }
+  } catch {
+    btn.disabled = false;
   }
+}
+
+function buildWinesUrl({ limit, offset } = {}) {
+  const params = new URLSearchParams(buildQuery());
+  if (limit) params.set('limit', String(limit));
+  if (offset) params.set('offset', String(offset));
+  return `${API}/wines?${params.toString()}`;
 }
 
 async function loadWines() {
   const container = $('winesContainer');
-  container.innerHTML = '<div class="loading"><div class="spinner"></div><br>טוען יינות...</div>';
+  if (!container.querySelector('.wine-card:not(.skeleton)')) {
+    container.innerHTML = winesSkeletonHtml(12);
+  }
   try {
-    const wines = await fetchJSON(`${API}/wines?${buildQuery()}`);
-    wines.forEach(w => { winesCache[w.id] = w; });
-    $('resultsCount').textContent = `נמצאו ${wines.length} יינות`;
-    if (!wines.length) {
-      homeWinesFullList = [];
-      homeWinesShown = 0;
-      container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
-      return;
-    }
     if (isAllSection()) {
-      renderAllSectionWines(container, wines);
+      const { wines, total } = await fetchWines(buildWinesUrl({ limit: INITIAL_FETCH_LIMIT }));
+      wines.forEach(w => { winesCache[w.id] = w; });
+      homeWinesTotal = total;
+      homeWinesFullList = wines;
+      $('resultsCount').textContent = `נמצאו ${total} יינות`;
+      if (!wines.length) {
+        homeWinesShown = 0;
+        container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
+        return;
+      }
+      renderAllSectionWines(container, homeWinesFullList);
     } else {
       homeWinesFullList = [];
       homeWinesShown = 0;
-      container.innerHTML = `<div class="wines-grid">${wines.map((w, i) => wineCardHtml(w, { eagerImage: i < 6 })).join('')}</div>`;
+      homeWinesTotal = 0;
+      const { wines, total } = await fetchWines(buildWinesUrl());
+      wines.forEach(w => { winesCache[w.id] = w; });
+      $('resultsCount').textContent = `נמצאו ${total} יינות`;
+      if (!wines.length) {
+        container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
+        return;
+      }
+      container.innerHTML = `<div class="wines-grid">${wines.map((w, i) => wineCardHtml(w, { eagerImage: i < 4 })).join('')}</div>`;
       bindWineCards(container);
     }
     updateRecommendedVisibility();
@@ -1216,7 +1305,8 @@ async function init() {
     renderCategoryCards();
     setupFilters();
     setupCart();
-    await Promise.all([loadRecommended(), loadWines()]);
+    await loadWines();
+    await loadRecommended();
   } catch {
     $('winesContainer').innerHTML = '<div class="loading">לא ניתן להתחבר לשרת. הריצו: docker compose up -d --build</div>';
   }
