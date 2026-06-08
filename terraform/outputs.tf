@@ -24,8 +24,13 @@ output "website_url" {
 }
 
 output "admin_panel_url" {
-  description = "Admin panel URL"
+  description = "Admin panel URL (protected by Cloudflare Access email OTP)"
   value       = "https://${var.cloudflare_zone}/admin.html"
+}
+
+output "admin_access_emails" {
+  description = "Emails allowed through Cloudflare Access for admin"
+  value       = var.admin_allowed_emails
 }
 
 output "ssm_admin_password_path" {

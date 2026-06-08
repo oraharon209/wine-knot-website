@@ -17,10 +17,14 @@ ssh_cidr_blocks = ["203.0.113.10/32"]
 # The EC2 instance reads them at boot; you retrieve them with:
 #   aws ssm get-parameter --region eu-north-1 --name /wine-knot/admin_password --with-decryption --query Parameter.Value --output text
 
+# Token needs: Zone DNS Edit, Access: Apps and Policies Write, Zero Trust Write
 cloudflare_api_token = "your_cloudflare_api_token_here"
 
-# Optional: set a fixed admin password. Leave empty to auto-generate.
-# admin_password = ""
+# Cloudflare Access — email OTP before /admin.html (who may log in)
+admin_allowed_emails = ["doronchick@gmail.com", "or.aharon209@gmail.com"]
+
+# In-app password for /admin.html (SSM → EC2 .env ADMIN_PASSWORD). Uncomment to set your own:
+# admin_password = "choose-a-strong-password"
 
 cloudflare_zone      = "wineknot.co.il"
 cloudflare_subdomain = "@"

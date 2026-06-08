@@ -80,3 +80,8 @@ variable "swap_size_gb" {
   type        = number
   default     = 1
 }
+
+variable "admin_allowed_emails" {
+  description = "Emails allowed through Cloudflare Access (email OTP) for /admin.html and /api/admin"
+  type        = list(string)
+}
