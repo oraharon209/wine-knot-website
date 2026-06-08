@@ -12,6 +12,8 @@ docker compose up -d --build
 
 Open in your browser: **http://localhost:8080**
 
+Local dev uses HTTP only (no SSL certs). On the server, use `docker compose -f docker-compose.yml -f docker-compose.production.yml up -d` for HTTPS on 443.
+
 ### Admin panel
 
 **http://localhost:8080/admin.html**

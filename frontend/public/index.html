@@ -305,6 +305,188 @@
       font-family: inherit;
     }
     .btn-whatsapp:hover { background: #1da851; }
+    .btn-whatsapp:disabled { background: #aaa; cursor: not-allowed; }
+
+    .btn-add-cart {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      background: var(--wine);
+      color: #fff;
+      padding: .55rem .9rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: .85rem;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s;
+      width: 100%;
+      margin-top: .75rem;
+    }
+    .btn-add-cart:hover { background: var(--wine-dark); }
+
+    /* Cart button in header */
+    .cart-btn {
+      position: relative;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      color: #fff;
+      padding: .45rem 1rem;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .2s;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .cart-btn:hover { background: rgba(255,255,255,.22); }
+    .cart-badge {
+      background: var(--gold);
+      color: var(--wine-dark);
+      font-size: .75rem;
+      font-weight: 700;
+      min-width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 .25rem;
+    }
+    .cart-badge:empty, .cart-badge[data-count="0"] { display: none; }
+
+    /* Cart drawer */
+    .cart-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 300;
+    }
+    .cart-overlay.open { display: block; }
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: min(400px, 100vw);
+      height: 100%;
+      background: #fff;
+      box-shadow: 4px 0 24px rgba(0,0,0,.15);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform .3s ease;
+    }
+    .cart-overlay.open .cart-drawer { transform: translateX(0); }
+    .cart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--cream);
+    }
+    .cart-header h2 { font-size: 1.2rem; color: var(--wine); }
+    .cart-close {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--muted);
+      line-height: 1;
+    }
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.5rem;
+    }
+    .cart-empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 3rem 1rem;
+      font-size: .95rem;
+    }
+    .cart-item {
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cart-item-info { flex: 1; min-width: 0; }
+    .cart-item-name { font-weight: 600; font-size: .95rem; margin-bottom: .15rem; }
+    .cart-item-meta { font-size: .8rem; color: var(--muted); margin-bottom: .4rem; }
+    .cart-item-price { font-weight: 700; color: var(--wine); font-size: .95rem; }
+    .cart-qty {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-top: .5rem;
+    }
+    .cart-qty button {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      color: var(--text);
+    }
+    .cart-qty button:hover { border-color: var(--wine); color: var(--wine); }
+    .cart-qty span { font-weight: 600; min-width: 1.5rem; text-align: center; }
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: .2rem;
+      line-height: 1;
+    }
+    .cart-item-remove:hover { color: #e74c3c; }
+    .cart-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--cream);
+    }
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--wine);
+    }
+    .cart-footer .btn-whatsapp { margin-top: 0; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--wine);
+      color: #fff;
+      padding: .75rem 1.5rem;
+      border-radius: var(--radius);
+      font-weight: 500;
+      z-index: 400;
+      opacity: 0;
+      transition: transform .3s, opacity .3s;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
 
     /* Contact */
     .contact {
@@ -363,6 +545,10 @@
   <div class="header-inner">
     <div class="logo">Wine <span>Knot</span></div>
     <nav class="nav" id="nav"></nav>
+    <button class="cart-btn" id="cartBtn" type="button">
+      🛒 עגלה
+      <span class="cart-badge" id="cartBadge" data-count="0">0</span>
+    </button>
   </div>
 </header>
 
@@ -420,15 +606,217 @@
   </div>
 </div>
 
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-drawer">
+    <div class="cart-header">
+      <h2>🛒 העגלה שלי</h2>
+      <button class="cart-close" id="cartClose" type="button" aria-label="סגור">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer" id="cartFooter">
+      <div class="cart-total">
+        <span>סה"כ</span>
+        <span id="cartTotalAmount">₪0</span>
+      </div>
+      <button class="btn-whatsapp" id="cartWhatsAppBtn" type="button" disabled>💬 שליחת הזמנה בוואטסאפ</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
 const API = '/api';
 const CONTACT = { phone: '050-8496666', whatsapp: '972508496666', email: 'doronchick@gmail.com' };
+const CART_KEY = 'wineknot_cart';
 
 let categories = [];
 let activeCategory = '';
 let debounceTimer;
+let winesCache = {};
+let cart = loadCart();
 
 const $ = id => document.getElementById(id);
+
+function loadCart() {
+  try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveCart() {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  updateCartBadge();
+  renderCart();
+}
+
+function addToCart(wine, qty = 1) {
+  const id = String(wine.id);
+  if (cart[id]) cart[id].quantity += qty;
+  else {
+    cart[id] = {
+      id: wine.id,
+      name: wine.name,
+      sale_price: Number(wine.sale_price),
+      winery: wine.winery || '',
+      vintage: wine.vintage || '',
+      quantity: qty,
+    };
+  }
+  saveCart();
+  showToast('נוסף לעגלה ✓');
+}
+
+function removeFromCart(id) {
+  delete cart[String(id)];
+  saveCart();
+}
+
+function setCartQuantity(id, qty) {
+  id = String(id);
+  if (!cart[id]) return;
+  if (qty <= 0) removeFromCart(id);
+  else { cart[id].quantity = qty; saveCart(); }
+}
+
+function cartItemCount() {
+  return Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+}
+
+function cartTotalAmount() {
+  return Object.values(cart).reduce((sum, item) => sum + item.sale_price * item.quantity, 0);
+}
+
+function formatPrice(amount) {
+  return '₪' + Number(amount).toLocaleString('he-IL', { maximumFractionDigits: 0 });
+}
+
+function formatBottleQty(qty) {
+  return qty === 1 ? 'בקבוק אחד' : `${qty} בקבוקים`;
+}
+
+function cartWineLabel(item) {
+  const name = item.name.trim();
+  const vintage = (item.vintage || '').trim();
+  if (!vintage || new RegExp(`\\b${vintage.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(name)) {
+    return name;
+  }
+  return `${name} · ${vintage}`;
+}
+
+function buildCartWhatsAppMessage() {
+  const items = Object.values(cart);
+  if (!items.length) return '';
+
+  const lines = [
+    'שלום Wine Knot,',
+    '',
+    'להלן ההזמנה שלי:',
+    '',
+  ];
+
+  items.forEach(item => {
+    const label = cartWineLabel(item);
+    const lineTotal = item.sale_price * item.quantity;
+    lines.push(label);
+    lines.push(`   ${formatBottleQty(item.quantity)} · ${formatPrice(lineTotal)}`);
+    lines.push('');
+  });
+
+  lines.push('──────────────');
+  lines.push(`סה״כ לתשלום: ${formatPrice(cartTotalAmount())}`);
+  lines.push('');
+  lines.push('תודה!');
+
+  return lines.join('\n');
+}
+
+function updateCartBadge() {
+  const count = cartItemCount();
+  const badge = $('cartBadge');
+  badge.textContent = count;
+  badge.dataset.count = count;
+}
+
+function renderCart() {
+  const items = Object.values(cart);
+  const container = $('cartItems');
+  const waBtn = $('cartWhatsAppBtn');
+
+  if (!items.length) {
+    container.innerHTML = '<div class="cart-empty">העגלה ריקה<br><small>הוסיפו יינות מהחנות</small></div>';
+    $('cartTotalAmount').textContent = '₪0';
+    waBtn.disabled = true;
+    return;
+  }
+
+  container.innerHTML = items.map(item => `
+    <div class="cart-item" data-id="${item.id}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">${item.winery}${item.vintage ? ' · ' + item.vintage : ''}</div>
+        <div class="cart-qty">
+          <button type="button" data-action="dec" aria-label="הפחת כמות">−</button>
+          <span>${item.quantity}</span>
+          <button type="button" data-action="inc" aria-label="הוסף כמות">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="cart-item-price">₪${(item.sale_price * item.quantity).toFixed(0)}</div>
+        <button type="button" class="cart-item-remove" data-action="remove" aria-label="הסר">✕</button>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.cart-item').forEach(row => {
+    const id = row.dataset.id;
+    row.querySelector('[data-action="dec"]').addEventListener('click', () => {
+      setCartQuantity(id, cart[id].quantity - 1);
+    });
+    row.querySelector('[data-action="inc"]').addEventListener('click', () => {
+      setCartQuantity(id, cart[id].quantity + 1);
+    });
+    row.querySelector('[data-action="remove"]').addEventListener('click', () => {
+      removeFromCart(id);
+    });
+  });
+
+  $('cartTotalAmount').textContent = `₪${cartTotalAmount().toFixed(0)}`;
+  waBtn.disabled = false;
+}
+
+function openCart() {
+  renderCart();
+  $('cartOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  $('cartOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+let toastTimer;
+function showToast(text) {
+  const el = $('toast');
+  el.textContent = text;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function setupCart() {
+  $('cartBtn').addEventListener('click', openCart);
+  $('cartClose').addEventListener('click', closeCart);
+  $('cartOverlay').addEventListener('click', e => {
+    if (e.target === $('cartOverlay')) closeCart();
+  });
+  $('cartWhatsAppBtn').addEventListener('click', () => {
+    const msg = encodeURIComponent(buildCartWhatsAppMessage());
+    window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank');
+  });
+  updateCartBadge();
+  renderCart();
+}
 
 async function fetchJSON(url) {
   const res = await fetch(url);
@@ -500,6 +888,7 @@ async function loadWines() {
   container.innerHTML = '<div class="loading"><div class="spinner"></div><br>טוען יינות...</div>';
   try {
     const wines = await fetchJSON(`${API}/wines?${buildQuery()}`);
+    wines.forEach(w => { winesCache[w.id] = w; });
     $('resultsCount').textContent = `נמצאו ${wines.length} יינות`;
     if (!wines.length) {
       container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
@@ -522,11 +911,22 @@ async function loadWines() {
                 ${disc ? `<span class="shelf-price">₪${Number(w.shelf_price).toFixed(0)}</span>` : ''}
               </div>
             </div>
+            <button class="btn-add-cart" type="button" data-add-id="${w.id}">🛒 הוסף לעגלה</button>
           </div>
         </div>`;
     }).join('')}</div>`;
     container.querySelectorAll('.wine-card').forEach(card => {
-      card.addEventListener('click', () => openModal(card.dataset.id));
+      card.addEventListener('click', e => {
+        if (e.target.closest('.btn-add-cart')) return;
+        openModal(card.dataset.id);
+      });
+    });
+    container.querySelectorAll('.btn-add-cart').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const wine = winesCache[btn.dataset.addId];
+        if (wine) addToCart(wine);
+      });
     });
   } catch {
     container.innerHTML = '<div class="loading">שגיאה בטעינת היינות. ודאו שהשרת פועל.</div>';
@@ -547,10 +947,17 @@ async function openModal(id) {
       </div>
       <div>⭐ דירוג: <strong>${w.rating}</strong> · ${w.category_he}</div>
       ${w.notes ? `<div class="modal-notes">${w.notes}</div>` : ''}
-      <button class="btn-whatsapp" id="orderBtn">💬 הזמנה בוואטסאפ</button>
+      <button class="btn-add-cart" id="modalAddBtn" type="button">🛒 הוסף לעגלה</button>
+      <button class="btn-whatsapp" id="orderBtn" type="button">💬 הזמנה מהירה בוואטסאפ</button>
     `;
+    $('modalAddBtn').addEventListener('click', () => {
+      addToCart(w);
+    });
     $('orderBtn').addEventListener('click', () => {
-      const msg = encodeURIComponent(`שלום, אני מעוניין/ת ב:\n${w.name}\nמחיר: ${w.sale_price} ₪`);
+      const label = cartWineLabel({ name: w.name, vintage: w.vintage || '' });
+      const msg = encodeURIComponent(
+        `שלום Wine Knot,\n\nמעוניין/ת ב:\n${label}\n${formatPrice(w.sale_price)}`
+      );
       window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank');
     });
     $('modal').classList.add('open');
@@ -582,6 +989,7 @@ async function init() {
     renderNav();
     renderCategoryCards();
     setupFilters();
+    setupCart();
     await loadWines();
   } catch {
     $('winesContainer').innerHTML = '<div class="loading">לא ניתן להתחבר לשרת. הריצו: docker compose up -d --build</div>';
