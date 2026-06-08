@@ -1,14 +1,11 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const pool = require('../config/db');
 const { requireAdmin, checkPassword, adminToken } = require('../middleware/auth');
+const storage = require('../lib/storage');
 
 const router = express.Router();
-
-const IMG_DIR = process.env.IMAGE_DIR || path.join(__dirname, '..', 'uploads', 'images', 'wines');
-fs.mkdirSync(IMG_DIR, { recursive: true });
 
 function wineImageLabel(wine) {
   const winery = (wine.winery || '').split('/')[0].split('(')[0].trim().replace(/\s+/g, ' ');
@@ -30,16 +27,11 @@ function wineImageFilename(wine, ext = '.jpg') {
 }
 
 function wineImageUrl(wine) {
-  return `/images/wines/${wineImageFilename(wine)}`;
+  return storage.publicUrl(wineImageFilename(wine));
 }
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, IMG_DIR),
-    filename: (req, _file, cb) => {
-      cb(null, req.wineImageName || `${req.params.id}.jpg`);
-    },
-  }),
+  storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (file.mimetype.startsWith('image/')) cb(null, true);
@@ -70,7 +62,10 @@ router.get('/wines', async (req, res) => {
     }
     sql += ' ORDER BY w.out_of_stock ASC, w.name ASC';
     const [rows] = await pool.query(sql, params);
-    res.json(rows);
+    res.json(rows.map((row) => ({
+      ...row,
+      image_url: storage.resolveImageUrl(row.image_url),
+    })));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'שגיאה בטעינה' });
@@ -154,10 +149,7 @@ router.delete('/wines/:id', async (req, res) => {
     if (!rows.length) return res.status(404).json({ error: 'לא נמצא' });
     const imageUrl = rows[0].image_url;
     await pool.query('DELETE FROM wines WHERE id = ?', [req.params.id]);
-    if (imageUrl && imageUrl.startsWith('/images/wines/')) {
-      const filePath = path.join(IMG_DIR, path.basename(imageUrl));
-      fs.unlink(filePath, () => {});
-    }
+    await storage.deleteImage(imageUrl);
     res.json({ ok: true });
   } catch (err) {
     console.error(err);
@@ -190,7 +182,8 @@ router.post('/wines/:id/image', async (req, res, next) => {
 }, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'לא נבחרה תמונה' });
-    const imageUrl = `/images/wines/${req.file.filename}`;
+    const filename = req.wineImageName || `${req.params.id}.jpg`;
+    const imageUrl = await storage.saveImage(filename, req.file.buffer, req.file.mimetype);
     await pool.query('UPDATE wines SET image_url = ? WHERE id = ?', [imageUrl, req.params.id]);
     res.json({ ok: true, image_url: imageUrl });
   } catch (err) {

@@ -4,16 +4,52 @@ output "instance_id" {
 }
 
 output "public_ip" {
-  description = "Elastic IP — point your domain or Cloudflare DDNS here"
+  description = "Elastic IP — Cloudflare DDNS will point your domain here"
   value       = aws_eip.web.public_ip
 }
 
 output "ssh_command" {
-  description = "SSH into the server as ec2-user"
-  value       = "ssh -i ~/.ssh/YOUR_PRIVATE_KEY ec2-user@${aws_eip.web.public_ip}"
+  description = "SSH into the server (must come from an IP in ssh_cidr_blocks)"
+  value       = "ssh -i ~/.ssh/YOUR_PRIVATE_KEY.pem ubuntu@${aws_eip.web.public_ip}"
 }
 
 output "website_url" {
-  description = "URL to open after deploying docker compose"
-  value       = "http://${aws_eip.web.public_ip}:${var.http_port}"
+  description = "Site URL via Cloudflare (orange-cloud proxied DNS required)"
+  value       = "https://${var.cloudflare_zone}"
+}
+
+output "admin_panel_url" {
+  description = "Admin panel URL"
+  value       = "https://${var.cloudflare_zone}/admin.html"
+}
+
+output "ssm_admin_password_path" {
+  description = "SSM path for admin password (retrieve with aws ssm get-parameter --with-decryption)"
+  value       = aws_ssm_parameter.admin_password.name
+}
+
+output "ssm_cloudflare_token_path" {
+  description = "SSM path for Cloudflare API token"
+  value       = aws_ssm_parameter.cloudflare_api_token.name
+}
+
+output "admin_password" {
+  description = "Admin password (only shown once — also stored in SSM)"
+  value       = local.admin_password_value
+  sensitive   = true
+}
+
+output "retrieve_secrets_command" {
+  description = "How to read secrets from SSM after apply"
+  value       = "aws ssm get-parameter --region ${var.aws_region} --name /${var.project_name}/admin_password --with-decryption --query Parameter.Value --output text"
+}
+
+output "s3_bucket" {
+  description = "S3 bucket for wine bottle images"
+  value       = aws_s3_bucket.wine_images.bucket
+}
+
+output "s3_images_base_url" {
+  description = "Public base URL for wine images (uploads go to /wines/)"
+  value       = local.s3_public_base_url
 }

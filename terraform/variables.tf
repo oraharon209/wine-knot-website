@@ -1,40 +1,89 @@
 variable "aws_region" {
-  description = "AWS region for all resources (e.g. eu-west-1 for Israel-adjacent latency)"
+  description = "AWS region (your current instance is in eu-north-1)"
   type        = string
-  default     = "eu-west-1"
+  default     = "eu-north-1"
 }
 
 variable "project_name" {
-  description = "Prefix for resource names and tags"
+  description = "Prefix for resource names, SSM paths, and tags"
   type        = string
   default     = "wine-knot"
 }
 
 variable "instance_type" {
-  description = "EC2 instance type. t3.small is recommended for Docker + MySQL; t3.micro works for very low traffic."
+  description = "EC2 instance type. t3.micro is enough for this site (use swap)."
   type        = string
-  default     = "t3.small"
+  default     = "t3.micro"
+}
+
+variable "key_name" {
+  description = "Existing EC2 key pair name (e.g. WIne-knot-test-key). Leave empty to create from ssh_public_key."
+  type        = string
+  default     = ""
 }
 
 variable "ssh_public_key" {
-  description = "Contents of your SSH public key (~/.ssh/id_ed25519.pub or id_rsa.pub)"
+  description = "SSH public key — only used when key_name is empty"
   type        = string
+  default     = ""
 }
 
 variable "ssh_cidr_blocks" {
-  description = "CIDR blocks allowed to SSH into the instance. Restrict to your home IP for security."
+  description = "CIDR blocks allowed to SSH (your IP only — Cloudflare does not proxy SSH)"
   type        = list(string)
-  default     = ["0.0.0.0/0"]
 }
 
 variable "http_port" {
-  description = "Host port mapped to nginx (must match HTTP_PORT in .env on the server)"
+  description = "Host port mapped to nginx (HTTP_PORT in .env)"
   type        = number
   default     = 80
 }
 
 variable "root_volume_size_gb" {
-  description = "Root EBS volume size in GB (images + MySQL data need some headroom)"
+  description = "Root EBS volume size in GB"
   type        = number
   default     = 20
+}
+
+variable "git_repo_url" {
+  description = "Public git URL to clone on first boot"
+  type        = string
+  default     = "https://github.com/oraharon209/wine-knot-website.git"
+}
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token for DDNS — set in terraform.tfvars (never commit)"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudflare_zone" {
+  description = "Cloudflare zone for DDNS"
+  type        = string
+  default     = "wine-knot.co.il"
+}
+
+variable "cloudflare_subdomain" {
+  description = "Cloudflare subdomain for DDNS (@ for apex)"
+  type        = string
+  default     = "@"
+}
+
+variable "cloudflare_proxied" {
+  description = "Whether Cloudflare DDNS record is proxied (must be true for Cloudflare-only SG to work for visitors)"
+  type        = bool
+  default     = true
+}
+
+variable "admin_password" {
+  description = "Admin panel password. Leave empty to auto-generate and store in SSM only."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "swap_size_gb" {
+  description = "Swap file size in GB (helps on t3.micro)"
+  type        = number
+  default     = 1
 }

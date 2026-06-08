@@ -1,7 +1,15 @@
 const express = require('express');
 const pool = require('../config/db');
+const { resolveImageUrl } = require('../lib/storage');
 
 const router = express.Router();
+
+function withResolvedImages(rows) {
+  return rows.map((row) => ({
+    ...row,
+    image_url: resolveImageUrl(row.image_url),
+  }));
+}
 
 const SORT_MAP = {
   price_asc: 'w.sale_price ASC',
@@ -51,7 +59,7 @@ router.get('/', async (req, res) => {
        ORDER BY ${orderBy}`,
       params
     );
-    res.json(rows);
+    res.json(withResolvedImages(rows));
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'שגיאה בטעינת יינות' });
@@ -68,7 +76,7 @@ router.get('/:id', async (req, res) => {
       [req.params.id]
     );
     if (!rows.length) return res.status(404).json({ error: 'יין לא נמצא' });
-    res.json(rows[0]);
+    res.json(withResolvedImages(rows)[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'שגיאה בטעינת יין' });

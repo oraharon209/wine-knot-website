@@ -1,13 +1,28 @@
-# Copy to terraform.tfvars and fill in your values:
+# Copy to terraform.tfvars (gitignored) and fill in:
 #   cp terraform.tfvars.example terraform.tfvars
 
-aws_region    = "eu-west-1"   # or il-central-1 (Tel Aviv) if available on your account
-instance_type = "t3.small"
-http_port     = 80            # match HTTP_PORT in .env (use 80 in production)
+aws_region    = "eu-north-1"
+instance_type = "t3.micro"
+http_port     = 80
 
-# Paste the contents of your public key file:
-#   cat ~/.ssh/id_ed25519.pub
-ssh_public_key = "ssh-ed25519 AAAA... your-email@example.com"
+# Use your existing key pair from the EC2 console:
+key_name = "WIne-knot-test-key"
+# Or leave key_name empty and set ssh_public_key instead:
+# ssh_public_key = "ssh-ed25519 AAAA..."
 
-# Restrict SSH to your IP (recommended):
-# ssh_cidr_blocks = ["203.0.113.10/32"]
+# Your public IP only — Cloudflare does NOT proxy SSH
+ssh_cidr_blocks = ["203.0.113.10/32"]
+
+# --- Secrets (NEVER commit terraform.tfvars) ---
+# Stored in AWS SSM Parameter Store (SecureString) by Terraform.
+# The EC2 instance reads them at boot; you retrieve them with:
+#   aws ssm get-parameter --region eu-north-1 --name /wine-knot/admin_password --with-decryption --query Parameter.Value --output text
+
+cloudflare_api_token = "your_cloudflare_api_token_here"
+
+# Optional: set a fixed admin password. Leave empty to auto-generate.
+# admin_password = ""
+
+cloudflare_zone      = "wine-knot.co.il"
+cloudflare_subdomain = "@"
+cloudflare_proxied   = true
