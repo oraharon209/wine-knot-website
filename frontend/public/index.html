@@ -224,7 +224,7 @@
     /* Wine grid */
     .wines-grid {
       max-width: 1280px;
-      margin: 0 auto 3rem;
+      margin: 0 auto;
       padding: 0 1.5rem;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -298,6 +298,29 @@
     .sale-price { font-size: 1.15rem; font-weight: 700; color: #111; }
     .shelf-price { font-size: .85rem; color: #999; text-decoration: line-through; }
     .price-label { font-size: .7rem; color: #5a5a5a; display: block; margin-bottom: .15rem; }
+
+    .show-more-wrap {
+      max-width: 1280px;
+      margin: 2rem auto 3rem;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+    .btn-show-more {
+      background: #fff;
+      color: var(--wine);
+      border: 2px solid var(--wine);
+      padding: .85rem 2.5rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s, color .2s;
+    }
+    .btn-show-more:hover {
+      background: var(--wine);
+      color: #fff;
+    }
 
     /* Modal */
     .modal-overlay {
@@ -705,12 +728,15 @@
 const API = '/api';
 const CONTACT = { phone: '050-8496666', whatsapp: '972508496666', email: 'doronchick@gmail.com' };
 const CART_KEY = 'wineknot_cart';
+const HOME_WINES_PAGE_SIZE = 45;
 
 let categories = [];
 let activeCategory = '';
 let debounceTimer;
 let winesCache = {};
 let recommendedWines = [];
+let homeWinesFullList = [];
+let homeWinesShown = 0;
 let cart = loadCart();
 
 const $ = id => document.getElementById(id);
@@ -1060,6 +1086,50 @@ function readUrlState() {
   if (sort) $('sort').value = sort;
 }
 
+function isAllSection() {
+  return !activeCategory;
+}
+
+function showMoreButtonHtml(remaining) {
+  return `
+    <div class="show-more-wrap">
+      <button class="btn-show-more" id="showMoreBtn" type="button">הצג עוד (${remaining} נוספים)</button>
+    </div>`;
+}
+
+function renderAllSectionWines(container, wines) {
+  homeWinesFullList = wines;
+  homeWinesShown = Math.min(HOME_WINES_PAGE_SIZE, wines.length);
+  const visible = wines.slice(0, homeWinesShown);
+  const remaining = wines.length - homeWinesShown;
+
+  container.innerHTML =
+    `<div class="wines-grid" id="winesGrid">${visible.map((w, i) => wineCardHtml(w, { eagerImage: i < 6 })).join('')}</div>` +
+    (remaining > 0 ? showMoreButtonHtml(remaining) : '');
+
+  bindWineCards(container);
+  const showMoreBtn = $('showMoreBtn');
+  if (showMoreBtn) showMoreBtn.addEventListener('click', showMoreHomeWines);
+}
+
+function showMoreHomeWines() {
+  const grid = $('winesGrid');
+  const prevShown = homeWinesShown;
+  homeWinesShown = Math.min(homeWinesShown + HOME_WINES_PAGE_SIZE, homeWinesFullList.length);
+  const newWines = homeWinesFullList.slice(prevShown, homeWinesShown);
+  grid.insertAdjacentHTML('beforeend', newWines.map(w => wineCardHtml(w)).join(''));
+  bindWineCards(grid);
+
+  const remaining = homeWinesFullList.length - homeWinesShown;
+  const btn = $('showMoreBtn');
+  if (!btn) return;
+  if (remaining <= 0) {
+    btn.closest('.show-more-wrap').remove();
+  } else {
+    btn.textContent = `הצג עוד (${remaining} נוספים)`;
+  }
+}
+
 async function loadWines() {
   const container = $('winesContainer');
   container.innerHTML = '<div class="loading"><div class="spinner"></div><br>טוען יינות...</div>';
@@ -1068,11 +1138,19 @@ async function loadWines() {
     wines.forEach(w => { winesCache[w.id] = w; });
     $('resultsCount').textContent = `נמצאו ${wines.length} יינות`;
     if (!wines.length) {
+      homeWinesFullList = [];
+      homeWinesShown = 0;
       container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
       return;
     }
-    container.innerHTML = `<div class="wines-grid">${wines.map((w, i) => wineCardHtml(w, { eagerImage: i < 6 })).join('')}</div>`;
-    bindWineCards(container);
+    if (isAllSection()) {
+      renderAllSectionWines(container, wines);
+    } else {
+      homeWinesFullList = [];
+      homeWinesShown = 0;
+      container.innerHTML = `<div class="wines-grid">${wines.map((w, i) => wineCardHtml(w, { eagerImage: i < 6 })).join('')}</div>`;
+      bindWineCards(container);
+    }
     updateRecommendedVisibility();
     syncUrl();
   } catch {
