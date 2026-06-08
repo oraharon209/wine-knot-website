@@ -49,7 +49,7 @@ router.get('/', async (req, res) => {
     }
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-    const orderBy = SORT_MAP[sort] || 'w.rating DESC';
+    const orderBy = SORT_MAP[sort] || 'w.sale_price ASC';
 
     const [rows] = await pool.query(
       `SELECT w.*, c.slug AS category, c.name_he AS category_he

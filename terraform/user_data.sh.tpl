@@ -140,11 +140,11 @@ CONTACT_EMAIL=info@wineknot.co.il
 EOF
 chmod 600 .env
 chown ubuntu:ubuntu .env
-docker compose up -d
+docker compose -f docker-compose.yml -f docker-compose.production.yml up -d --force-recreate backend
 SCRIPT
 chmod 755 /usr/local/bin/wine-knot-refresh-secrets
 
 log "Starting Docker Compose"
-docker compose up -d --build
+docker compose -f docker-compose.yml -f docker-compose.production.yml up -d --build
 
 log "Bootstrap complete"
