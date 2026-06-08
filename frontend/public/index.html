@@ -136,6 +136,51 @@
       width: 100%;
     }
 
+    /* Recommended */
+    .recommended {
+      max-width: 1280px;
+      margin: 0 auto 2rem;
+      padding: 0 1.5rem;
+    }
+    .recommended.hidden { display: none; }
+    .recommended-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .recommended-header h2 {
+      font-size: 1.6rem;
+      color: var(--wine);
+    }
+    .recommended-header p {
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    .recommended-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .recommended-grid .wine-card {
+      border-color: var(--gold);
+      box-shadow: var(--shadow);
+    }
+    .recommended-badge {
+      position: absolute;
+      top: .6rem;
+      right: .6rem;
+      background: var(--gold);
+      color: var(--wine-dark);
+      font-size: .7rem;
+      font-weight: 700;
+      padding: .2rem .5rem;
+      border-radius: 4px;
+      z-index: 1;
+    }
+
     /* Category cards */
     .categories {
       max-width: 1280px;
@@ -561,6 +606,16 @@
   <p>חנות היין שלך — מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.</p>
 </section>
 
+<section class="recommended hidden" id="recommendedSection">
+  <div class="recommended-header">
+    <div>
+      <h2>מומלצים</h2>
+      <p>הבחירות שלנו — יינות שאנחנו אוהבים במיוחד</p>
+    </div>
+  </div>
+  <div class="recommended-grid" id="recommendedGrid"></div>
+</section>
+
 <div class="controls">
   <div class="search-box">
     <input type="text" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off">
@@ -837,6 +892,63 @@ function wineImageHtml(w) {
   return '<span class="no-img">תמונה בקרוב</span>';
 }
 
+function wineCardHtml(w, { showRecommendedBadge = false } = {}) {
+  const disc = discountPct(w.shelf_price, w.sale_price);
+  return `
+    <div class="wine-card" data-id="${w.id}">
+      ${showRecommendedBadge ? '<div class="recommended-badge">מומלץ</div>' : ''}
+      ${disc ? `<div class="discount-badge">-${disc}%</div>` : ''}
+      ${w.rating ? `<div class="rating-badge">${w.rating}</div>` : ''}
+      <div class="wine-img">${wineImageHtml(w)}</div>
+      <div class="wine-body">
+        <div class="wine-name">${w.name}</div>
+        <div class="wine-winery">${w.winery || ''}${w.vintage ? ' · ' + w.vintage : ''}</div>
+        <div class="wine-prices">
+          <div>
+            <span class="price-label">מחיר</span>
+            <span class="sale-price">₪${Number(w.sale_price).toFixed(0)}</span>
+            ${disc ? `<span class="shelf-price">₪${Number(w.shelf_price).toFixed(0)}</span>` : ''}
+          </div>
+        </div>
+        <button class="btn-add-cart" type="button" data-add-id="${w.id}">🛒 הוסף לעגלה</button>
+      </div>
+    </div>`;
+}
+
+function bindWineCards(container) {
+  container.querySelectorAll('.wine-card').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.btn-add-cart')) return;
+      openModal(card.dataset.id);
+    });
+  });
+  container.querySelectorAll('.btn-add-cart').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const wine = winesCache[btn.dataset.addId];
+      if (wine) addToCart(wine);
+    });
+  });
+}
+
+async function loadRecommended() {
+  const section = $('recommendedSection');
+  const grid = $('recommendedGrid');
+  try {
+    const wines = await fetchJSON(`${API}/wines/recommended`);
+    if (!wines.length) {
+      section.classList.add('hidden');
+      return;
+    }
+    wines.forEach(w => { winesCache[w.id] = w; });
+    grid.innerHTML = wines.map(w => wineCardHtml(w, { showRecommendedBadge: true })).join('');
+    bindWineCards(grid);
+    section.classList.remove('hidden');
+  } catch {
+    section.classList.add('hidden');
+  }
+}
+
 function renderNav() {
   const nav = $('nav');
   nav.innerHTML = `<a data-cat="" class="${!activeCategory ? 'active' : ''}">הכל</a>` +
@@ -894,40 +1006,8 @@ async function loadWines() {
       container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
       return;
     }
-    container.innerHTML = `<div class="wines-grid">${wines.map(w => {
-      const disc = discountPct(w.shelf_price, w.sale_price);
-      return `
-        <div class="wine-card" data-id="${w.id}">
-          ${disc ? `<div class="discount-badge">-${disc}%</div>` : ''}
-          ${w.rating ? `<div class="rating-badge">${w.rating}</div>` : ''}
-          <div class="wine-img">${wineImageHtml(w)}</div>
-          <div class="wine-body">
-            <div class="wine-name">${w.name}</div>
-            <div class="wine-winery">${w.winery || ''}${w.vintage ? ' · ' + w.vintage : ''}</div>
-            <div class="wine-prices">
-              <div>
-                <span class="price-label">מחיר</span>
-                <span class="sale-price">₪${Number(w.sale_price).toFixed(0)}</span>
-                ${disc ? `<span class="shelf-price">₪${Number(w.shelf_price).toFixed(0)}</span>` : ''}
-              </div>
-            </div>
-            <button class="btn-add-cart" type="button" data-add-id="${w.id}">🛒 הוסף לעגלה</button>
-          </div>
-        </div>`;
-    }).join('')}</div>`;
-    container.querySelectorAll('.wine-card').forEach(card => {
-      card.addEventListener('click', e => {
-        if (e.target.closest('.btn-add-cart')) return;
-        openModal(card.dataset.id);
-      });
-    });
-    container.querySelectorAll('.btn-add-cart').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        const wine = winesCache[btn.dataset.addId];
-        if (wine) addToCart(wine);
-      });
-    });
+    container.innerHTML = `<div class="wines-grid">${wines.map(w => wineCardHtml(w)).join('')}</div>`;
+    bindWineCards(container);
   } catch {
     container.innerHTML = '<div class="loading">שגיאה בטעינת היינות. ודאו שהשרת פועל.</div>';
   }
@@ -990,7 +1070,7 @@ async function init() {
     renderCategoryCards();
     setupFilters();
     setupCart();
-    await loadWines();
+    await Promise.all([loadRecommended(), loadWines()]);
   } catch {
     $('winesContainer').innerHTML = '<div class="loading">לא ניתן להתחבר לשרת. הריצו: docker compose up -d --build</div>';
   }

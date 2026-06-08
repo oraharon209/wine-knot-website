@@ -66,6 +66,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/recommended', async (_req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT w.*, c.slug AS category, c.name_he AS category_he
+       FROM recommended_wines r
+       JOIN wines w ON w.id = r.wine_id
+       JOIN categories c ON c.id = w.category_id
+       WHERE w.out_of_stock = 0
+       ORDER BY r.sort_order ASC, r.wine_id ASC`
+    );
+    res.json(withResolvedImages(rows));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'שגיאה בטעינת מומלצים' });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const [rows] = await pool.query(

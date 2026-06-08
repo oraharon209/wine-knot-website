@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const pool = require('../config/db');
-const { requireAdmin, checkPassword, adminToken } = require('../middleware/auth');
 const storage = require('../lib/storage');
 
 const router = express.Router();
@@ -37,16 +36,6 @@ const upload = multer({
     else cb(new Error('רק קבצי תמונה'));
   },
 });
-
-router.post('/login', (req, res) => {
-  const { password } = req.body;
-  if (!checkPassword(password)) {
-    return res.status(401).json({ error: 'סיסמה שגויה' });
-  }
-  res.json({ token: adminToken(), ok: true });
-});
-
-router.use(requireAdmin);
 
 router.get('/wines', async (req, res) => {
   try {
@@ -163,6 +152,128 @@ router.patch('/wines/:id/stock', async (req, res) => {
     res.json({ ok: true, out_of_stock: !!out });
   } catch (err) {
     res.status(500).json({ error: 'שגיאה' });
+  }
+});
+
+const MAX_RECOMMENDED = 50;
+
+async function fetchRecommendedRows() {
+  const [rows] = await pool.query(
+    `SELECT w.*, c.slug AS category, c.name_he AS category_he, r.sort_order
+     FROM recommended_wines r
+     JOIN wines w ON w.id = r.wine_id
+     JOIN categories c ON c.id = w.category_id
+     ORDER BY r.sort_order ASC, r.wine_id ASC`
+  );
+  return rows.map((row) => ({
+    ...row,
+    image_url: storage.resolveImageUrl(row.image_url),
+  }));
+}
+
+router.get('/recommended', async (_req, res) => {
+  try {
+    res.json(await fetchRecommendedRows());
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'שגיאה בטעינת מומלצים' });
+  }
+});
+
+router.put('/recommended', async (req, res) => {
+  try {
+    const { wine_ids: wineIds } = req.body;
+    if (!Array.isArray(wineIds)) {
+      return res.status(400).json({ error: 'נדרש מערך wine_ids' });
+    }
+    if (wineIds.length > MAX_RECOMMENDED) {
+      return res.status(400).json({ error: `ניתן לבחור עד ${MAX_RECOMMENDED} יינות` });
+    }
+    const unique = [...new Set(wineIds.map((id) => parseInt(id, 10)).filter((id) => id > 0))];
+    if (unique.length !== wineIds.length) {
+      return res.status(400).json({ error: 'רשימה לא תקינה — יינות כפולים או חסרים' });
+    }
+    if (unique.length) {
+      const placeholders = unique.map(() => '?').join(',');
+      const [found] = await pool.query(
+        `SELECT id FROM wines WHERE id IN (${placeholders})`,
+        unique
+      );
+      if (found.length !== unique.length) {
+        return res.status(400).json({ error: 'חלק מהיינות לא נמצאו' });
+      }
+    }
+    const conn = await pool.getConnection();
+    try {
+      await conn.beginTransaction();
+      await conn.query('DELETE FROM recommended_wines');
+      for (let i = 0; i < unique.length; i++) {
+        await conn.query(
+          'INSERT INTO recommended_wines (wine_id, sort_order) VALUES (?, ?)',
+          [unique[i], i]
+        );
+      }
+      await conn.commit();
+    } catch (e) {
+      await conn.rollback();
+      throw e;
+    } finally {
+      conn.release();
+    }
+    res.json(await fetchRecommendedRows());
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'שגיאה בשמירת מומלצים' });
+  }
+});
+
+router.post('/recommended', async (req, res) => {
+  try {
+    const wineId = parseInt(req.body.wine_id, 10);
+    if (!wineId) return res.status(400).json({ error: 'נדרש wine_id' });
+    const [rows] = await pool.query('SELECT id FROM wines WHERE id = ?', [wineId]);
+    if (!rows.length) return res.status(404).json({ error: 'יין לא נמצא' });
+    const [existing] = await pool.query(
+      'SELECT wine_id FROM recommended_wines WHERE wine_id = ?',
+      [wineId]
+    );
+    if (existing.length) return res.status(400).json({ error: 'היין כבר ברשימת המומלצים' });
+    const [countRows] = await pool.query('SELECT COUNT(*) AS n FROM recommended_wines');
+    if (countRows[0].n >= MAX_RECOMMENDED) {
+      return res.status(400).json({ error: `ניתן לבחור עד ${MAX_RECOMMENDED} יינות` });
+    }
+    await pool.query(
+      'INSERT INTO recommended_wines (wine_id, sort_order) VALUES (?, ?)',
+      [wineId, countRows[0].n]
+    );
+    res.status(201).json(await fetchRecommendedRows());
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'שגיאה בהוספה למומלצים' });
+  }
+});
+
+router.delete('/recommended/:wineId', async (req, res) => {
+  try {
+    const wineId = parseInt(req.params.wineId, 10);
+    const [result] = await pool.query(
+      'DELETE FROM recommended_wines WHERE wine_id = ?',
+      [wineId]
+    );
+    if (!result.affectedRows) return res.status(404).json({ error: 'לא ברשימת המומלצים' });
+    const [remaining] = await pool.query(
+      'SELECT wine_id FROM recommended_wines ORDER BY sort_order ASC, wine_id ASC'
+    );
+    for (let i = 0; i < remaining.length; i++) {
+      await pool.query(
+        'UPDATE recommended_wines SET sort_order = ? WHERE wine_id = ?',
+        [i, remaining[i].wine_id]
+      );
+    }
+    res.json(await fetchRecommendedRows());
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'שגיאה בהסרה ממומלצים' });
   }
 });
 

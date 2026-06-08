@@ -26,6 +26,12 @@ CREATE TABLE IF NOT EXISTS wines (
   FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
+CREATE TABLE IF NOT EXISTS recommended_wines (
+  wine_id INT NOT NULL PRIMARY KEY,
+  sort_order INT NOT NULL DEFAULT 0,
+  FOREIGN KEY (wine_id) REFERENCES wines(id) ON DELETE CASCADE
+);
+
 INSERT INTO categories (slug, name_he, sort_order) VALUES
   ('white', 'לבן', 1),
   ('sparkling', 'נתזים ושמפניות', 2),
