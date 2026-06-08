@@ -37,3 +37,12 @@ resource "cloudflare_record" "apex" {
   proxied = var.cloudflare_proxied
   ttl     = 1
 }
+
+resource "cloudflare_zone_settings_override" "tls" {
+  zone_id = data.cloudflare_zone.main.id
+
+  settings {
+    min_tls_version = "1.2"
+    tls_1_3         = "on"
+  }
+}

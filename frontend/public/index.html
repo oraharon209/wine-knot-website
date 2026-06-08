@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wine Knot | חנות יין אונליין</title>
+  <meta name="description" content="Wine Knot — חנות יין אונליין. מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"></noscript>
   <style>
     :root {
       --wine: #6b1d3a;
@@ -20,10 +23,21 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Heebo', sans-serif;
+      font-family: 'Heebo', system-ui, sans-serif;
       background: var(--cream);
       color: var(--text);
       line-height: 1.6;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
     a { color: inherit; text-decoration: none; }
 
@@ -70,6 +84,7 @@
       color: #fff;
       text-align: center;
       padding: 4rem 1.5rem;
+      min-height: 220px;
     }
     .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: .5rem; }
     .hero p { font-size: 1.1rem; opacity: .9; max-width: 600px; margin: 0 auto 2rem; }
@@ -241,6 +256,8 @@
       overflow: hidden;
     }
     .wine-img img {
+      width: 200px;
+      height: 200px;
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
@@ -274,13 +291,13 @@
       border: 1px solid #e0e0e0;
     }
     .wine-body { padding: .85rem 1rem 1rem; flex: 1; display: flex; flex-direction: column; }
-    .wine-cat { font-size: .7rem; color: #888; margin-bottom: .25rem; }
+    .wine-cat { font-size: .7rem; color: #5a5a5a; margin-bottom: .25rem; }
     .wine-name { font-weight: 500; font-size: .95rem; margin-bottom: .2rem; line-height: 1.35; color: #1a3a5c; }
     .wine-winery { font-size: .8rem; color: #666; margin-bottom: .6rem; }
     .wine-prices { display: flex; align-items: baseline; gap: .5rem; margin-top: auto; }
     .sale-price { font-size: 1.15rem; font-weight: 700; color: #111; }
     .shelf-price { font-size: .85rem; color: #999; text-decoration: line-through; }
-    .price-label { font-size: .7rem; color: #888; display: block; margin-bottom: .15rem; }
+    .price-label { font-size: .7rem; color: #5a5a5a; display: block; margin-bottom: .15rem; }
 
     /* Modal */
     .modal-overlay {
@@ -560,6 +577,7 @@
     }
 
     /* Loading */
+    #winesContainer { min-height: 480px; }
     .loading {
       text-align: center;
       padding: 3rem;
@@ -597,6 +615,7 @@
   </div>
 </header>
 
+<main id="main">
 <div class="promo">
   🎁 מבצע מיוחד: מתנה ב-12 בקבוקים | מתנה פרימיום ב-24 בקבוקים — צרו קשר לפרטים
 </div>
@@ -621,6 +640,7 @@
     <input type="text" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off">
   </div>
   <div class="filter-group">
+    <label class="sr-only" for="sort">מיון יינות</label>
     <select id="sort">
       <option value="price_asc" selected>מחיר (נמוך לגבוה)</option>
       <option value="rating_desc">דירוג (גבוה לנמוך)</option>
@@ -638,6 +658,7 @@
 <div id="winesContainer">
   <div class="loading"><div class="spinner"></div><br>טוען יינות...</div>
 </div>
+</main>
 
 <section class="contact" id="contact">
   <h2>צרו קשר</h2>
@@ -885,22 +906,24 @@ function discountPct(shelf, sale) {
   return Math.round((1 - sale / shelf) * 100);
 }
 
-function wineImageHtml(w) {
+function wineImageHtml(w, { eager = false } = {}) {
   const alt = w.name.replace(/"/g, '');
   if (w.image_url) {
-    return `<img src="${w.image_url}" alt="${alt}" loading="lazy" onerror="this.outerHTML='<span class=no-img>תמונה בקרוב</span>'">`;
+    const loading = eager ? 'eager' : 'lazy';
+    const priority = eager ? ' fetchpriority="high"' : '';
+    return `<img src="${w.image_url}" alt="${alt}" width="200" height="200" loading="${loading}" decoding="async"${priority} onerror="this.outerHTML='<span class=no-img>תמונה בקרוב</span>'">`;
   }
   return '<span class="no-img">תמונה בקרוב</span>';
 }
 
-function wineCardHtml(w, { showRecommendedBadge = false } = {}) {
+function wineCardHtml(w, { showRecommendedBadge = false, eagerImage = false } = {}) {
   const disc = discountPct(w.shelf_price, w.sale_price);
   return `
     <div class="wine-card" data-id="${w.id}">
       ${showRecommendedBadge ? '<div class="recommended-badge">מומלץ</div>' : ''}
       ${disc ? `<div class="discount-badge">-${disc}%</div>` : ''}
       ${w.rating ? `<div class="rating-badge">${w.rating}</div>` : ''}
-      <div class="wine-img">${wineImageHtml(w)}</div>
+      <div class="wine-img">${wineImageHtml(w, { eager: eagerImage })}</div>
       <div class="wine-body">
         <div class="wine-name">${w.name}</div>
         <div class="wine-winery">${w.winery || ''}${w.vintage ? ' · ' + w.vintage : ''}</div>
@@ -957,7 +980,7 @@ async function loadRecommended() {
       return;
     }
     recommendedWines.forEach(w => { winesCache[w.id] = w; });
-    grid.innerHTML = recommendedWines.map(w => wineCardHtml(w, { showRecommendedBadge: true })).join('');
+    grid.innerHTML = recommendedWines.map((w, i) => wineCardHtml(w, { showRecommendedBadge: true, eagerImage: i < 4 })).join('');
     bindWineCards(grid);
     updateRecommendedVisibility();
   } catch {
@@ -966,13 +989,19 @@ async function loadRecommended() {
   }
 }
 
+function categoryHref(slug) {
+  return slug ? `/?category=${encodeURIComponent(slug)}` : '/';
+}
+
 function renderNav() {
   const nav = $('nav');
-  nav.innerHTML = `<a data-cat="" class="${!activeCategory ? 'active' : ''}">הכל</a>` +
-    categories.map(c => `<a data-cat="${c.slug}" class="${activeCategory === c.slug ? 'active' : ''}">${c.name_he}</a>`).join('');
+  nav.innerHTML = `<a href="/" data-cat="" class="${!activeCategory ? 'active' : ''}">הכל</a>` +
+    categories.map(c => `<a href="${categoryHref(c.slug)}" data-cat="${c.slug}" class="${activeCategory === c.slug ? 'active' : ''}">${c.name_he}</a>`).join('');
   nav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
       activeCategory = a.dataset.cat;
+      syncUrl();
       renderNav();
       renderCategoryCards();
       loadWines();
@@ -1012,6 +1041,25 @@ function buildQuery() {
   return params.toString();
 }
 
+function syncUrl() {
+  const qs = buildQuery();
+  const url = qs ? `?${qs}` : '/';
+  history.replaceState(null, '', url);
+}
+
+function readUrlState() {
+  const params = new URLSearchParams(location.search);
+  activeCategory = params.get('category') || '';
+  const search = params.get('search');
+  if (search) $('search').value = search;
+  const maxPrice = params.get('max_price');
+  if (maxPrice) $('maxPrice').value = maxPrice;
+  const minRating = params.get('min_rating');
+  if (minRating) $('minRating').value = minRating;
+  const sort = params.get('sort');
+  if (sort) $('sort').value = sort;
+}
+
 async function loadWines() {
   const container = $('winesContainer');
   container.innerHTML = '<div class="loading"><div class="spinner"></div><br>טוען יינות...</div>';
@@ -1023,9 +1071,10 @@ async function loadWines() {
       container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
       return;
     }
-    container.innerHTML = `<div class="wines-grid">${wines.map(w => wineCardHtml(w)).join('')}</div>`;
+    container.innerHTML = `<div class="wines-grid">${wines.map((w, i) => wineCardHtml(w, { eagerImage: i < 6 })).join('')}</div>`;
     bindWineCards(container);
     updateRecommendedVisibility();
+    syncUrl();
   } catch {
     container.innerHTML = '<div class="loading">שגיאה בטעינת היינות. ודאו שהשרת פועל.</div>';
   }
@@ -1083,6 +1132,7 @@ async function init() {
   $('emailLink').textContent = `✉️ ${CONTACT.email}`;
 
   try {
+    readUrlState();
     categories = await fetchJSON(`${API}/categories`);
     renderNav();
     renderCategoryCards();
