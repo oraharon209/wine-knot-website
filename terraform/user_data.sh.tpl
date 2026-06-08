@@ -102,6 +102,16 @@ if [ -d "$APP_DIR/frontend/public/images/wines" ]; then
   aws s3 sync "$APP_DIR/frontend/public/images/wines/" "s3://${s3_bucket}/wines/" || true
 fi
 
+mkdir -p "$APP_DIR/nginx/ssl"
+if [ ! -f "$APP_DIR/nginx/ssl/origin.crt" ]; then
+  log "Generating origin TLS certificate for Cloudflare Full SSL"
+  openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+    -keyout "$APP_DIR/nginx/ssl/origin.key" \
+    -out "$APP_DIR/nginx/ssl/origin.crt" \
+    -subj "/CN=${cloudflare_zone}"
+  chmod 600 "$APP_DIR/nginx/ssl/origin.key"
+fi
+
 # Re-fetch secrets script (for rotation without reprovisioning)
 cat > /usr/local/bin/wine-knot-refresh-secrets <<SCRIPT
 #!/bin/bash
@@ -124,6 +134,7 @@ DB_USER=wineknot
 DB_PASSWORD=\$DB_PASS
 DB_NAME=wineknot
 HTTP_PORT=${http_port}
+HTTPS_PORT=443
 ADMIN_PASSWORD=\$ADMIN_PASS
 CLOUDFLARE_API_TOKEN=\$CF_TOKEN
 CLOUDFLARE_ZONE=${cloudflare_zone}
