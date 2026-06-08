@@ -637,6 +637,67 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* Age gate */
+    body.age-gate-active { overflow: hidden; }
+    body.age-gate-active > :not(#ageGate) { filter: blur(4px); pointer-events: none; user-select: none; }
+    body.age-gate-active .age-gate { display: flex; }
+    .age-gate {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(26, 10, 16, .85);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .age-gate-card {
+      background: #fff;
+      border-radius: var(--radius);
+      max-width: 420px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,.35);
+      text-align: center;
+    }
+    .age-gate-header {
+      background: linear-gradient(135deg, var(--wine-dark), var(--wine));
+      color: #fff;
+      padding: 1.75rem 1.5rem 1.25rem;
+    }
+    .age-gate-header .age-gate-icon { font-size: 2.5rem; margin-bottom: .5rem; }
+    .age-gate-header h2 { font-size: 1.5rem; margin-bottom: .35rem; }
+    .age-gate-header p { font-size: .9rem; opacity: .9; line-height: 1.5; }
+    .age-gate-body { padding: 1.5rem; }
+    .age-gate-question { font-size: 1.05rem; font-weight: 600; margin-bottom: 1.25rem; color: var(--text); }
+    .age-gate-actions { display: flex; flex-direction: column; gap: .65rem; }
+    .age-gate-actions button {
+      padding: .85rem 1rem;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background .2s, transform .1s;
+    }
+    .age-gate-actions button:active { transform: scale(.98); }
+    .btn-age-yes {
+      background: var(--wine);
+      color: #fff;
+    }
+    .btn-age-yes:hover { background: var(--wine-dark); }
+    .btn-age-no {
+      background: var(--cream);
+      color: var(--muted);
+      border: 1px solid var(--border) !important;
+    }
+    .btn-age-no:hover { border-color: var(--wine) !important; color: var(--wine); }
+    .age-gate-rejected { display: none; padding: 1.5rem; }
+    .age-gate-rejected.show { display: block; }
+    .age-gate-rejected p { color: var(--muted); line-height: 1.6; margin-bottom: .5rem; }
+    .age-gate-rejected .rejected-icon { font-size: 2rem; margin-bottom: .75rem; }
+
     @media (max-width: 600px) {
       .header-inner { justify-content: center; }
       .nav { justify-content: center; }
@@ -645,6 +706,7 @@
   </style>
 </head>
 <body>
+<script>if(localStorage.getItem('wineknot_age_verified')!=='1')document.body.classList.add('age-gate-active');</script>
 
 <header class="header">
   <div class="header-inner">
@@ -763,10 +825,35 @@
 
 <div class="toast" id="toast"></div>
 
+<div class="age-gate" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
+  <div class="age-gate-card">
+    <div id="ageGatePrompt">
+      <div class="age-gate-header">
+        <div class="age-gate-icon" aria-hidden="true">🍷</div>
+        <h2 id="ageGateTitle">אימות גיל</h2>
+        <p>האתר מכיל תוכן הקשור לאלכוהול. הכניסה מותרת לבני 18 ומעלה בלבד.</p>
+      </div>
+      <div class="age-gate-body">
+        <p class="age-gate-question">האם אתם מעל גיל 18?</p>
+        <div class="age-gate-actions">
+          <button class="btn-age-yes" id="ageGateYes" type="button">כן, אני מעל גיל 18</button>
+          <button class="btn-age-no" id="ageGateNo" type="button">לא, אני מתחת לגיל 18</button>
+        </div>
+      </div>
+    </div>
+    <div class="age-gate-rejected" id="ageGateRejected">
+      <div class="rejected-icon" aria-hidden="true">🚫</div>
+      <p><strong>מצטערים</strong></p>
+      <p>עליך להיות בן 18 ומעלה כדי להיכנס לאתר Wine Knot.</p>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = '/api';
 const CONTACT = { phone: '050-8496666', whatsapp: '972508496666', email: 'doronchick@gmail.com' };
 const CART_KEY = 'wineknot_cart';
+const AGE_KEY = 'wineknot_age_verified';
 const HOME_WINES_PAGE_SIZE = 12;
 const INITIAL_FETCH_LIMIT = 12;
 
@@ -1291,6 +1378,26 @@ function setupFilters() {
 $('modalClose').addEventListener('click', () => $('modal').classList.remove('open'));
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) $('modal').classList.remove('open'); });
 
+function setupAgeGate() {
+  if (localStorage.getItem(AGE_KEY) === '1') {
+    document.body.classList.remove('age-gate-active');
+    return true;
+  }
+
+  $('ageGateYes').addEventListener('click', () => {
+    localStorage.setItem(AGE_KEY, '1');
+    document.body.classList.remove('age-gate-active');
+    init();
+  });
+
+  $('ageGateNo').addEventListener('click', () => {
+    $('ageGatePrompt').style.display = 'none';
+    $('ageGateRejected').classList.add('show');
+  });
+
+  return false;
+}
+
 async function init() {
   $('phoneLink').href = `tel:${CONTACT.phone}`;
   $('phoneLink').textContent = `📞 ${CONTACT.phone}`;
@@ -1311,7 +1418,7 @@ async function init() {
   }
 }
 
-init();
+if (setupAgeGate()) init();
 </script>
 </body>
 </html>
