@@ -71,7 +71,6 @@
     tr.oos { opacity: .55; }
     tr.oos td:first-child::after { content: ' · אזל'; color: var(--danger); font-size: .8rem; }
     .thumb { width: 44px; height: 56px; object-fit: contain; background: #fff; border: 1px solid #eee; }
-    .login-box { max-width: 360px; margin: 4rem auto; }
     .hidden { display: none !important; }
     .img-preview {
       width: 120px; height: 150px; object-fit: contain;
@@ -85,25 +84,11 @@
 </head>
 <body>
 
-<div id="loginScreen" class="wrap">
-  <div class="card login-box">
-    <h1>ניהול Wine Knot</h1>
-    <p style="color:var(--muted);margin-bottom:1rem">הזינו סיסמה כדי להיכנס</p>
-    <label>סיסמה</label>
-    <input type="password" id="loginPass" placeholder="סיסמה" autocomplete="current-password">
-    <div class="actions" style="margin-top:1rem">
-      <button onclick="doLogin()">כניסה</button>
-    </div>
-    <p id="loginErr" style="color:var(--danger);margin-top:.75rem;display:none">סיסמה שגויה</p>
-  </div>
-</div>
-
-<div id="app" class="wrap hidden">
+<div id="app" class="wrap">
   <div class="topbar">
     <h1>ניהול יינות</h1>
     <div class="actions">
       <a class="link" href="/" target="_blank">צפייה באתר</a>
-      <button class="ghost" onclick="logout()">יציאה</button>
     </div>
   </div>
 
@@ -164,7 +149,6 @@
 
 <script>
 const API = '/api/admin';
-let token = localStorage.getItem('wk_admin_token') || '';
 let categories = [];
 let wines = [];
 let selectedId = null;
@@ -173,7 +157,7 @@ let searchTimer;
 const $ = id => document.getElementById(id);
 
 function headers() {
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+  return { 'Content-Type': 'application/json' };
 }
 
 function showMsg(text, ok = true) {
@@ -184,36 +168,12 @@ function showMsg(text, ok = true) {
 }
 
 async function api(url, opts = {}) {
-  const res = await fetch(url, { ...opts, headers: { ...headers(), ...opts.headers } });
+  const res = await fetch(url, { credentials: 'include', ...opts, headers: { ...headers(), ...opts.headers } });
   const text = await res.text();
   let data = {};
   try { data = text ? JSON.parse(text) : {}; } catch { /* HTML error page from server */ }
   if (!res.ok) throw new Error(data.error || (res.status === 404 ? 'הפעולה לא זמינה בשרת' : 'שגיאה'));
   return data;
-}
-
-async function doLogin() {
-  try {
-    const data = await fetch(`${API}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: $('loginPass').value }),
-    }).then(r => r.json());
-    if (!data.token) throw new Error();
-    token = data.token;
-    localStorage.setItem('wk_admin_token', token);
-    $('loginErr').style.display = 'none';
-    initApp();
-  } catch {
-    $('loginErr').style.display = 'block';
-  }
-}
-
-function logout() {
-  token = '';
-  localStorage.removeItem('wk_admin_token');
-  $('app').classList.add('hidden');
-  $('loginScreen').classList.remove('hidden');
 }
 
 function wineFieldsHtml(prefix, w = {}) {
@@ -362,7 +322,7 @@ async function uploadImage() {
   try {
     const res = await fetch(`${API}/wines/${selectedId}/image`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include',
       body: fd,
     });
     const data = await res.json();
@@ -381,17 +341,14 @@ function debounceSearch() {
 async function initApp() {
   try {
     categories = await api(`${API}/categories`);
-    $('loginScreen').classList.add('hidden');
-    $('app').classList.remove('hidden');
     $('newFields').innerHTML = '';
     await loadWines();
-  } catch {
-    logout();
+  } catch (e) {
+    showMsg(e.message || 'שגיאה בטעינה', false);
   }
 }
 
-$('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-if (token) initApp();
+initApp();
 </script>
 </body>
 </html>
