@@ -1,6 +1,6 @@
 # Wine Knot
 
-Hebrew online wine shop — Node.js + MySQL + Nginx + Cloudflare DDNS
+Hebrew online wine shop — Node.js + MySQL + Nginx + Terraform/Cloudflare DNS
 
 ## Local setup
 
@@ -27,7 +27,7 @@ Password: the value of `ADMIN_PASSWORD` in `.env` (default: `wineknot`)
 
 ```
 wine-knot/
-├── docker-compose.yml      # MySQL + Backend + Nginx (+ Cloudflare DDNS in production)
+├── docker-compose.yml      # MySQL + Backend + Nginx
 ├── wines_data.json         # Wine catalog (seed data)
 ├── frontend/public/        # Hebrew RTL storefront
 ├── backend/                # Express REST API
@@ -93,16 +93,9 @@ Requires `rembg` and `onnxruntime` in the Python venv for background removal.
 
 Place a file at `scripts/manual_images/{id}.jpg` (or the expected filename), then re-run fetch for that wine.
 
-## Cloudflare DDNS (production)
+## DNS (production)
 
-```bash
-# Add to .env:
-CLOUDFLARE_API_TOKEN=your_token
-CLOUDFLARE_ZONE=wineknot.co.il
-CLOUDFLARE_SUBDOMAIN=@
-
-docker compose --profile production up -d
-```
+DNS is managed by **Terraform** (`terraform/cloudflare.tf`), not Docker. On `terraform apply`, the apex A record for `wineknot.co.il` points at the Elastic IP. Set your Cloudflare API token in `terraform/terraform.tfvars`.
 
 ## Stop
 
@@ -117,7 +110,6 @@ docker compose down
 | **backend** | `wine-knot-backend:latest` | Yes — only custom image |
 | mysql | `mysql:8.0` | No — official Docker Hub |
 | nginx | `nginx:alpine` | No — frontend is mounted as files |
-| cloudflare-ddns | `oznu/cloudflare-ddns` | No — third-party |
 
 Old dangling `<none>` images from rebuilds are safe to remove:
 

@@ -4,7 +4,7 @@ output "instance_id" {
 }
 
 output "public_ip" {
-  description = "Elastic IP — Cloudflare DDNS will point your domain here"
+  description = "Elastic IP — Terraform points your Cloudflare DNS record here"
   value       = aws_eip.web.public_ip
 }
 

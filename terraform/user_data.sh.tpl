@@ -47,7 +47,6 @@ done
 ADMIN_PASS=$(ssm_get "$SSM_PREFIX/admin_password")
 DB_PASS=$(ssm_get "$SSM_PREFIX/db_password")
 ROOT_PASS=$(ssm_get "$SSM_PREFIX/mysql_root_password")
-CF_TOKEN=$(ssm_get "$SSM_PREFIX/cloudflare_api_token")
 
 # --- Docker ---
 if ! command -v docker >/dev/null 2>&1; then
@@ -82,10 +81,6 @@ DB_NAME=wineknot
 HTTP_PORT=${http_port}
 HTTPS_PORT=443
 ADMIN_PASSWORD=$ADMIN_PASS
-CLOUDFLARE_API_TOKEN=$CF_TOKEN
-CLOUDFLARE_ZONE=${cloudflare_zone}
-CLOUDFLARE_SUBDOMAIN=${cloudflare_subdomain}
-CLOUDFLARE_PROXIED=${cloudflare_proxied}
 IMAGE_STORAGE=s3
 S3_BUCKET=${s3_bucket}
 AWS_REGION=$REGION
@@ -127,7 +122,6 @@ cd "\$APP_DIR"
 ADMIN_PASS=\$(ssm_get "\$SSM_PREFIX/admin_password")
 DB_PASS=\$(ssm_get "\$SSM_PREFIX/db_password")
 ROOT_PASS=\$(ssm_get "\$SSM_PREFIX/mysql_root_password")
-CF_TOKEN=\$(ssm_get "\$SSM_PREFIX/cloudflare_api_token")
 cat > .env <<EOF
 MYSQL_ROOT_PASSWORD=\$ROOT_PASS
 DB_USER=wineknot
@@ -136,10 +130,6 @@ DB_NAME=wineknot
 HTTP_PORT=${http_port}
 HTTPS_PORT=443
 ADMIN_PASSWORD=\$ADMIN_PASS
-CLOUDFLARE_API_TOKEN=\$CF_TOKEN
-CLOUDFLARE_ZONE=${cloudflare_zone}
-CLOUDFLARE_SUBDOMAIN=${cloudflare_subdomain}
-CLOUDFLARE_PROXIED=${cloudflare_proxied}
 IMAGE_STORAGE=s3
 S3_BUCKET=${s3_bucket}
 AWS_REGION=$REGION
@@ -150,11 +140,11 @@ CONTACT_EMAIL=info@wineknot.co.il
 EOF
 chmod 600 .env
 chown ubuntu:ubuntu .env
-docker compose --profile production up -d
+docker compose up -d
 SCRIPT
 chmod 755 /usr/local/bin/wine-knot-refresh-secrets
 
 log "Starting Docker Compose"
-docker compose --profile production up -d --build
+docker compose up -d --build
 
 log "Bootstrap complete"

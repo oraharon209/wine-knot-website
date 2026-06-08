@@ -53,16 +53,5 @@ services:
     depends_on:
       - backend
 
-  cloudflare-ddns:
-    image: oznu/cloudflare-ddns:latest
-    restart: unless-stopped
-    profiles:
-      - production
-    environment:
-      API_KEY: ${CLOUDFLARE_API_TOKEN:-}
-      ZONE: ${CLOUDFLARE_ZONE:-wineknot.co.il}
-      SUBDOMAIN: ${CLOUDFLARE_SUBDOMAIN:-@}
-      PROXIED: ${CLOUDFLARE_PROXIED:-false}
-
 volumes:
   mysql_data:

@@ -45,25 +45,25 @@ variable "git_repo_url" {
 }
 
 variable "cloudflare_api_token" {
-  description = "Cloudflare API token for DDNS — set in terraform.tfvars (never commit)"
+  description = "Cloudflare API token for Terraform DNS — set in terraform.tfvars (never commit)"
   type        = string
   sensitive   = true
 }
 
 variable "cloudflare_zone" {
-  description = "Cloudflare zone for DDNS"
+  description = "Cloudflare zone managed by Terraform"
   type        = string
   default     = "wineknot.co.il"
 }
 
 variable "cloudflare_subdomain" {
-  description = "Cloudflare subdomain for DDNS (@ for apex)"
+  description = "DNS record name (@ for apex)"
   type        = string
   default     = "@"
 }
 
 variable "cloudflare_proxied" {
-  description = "Whether Cloudflare DDNS record is proxied (must be true for Cloudflare-only SG to work for visitors)"
+  description = "Whether the Cloudflare DNS record is proxied (must be true for Cloudflare-only SG to work for visitors)"
   type        = bool
   default     = true
 }
