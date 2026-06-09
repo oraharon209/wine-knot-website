@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const logger = require('./logger');
 
 const STORAGE = process.env.IMAGE_STORAGE || 'local';
 const IMG_DIR = process.env.IMAGE_DIR || path.join(__dirname, '..', 'uploads', 'images', 'wines');
@@ -40,20 +41,28 @@ function resolveImageUrl(url) {
 }
 
 async function saveImage(filename, buffer, mimetype) {
-  if (useS3()) {
-    await getS3().send(new PutObjectCommand({
-      Bucket: S3_BUCKET,
-      Key: `${S3_PREFIX}/${filename}`,
-      Body: buffer,
-      ContentType: mimetype || 'image/jpeg',
-      CacheControl: 'public, max-age=86400',
-    }));
-    return publicUrl(filename);
-  }
+  const dest = useS3() ? `s3://${S3_BUCKET}/${S3_PREFIX}/${filename}` : path.join(IMG_DIR, filename);
+  try {
+    if (useS3()) {
+      await getS3().send(new PutObjectCommand({
+        Bucket: S3_BUCKET,
+        Key: `${S3_PREFIX}/${filename}`,
+        Body: buffer,
+        ContentType: mimetype || 'image/jpeg',
+        CacheControl: 'public, max-age=86400',
+      }));
+      logger.info('image_save', { status: 'ok', storage: 's3', dest, size: buffer.length });
+      return publicUrl(filename);
+    }
 
-  fs.mkdirSync(IMG_DIR, { recursive: true });
-  fs.writeFileSync(path.join(IMG_DIR, filename), buffer);
-  return publicUrl(filename);
+    fs.mkdirSync(IMG_DIR, { recursive: true });
+    fs.writeFileSync(path.join(IMG_DIR, filename), buffer);
+    logger.info('image_save', { status: 'ok', storage: 'local', dest, size: buffer.length });
+    return publicUrl(filename);
+  } catch (err) {
+    logger.error('image_save', { status: 'failed', dest, size: buffer.length, error: err.message });
+    throw err;
+  }
 }
 
 async function deleteImage(imageUrl) {

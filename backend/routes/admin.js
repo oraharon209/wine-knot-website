@@ -1,7 +1,9 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 const pool = require('../config/db');
 const storage = require('../lib/storage');
+const logger = require('../lib/logger');
 
 const router = express.Router();
 
@@ -28,14 +30,34 @@ function wineImageUrl(wine) {
   return storage.publicUrl(wineImageFilename(wine));
 }
 
+const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif']);
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true);
-    else cb(new Error('רק קבצי תמונה'));
+    if (file.mimetype.startsWith('image/')) return cb(null, true);
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    if (IMAGE_EXTS.has(ext)) return cb(null, true);
+    cb(new Error('רק קבצי תמונה'));
   },
 });
+
+function imageExt(mimetype, originalname) {
+  const map = {
+    'image/jpeg': '.jpg',
+    'image/png': '.png',
+    'image/webp': '.webp',
+    'image/gif': '.gif',
+    'image/heic': '.jpg',
+    'image/heif': '.jpg',
+  };
+  if (map[mimetype]) return map[mimetype];
+  const ext = path.extname(originalname || '').toLowerCase();
+  if (ext === '.jpeg') return '.jpg';
+  if (IMAGE_EXTS.has(ext)) return ext === '.heic' || ext === '.heif' ? '.jpg' : ext;
+  return '.jpg';
+}
 
 router.get('/wines', async (req, res) => {
   try {
@@ -278,26 +300,79 @@ router.delete('/recommended/:wineId', async (req, res) => {
 });
 
 router.post('/wines/:id/image', async (req, res, next) => {
+  const wineId = req.params.id;
   try {
     const [rows] = await pool.query(
       'SELECT id, name, winery, vintage FROM wines WHERE id = ?',
-      [req.params.id]
+      [wineId]
     );
-    if (!rows.length) return res.status(404).json({ error: 'לא נמצא' });
-    req.wineImageName = wineImageFilename(rows[0]);
+    if (!rows.length) {
+      logger.warn('wine_image_upload', { wineId, status: 'not_found' });
+      return res.status(404).json({ error: 'לא נמצא' });
+    }
+    req.wineRow = rows[0];
     next();
   } catch (err) {
+    logger.error('wine_image_upload', { wineId, status: 'lookup_failed', error: err.message });
     next(err);
   }
-}, upload.single('image'), async (req, res) => {
+}, (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (!err) return next();
+    const fields = {
+      wineId: req.params.id,
+      status: 'multer_rejected',
+      code: err.code,
+      error: err.message,
+    };
+    logger.warn('wine_image_upload', fields);
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'הקובץ גדול מדי (מקסימום 8MB)' });
+    }
+    return res.status(400).json({ error: err.message || 'קובץ לא תקין' });
+  });
+}, async (req, res) => {
+  const wineId = req.params.id;
   try {
-    if (!req.file) return res.status(400).json({ error: 'לא נבחרה תמונה' });
-    const filename = req.wineImageName || `${req.params.id}.jpg`;
+    if (!req.file) {
+      logger.warn('wine_image_upload', {
+        wineId,
+        status: 'no_file',
+        contentType: req.headers['content-type'],
+      });
+      return res.status(400).json({ error: 'לא נבחרה תמונה' });
+    }
+
+    const ext = imageExt(req.file.mimetype, req.file.originalname);
+    const filename = wineImageFilename(req.wineRow, ext);
+    logger.info('wine_image_upload', {
+      wineId,
+      status: 'started',
+      filename,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+      originalname: req.file.originalname,
+      storage: storage.useS3() ? 's3' : 'local',
+    });
+
     const imageUrl = await storage.saveImage(filename, req.file.buffer, req.file.mimetype);
-    await pool.query('UPDATE wines SET image_url = ? WHERE id = ?', [imageUrl, req.params.id]);
+    await pool.query('UPDATE wines SET image_url = ? WHERE id = ?', [imageUrl, wineId]);
+
+    logger.info('wine_image_upload', {
+      wineId,
+      status: 'ok',
+      filename,
+      imageUrl,
+      size: req.file.size,
+    });
     res.json({ ok: true, image_url: imageUrl });
   } catch (err) {
-    console.error(err);
+    logger.error('wine_image_upload', {
+      wineId,
+      status: 'failed',
+      error: err.message,
+      stack: err.stack,
+    });
     res.status(500).json({ error: err.message || 'שגיאה בהעלאה' });
   }
 });

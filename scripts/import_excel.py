@@ -10,7 +10,7 @@ import openpyxl
 from wine_image_names import assign_image_urls
 
 ROOT = Path(__file__).resolve().parent.parent
-EXCEL_DEFAULT = Path('/home/or/Downloads/מחירון מעודכן יוני 2026.xlsx')
+EXCEL_DEFAULT = Path('/home/or/Downloads/מחירון מעודכן יוני 2026(1).xlsx')
 
 CAT_HEADERS = {
     'לבנים': ('white', 'לבן'),

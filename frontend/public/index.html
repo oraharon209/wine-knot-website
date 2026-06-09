@@ -410,25 +410,64 @@
     .btn-whatsapp:hover { background: #1da851; }
     .btn-whatsapp:disabled { background: #aaa; cursor: not-allowed; }
 
-    .btn-add-cart {
+    .wine-qty-btns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .4rem;
+      margin-top: .75rem;
+    }
+    .btn-qty, .btn-add-cart {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: .4rem;
+      gap: .25rem;
       background: var(--wine);
       color: #fff;
-      padding: .55rem .9rem;
+      padding: .55rem .4rem;
       border-radius: var(--radius);
       font-weight: 600;
-      font-size: .85rem;
+      font-size: .82rem;
       border: none;
       cursor: pointer;
       font-family: inherit;
       transition: background .2s;
-      width: 100%;
-      margin-top: .75rem;
     }
-    .btn-add-cart:hover { background: var(--wine-dark); }
+    .btn-qty:hover, .btn-add-cart:hover { background: var(--wine-dark); }
+    .btn-qty-deal {
+      background: #1a6b3c;
+      position: relative;
+    }
+    .btn-qty-deal:hover { background: #145a32; }
+    .wine-deal-note {
+      font-size: .72rem;
+      color: #1a6b3c;
+      font-weight: 600;
+      text-align: center;
+      margin-top: .35rem;
+      line-height: 1.3;
+    }
+    .modal-qty-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .5rem;
+      margin: 1rem 0 .5rem;
+    }
+    .deal-hint {
+      font-size: .88rem;
+      color: #1a6b3c;
+      font-weight: 600;
+      background: #e8f5e9;
+      border-radius: var(--radius);
+      padding: .65rem .85rem;
+      margin-bottom: .75rem;
+      line-height: 1.4;
+    }
+    .cart-free-note {
+      font-size: .78rem;
+      color: #1a6b3c;
+      font-weight: 600;
+      margin-top: .2rem;
+    }
 
     /* Cart button in header */
     .cart-btn {
@@ -591,6 +630,36 @@
       opacity: 1;
     }
 
+    /* About */
+    .about {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3.5rem 1.5rem;
+      text-align: center;
+    }
+    .about h2 {
+      font-size: 1.8rem;
+      color: var(--wine);
+      margin-bottom: 1.25rem;
+    }
+    .about-text {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--text);
+    }
+    .about-text p { margin-bottom: 1rem; }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-highlight {
+      display: inline-block;
+      margin-top: .5rem;
+      padding: .75rem 1.25rem;
+      background: #e8f5e9;
+      color: #1a6b3c;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
     /* Contact */
     .contact {
       background: var(--wine-dark);
@@ -721,7 +790,7 @@
 
 <main id="main">
 <div class="promo">
-  🎁 מבצע מיוחד: מתנה ב-12 בקבוקים | מתנה פרימיום ב-24 בקבוקים — צרו קשר לפרטים
+  🎁 מבצע: ב-12 בקבוקים — בקבוק מתנה חינם! | מתנה פרימיום ב-24 בקבוקים
 </div>
 
 <section class="hero">
@@ -783,6 +852,23 @@
   </div>
 </div>
 </main>
+
+<section class="about" id="about">
+  <h2>אודותינו</h2>
+  <div class="about-text">
+    <p>
+      חברת <strong>Wine Knot ltd</strong> מביאה ללקוחות יין עד הבית (לאזורי חלוקה).
+      מבחר של כ־160 יינות שנבחרו בקפידה וכמענה לדרישות ואהבת הלקוחות במשך 23 שנות החברה,
+      בהנהלת <strong>דורון אהרון</strong> — מומחה ליין כבר כ־30 שנה.
+    </p>
+    <p>
+      ניתן לשלם במגוון אפשרויות: פייבוקס, ביט, העברה בנקאית, צ'ק או מזומן.
+    </p>
+    <p>
+      <span class="about-highlight">🎁 בקבוק מתנה על כל קנייה של ארגז 12 בקבוקים</span>
+    </p>
+  </div>
+</section>
 
 <section class="contact" id="contact">
   <h2>צרו קשר</h2>
@@ -894,7 +980,11 @@ function addToCart(wine, qty = 1) {
     };
   }
   saveCart();
-  showToast('נוסף לעגלה ✓');
+  const free = freeBottles(cart[id].quantity);
+  const msg = free
+    ? `נוסף לעגלה ✓ (+${free} בקבוק מתנה)`
+    : (qty === 1 ? 'נוסף לעגלה ✓' : `נוספו ${qty} בקבוקים לעגלה ✓`);
+  showToast(msg);
 }
 
 function removeFromCart(id) {
@@ -925,6 +1015,17 @@ function formatBottleQty(qty) {
   return qty === 1 ? 'בקבוק אחד' : `${qty} בקבוקים`;
 }
 
+function freeBottles(qty) {
+  return Math.floor(qty / 12);
+}
+
+function formatCartQty(item) {
+  const free = freeBottles(item.quantity);
+  if (!free) return formatBottleQty(item.quantity);
+  const total = item.quantity + free;
+  return `${item.quantity} בקבוקים (+${free} מתנה = ${total} סה"כ)`;
+}
+
 function cartWineLabel(item) {
   const name = item.name.trim();
   const vintage = (item.vintage || '').trim();
@@ -945,16 +1046,22 @@ function buildCartWhatsAppMessage() {
     '',
   ];
 
+  let totalFree = 0;
   items.forEach(item => {
     const label = cartWineLabel(item);
     const lineTotal = item.sale_price * item.quantity;
+    const free = freeBottles(item.quantity);
+    totalFree += free;
     lines.push(label);
-    lines.push(`   ${formatBottleQty(item.quantity)} · ${formatPrice(lineTotal)}`);
+    lines.push(`   ${formatCartQty(item)} · ${formatPrice(lineTotal)}`);
     lines.push('');
   });
 
   lines.push('──────────────');
   lines.push(`סה״כ לתשלום: ${formatPrice(cartTotalAmount())}`);
+  if (totalFree) {
+    lines.push(`🎁 בקבוקי מתנה: ${totalFree}`);
+  }
   lines.push('');
   lines.push('תודה!');
 
@@ -980,7 +1087,10 @@ function renderCart() {
     return;
   }
 
-  container.innerHTML = items.map(item => `
+  const totalFree = items.reduce((sum, item) => sum + freeBottles(item.quantity), 0);
+  container.innerHTML = items.map(item => {
+    const free = freeBottles(item.quantity);
+    return `
     <div class="cart-item" data-id="${item.id}">
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
@@ -990,13 +1100,14 @@ function renderCart() {
           <span>${item.quantity}</span>
           <button type="button" data-action="inc" aria-label="הוסף כמות">+</button>
         </div>
+        ${free ? `<div class="cart-free-note">🎁 +${free} בקבוק מתנה</div>` : ''}
       </div>
       <div>
         <div class="cart-item-price">₪${(item.sale_price * item.quantity).toFixed(0)}</div>
         <button type="button" class="cart-item-remove" data-action="remove" aria-label="הסר">✕</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('') + (totalFree ? `<div class="cart-free-note" style="padding:.5rem 0">🎁 סה"כ ${totalFree} בקבוקי מתנה בהזמנה זו</div>` : '');
 
   container.querySelectorAll('.cart-item').forEach(row => {
     const id = row.dataset.id;
@@ -1094,12 +1205,17 @@ function wineCardHtml(w, { showRecommendedBadge = false, eagerImage = false } = 
         <div class="wine-winery">${w.winery || ''}${w.vintage ? ' · ' + w.vintage : ''}</div>
         <div class="wine-prices">
           <div>
-            <span class="price-label">מחיר</span>
+            <span class="price-label">${disc ? 'מחיר מבצע' : 'מחיר'}</span>
             <span class="sale-price">₪${Number(w.sale_price).toFixed(0)}</span>
             ${disc ? `<span class="shelf-price">₪${Number(w.shelf_price).toFixed(0)}</span>` : ''}
           </div>
         </div>
-        <button class="btn-add-cart" type="button" data-add-id="${w.id}">🛒 הוסף לעגלה</button>
+        <div class="wine-qty-btns">
+          <button class="btn-qty" type="button" data-add-id="${w.id}" data-qty="1">1</button>
+          <button class="btn-qty" type="button" data-add-id="${w.id}" data-qty="6">6</button>
+          <button class="btn-qty btn-qty-deal" type="button" data-add-id="${w.id}" data-qty="12">12 🎁</button>
+        </div>
+        <div class="wine-deal-note">12 בקבוקים — בקבוק מתנה חינם</div>
       </div>
     </div>`;
 }
@@ -1107,15 +1223,16 @@ function wineCardHtml(w, { showRecommendedBadge = false, eagerImage = false } = 
 function bindWineCards(container) {
   container.querySelectorAll('.wine-card').forEach(card => {
     card.addEventListener('click', e => {
-      if (e.target.closest('.btn-add-cart')) return;
+      if (e.target.closest('.btn-qty, .btn-add-cart')) return;
       openModal(card.dataset.id);
     });
   });
-  container.querySelectorAll('.btn-add-cart').forEach(btn => {
+  container.querySelectorAll('.btn-qty, .btn-add-cart').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       const wine = winesCache[btn.dataset.addId];
-      if (wine) addToCart(wine);
+      const qty = parseInt(btn.dataset.qty, 10) || 1;
+      if (wine) addToCart(wine, qty);
     });
   });
 }
@@ -1348,11 +1465,18 @@ async function openModal(id) {
       </div>
       <div>⭐ דירוג: <strong>${w.rating}</strong> · ${w.category_he}</div>
       ${w.notes ? `<div class="modal-notes">${w.notes}</div>` : ''}
-      <button class="btn-add-cart" id="modalAddBtn" type="button">🛒 הוסף לעגלה</button>
+      <div class="deal-hint">🎁 ב-12 בקבוקים — בקבוק מתנה חינם!</div>
+      <div class="modal-qty-row">
+        <button class="btn-add-cart" type="button" data-qty="1">1 בקבוק</button>
+        <button class="btn-add-cart" type="button" data-qty="6">6 בקבוקים</button>
+        <button class="btn-add-cart btn-qty-deal" type="button" data-qty="12">12 + מתנה</button>
+      </div>
       <button class="btn-whatsapp" id="orderBtn" type="button">💬 הזמנה מהירה בוואטסאפ</button>
     `;
-    $('modalAddBtn').addEventListener('click', () => {
-      addToCart(w);
+    $('modalBody').querySelectorAll('.btn-add-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        addToCart(w, parseInt(btn.dataset.qty, 10) || 1);
+      });
     });
     $('orderBtn').addEventListener('click', () => {
       const label = cartWineLabel({ name: w.name, vintage: w.vintage || '' });

@@ -375,24 +375,33 @@ function previewImage() {
 }
 
 async function uploadImage() {
-  if (!selectedId || !$('imgFile').files[0]) {
+  const file = $('imgFile').files[0];
+  if (!selectedId || !file) {
     showMsg('בחרו תמונה קודם', false);
     return;
   }
   const fd = new FormData();
-  fd.append('image', $('imgFile').files[0]);
+  fd.append('image', file);
   try {
     const res = await fetch(`${API}/wines/${selectedId}/image`, {
       method: 'POST',
       credentials: 'include',
       body: fd,
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
+    let data = {};
+    try { data = await res.json(); } catch (_) { /* non-JSON body */ }
+    if (!res.ok) {
+      const err = data.error || `שגיאת שרת (${res.status})`;
+      console.error('upload failed', { wineId: selectedId, status: res.status, file: file.name, size: file.size, error: err });
+      throw new Error(err);
+    }
     showMsg('התמונה הועלתה');
     $('editImg').src = data.image_url + '?t=' + Date.now();
     await loadWines($('search').value);
-  } catch (e) { showMsg(e.message, false); }
+  } catch (e) {
+    console.error('upload error', { wineId: selectedId, file: file.name, size: file.size, message: e.message });
+    showMsg(e.message || 'שגיאה בהעלאה', false);
+  }
 }
 
 function debounceSearch() {
