@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 """Fetch product bottle images matching each wine by name and vintage."""
+
 import json
 import re
 import sys
 import time
-from io import BytesIO
 from pathlib import Path
 
 import requests
 from ddgs import DDGS
-from PIL import Image
 
-from wine_image_names import extract_years, wine_image_filename, winery_short, normalize as normalize_name
 from wine_bottle_validate import is_wine_bottle
+from wine_image_names import (
+    extract_years,
+    wine_image_filename,
+    winery_short,
+)
+from wine_image_names import (
+    normalize as normalize_name,
+)
 from wine_image_normalize import normalize_bottle_image
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -24,35 +30,111 @@ MANUAL_DIR = ROOT / 'scripts' / 'manual_images'
 MANUAL_IDS = set()
 
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'User-Agent': (
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
+        '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    ),
     'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
     'Accept-Language': 'he-IL,he;q=0.9,en-US;q=0.8,en;q=0.8',
 }
 
 WINERY_EN = {
-    'קסטל': 'Castel', 'דלתון': 'Dalton', 'טוליפ': 'Tulip', 'פסגות': 'Psagot',
-    'יקבי הגולן': 'Golan Heights', 'גולן': 'Golan Heights', 'רקנאטי': 'Recanati',
-    'כרמל': 'Carmel', 'ברקן': 'Barkan', 'טפרברג': 'Tepperberg', 'ירדן': 'Yarden',
-    'רמת הגולן': 'Golan Heights', 'רמת נגב': 'Ramat Negev', 'ויתקין': 'Vitkin',
-    'אדיר': 'Adir', 'לוריא': 'Luria', 'מוני': 'Montefiore', 'מאיה': 'Maya',
-    'שילה': 'Shiloh', 'סגל': 'Segal', 'רוטשילד': 'Rothschild', 'עמק האלה': 'Emek HaEla',
-    'רזיאל': 'Raziel', 'כרם שבו': 'Kerem Shavo', 'אלונה': 'Alona', 'קטן': 'Katten',
+    'קסטל': 'Castel',
+    'דלתון': 'Dalton',
+    'טוליפ': 'Tulip',
+    'פסגות': 'Psagot',
+    'יקבי הגולן': 'Golan Heights',
+    'גולן': 'Golan Heights',
+    'רקנאטי': 'Recanati',
+    'כרמל': 'Carmel',
+    'ברקן': 'Barkan',
+    'טפרברג': 'Tepperberg',
+    'ירדן': 'Yarden',
+    'רמת הגולן': 'Golan Heights',
+    'רמת נגב': 'Ramat Negev',
+    'ויתקין': 'Vitkin',
+    'אדיר': 'Adir',
+    'לוריא': 'Luria',
+    'מוני': 'Montefiore',
+    'מאיה': 'Maya',
+    'שילה': 'Shiloh',
+    'סגל': 'Segal',
+    'רוטשילד': 'Rothschild',
+    'עמק האלה': 'Emek HaEla',
+    'רזיאל': 'Raziel',
+    'כרם שבו': 'Kerem Shavo',
+    'אלונה': 'Alona',
+    'קטן': 'Katten',
 }
 
 GOOD = (
-    'wineconnection', 'alcoholmarket', 'paneco', 'wineroute', 'alcohome', 'vivino',
-    'winebuyers', 'gate2wine', 'wines.co.il', 'wine21', 'mashkaot', 'banamashkaot',
-    'eretzhagalil', 'winehouse', 'wine-club', 'manovino', 'grape-man', 'hibur',
-    'gmp.ae', 'winewarehouse', 'dalton', 'carmel', 'tulip', 'castel', 'golanwines',
-    'recanati', 'teperberg', 'barkan', 'shilo', 'psagot', 'vitkin', 'yarden',
-    'adir-winery', 'winedepot', 'manwithwine',
+    'wineconnection',
+    'alcoholmarket',
+    'paneco',
+    'wineroute',
+    'alcohome',
+    'vivino',
+    'winebuyers',
+    'gate2wine',
+    'wines.co.il',
+    'wine21',
+    'mashkaot',
+    'banamashkaot',
+    'eretzhagalil',
+    'winehouse',
+    'wine-club',
+    'manovino',
+    'grape-man',
+    'hibur',
+    'gmp.ae',
+    'winewarehouse',
+    'dalton',
+    'carmel',
+    'tulip',
+    'castel',
+    'golanwines',
+    'recanati',
+    'teperberg',
+    'barkan',
+    'shilo',
+    'psagot',
+    'vitkin',
+    'yarden',
+    'adir-winery',
+    'winedepot',
+    'manwithwine',
 )
 BAD = (
-    'pinterest', 'facebook', 'instagram', 'tiktok', 'flower2u', 'coloring',
-    'clipart', 'calendar', 'kalender', 'dogbreed', 'template.net', 'ftcdn',
-    'shutterstock', 'pngtree', 'lovepik', 'coffeco', 'travelourplanet', 'cq.ru',
-    'batshonfish', 'pokemon', 'imdb', 'poster', 'wallpaper', 'deviantart',
-    'fanpop', 'zerochan', 'wikia', 'fandom', 'grave', 'cemetery',
+    'pinterest',
+    'facebook',
+    'instagram',
+    'tiktok',
+    'flower2u',
+    'coloring',
+    'clipart',
+    'calendar',
+    'kalender',
+    'dogbreed',
+    'template.net',
+    'ftcdn',
+    'shutterstock',
+    'pngtree',
+    'lovepik',
+    'coffeco',
+    'travelourplanet',
+    'cq.ru',
+    'batshonfish',
+    'pokemon',
+    'imdb',
+    'poster',
+    'wallpaper',
+    'deviantart',
+    'fanpop',
+    'zerochan',
+    'wikia',
+    'fandom',
+    'grave',
+    'cemetery',
 )
 
 
@@ -74,36 +156,52 @@ def build_queries(wine):
     queries = []
 
     for year in years:
-        queries.extend([
-            f'{base_name} {winery} {year}',
-            f'{winery} {base_name} {year}',
-            f'{name} {winery} {year} בקבוק',
-            f'{winery} {base_name} {year} בקבוק יין',
-        ])
+        queries.extend(
+            [
+                f'{base_name} {winery} {year}',
+                f'{winery} {base_name} {year}',
+                f'{name} {winery} {year} בקבוק',
+                f'{winery} {base_name} {year} בקבוק יין',
+            ]
+        )
         if w_en:
-            queries.extend([
-                f'{w_en} {base_name} {year} bottle wine',
-                f'{w_en} {base_name} {year} bottle Israel',
-            ])
+            queries.extend(
+                [
+                    f'{w_en} {base_name} {year} bottle wine',
+                    f'{w_en} {base_name} {year} bottle Israel',
+                ]
+            )
 
-    queries.extend([
-        f'{name} {winery} בקבוק יין',
-        f'{winery} {name} בקבוק',
-        f'{name} {winery}',
-        f'{winery} {name}',
-    ])
+    queries.extend(
+        [
+            f'{name} {winery} בקבוק יין',
+            f'{winery} {name} בקבוק',
+            f'{name} {winery}',
+            f'{winery} {name}',
+        ]
+    )
     if w_en:
-        queries.extend([
-            f'{w_en} {base_name} bottle wine',
-            f'{w_en} {base_name} wine bottle Israel',
-        ])
+        queries.extend(
+            [
+                f'{w_en} {base_name} bottle wine',
+                f'{w_en} {base_name} wine bottle Israel',
+            ]
+        )
 
     if 'קסטל C' in name or 'קסטל  C' in name:
         for q in ['קסטל C שרדונה בקבוק', 'Castel C Chardonnay bottle']:
             queries.insert(0, q)
 
     if 'סדרת אסטייט' in name:
-        grape = 'cabernet' if 'קברנה' in name else 'merlot' if 'מרלו' in name else 'shiraz' if 'שירז' in name else 'petit'
+        grape = (
+            'cabernet'
+            if 'קברנה' in name
+            else 'merlot'
+            if 'מרלו' in name
+            else 'shiraz'
+            if 'שירז' in name
+            else 'petit'
+        )
         for q in [
             f'Dalton Estate {grape} bottle Israel',
             f'דלתון אסטייט {base_name} בקבוק',
@@ -138,8 +236,8 @@ def build_queries(wine):
     if 'קולומבארד' in name or 'קולומברד' in name:
         for q in [
             f'Adir Winery Colombard {years[0] if years else ""} bottle'.strip(),
-            f'אדיר קולומבארד בקבוק יין',
-            f'Adir Colombard white wine bottle Israel',
+            'אדיר קולומבארד בקבוק יין',
+            'Adir Colombard white wine bottle Israel',
         ]:
             queries.insert(0, q)
 
@@ -297,6 +395,7 @@ def main():
             manual = named_manual
         if manual.exists():
             from shutil import copy2
+
             copy2(manual, dest)
             print(f'[{wid}] manual override')
             ok += 1
@@ -312,7 +411,7 @@ def main():
         if force and dest.exists():
             dest.unlink()
 
-        cache_key = f"{wid}:{wine.get('name', '')}:{','.join(years)}"
+        cache_key = f'{wid}:{wine.get("name", "")}:{",".join(years)}'
         urls = [] if fix_bad else cache.get(cache_key, [])
         if isinstance(urls, str):
             urls = [urls]

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Import wines from Excel price list into wines_data.json."""
+
 import json
 import re
 import sys
@@ -87,20 +88,22 @@ def parse_excel(path):
         vintage_match = re.search(r'\b(19|20)\d{2}\b', name_s)
         vintage = vintage_match.group(0) if vintage_match else ''
 
-        wines.append({
-            'id': wid,
-            'name': name_s,
-            'category': current,
-            'category_he': current_he,
-            'winery': winery_s,
-            'country': 'ישראל' if current not in ('international', 'super_premium') else '',
-            'vintage': vintage,
-            'grape': '',
-            'rating': float(rating) if isinstance(rating, (int, float)) else None,
-            'shelf_price': int(shelf) if isinstance(shelf, (int, float)) else int(sale),
-            'sale_price': int(sale),
-            'notes': clean_notes(notes),
-        })
+        wines.append(
+            {
+                'id': wid,
+                'name': name_s,
+                'category': current,
+                'category_he': current_he,
+                'winery': winery_s,
+                'country': 'ישראל' if current not in ('international', 'super_premium') else '',
+                'vintage': vintage,
+                'grape': '',
+                'rating': float(rating) if isinstance(rating, (int, float)) else None,
+                'shelf_price': int(shelf) if isinstance(shelf, (int, float)) else int(sale),
+                'sale_price': int(sale),
+                'notes': clean_notes(notes),
+            }
+        )
         wid += 1
 
     wines = assign_image_urls(wines)

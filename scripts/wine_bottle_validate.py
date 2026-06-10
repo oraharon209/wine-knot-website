@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Heuristics to detect wine bottle product photos vs posters/scenes/graphics."""
+
 from io import BytesIO
 
 from PIL import Image, ImageFilter, ImageStat
@@ -56,7 +57,7 @@ def is_wine_bottle(data):
     corners = [px(2, 2), px(sw - 3, 2), px(2, sh - 3), px(sw - 3, sh - 3)]
     corner_lum = [_lum(*c) for c in corners]
     avg_corner = sum(corner_lum) / 4
-    light_corners = sum(1 for l in corner_lum if l > 185)
+    light_corners = sum(1 for lum_val in corner_lum if lum_val > 185)
 
     ys = list(range(sh // 5, 4 * sh // 5, max(1, sh // 20)))
     left_lum = sum(_lum(*px(5, y)) for y in ys) / len(ys)

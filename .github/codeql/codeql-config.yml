@@ -1,0 +1,10 @@
+name: "wine-knot CodeQL"
+
+paths:
+  - backend
+  - scripts
+
+paths-ignore:
+  - "**/__pycache__"
+  - "**/node_modules"
+  - frontend/public/images

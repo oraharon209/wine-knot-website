@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Rename numeric wine images to descriptive Hebrew filenames."""
+
 import json
 import shutil
 from pathlib import Path
 
-from wine_image_names import assign_image_urls, wine_image_filename
+from wine_image_names import wine_image_filename
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / 'wines_data.json'
@@ -43,11 +44,11 @@ def main():
         if dest.exists():
             dest.unlink()
         shutil.copy2(src, dest)
-        print(f"[{wine['id']}] -> {dest.name}")
+        print(f'[{wine["id"]}] -> {dest.name}')
 
     for old in IMG_DIR.glob('[0-9]*.jpg'):
         old.unlink()
-        print(f"removed {old.name}")
+        print(f'removed {old.name}')
 
     with open(DATA_PATH, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

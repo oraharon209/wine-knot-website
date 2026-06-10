@@ -33,7 +33,7 @@ app.use('/api/wines', winesRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/admin', adminRouter);
 
-app.use((err, _req, res, next) => {
+app.use((err, _req, res, _next) => {
   if (err.message === 'Not allowed by CORS') {
     return res.status(403).json({ error: 'גישה נדחתה' });
   }

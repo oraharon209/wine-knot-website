@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Normalize wine bottle photos to a clean white-background product shot."""
+
 from io import BytesIO
 
 from PIL import Image
@@ -16,6 +17,7 @@ def _get_rembg():
     global _rembg
     if _rembg is None:
         from rembg import remove
+
         _rembg = remove
     return _rembg
 
@@ -86,7 +88,7 @@ def needs_background_removal(data):
         samp.getpixel((sw - 3, sh - 3)),
     ]
     corner_lums = [lum(c) for c in corners]
-    return sum(1 for l in corner_lums if l > 185) < 3
+    return sum(1 for lum_val in corner_lums if lum_val > 185) < 3
 
 
 def normalize_bottle_image(data, remove_bg=None):

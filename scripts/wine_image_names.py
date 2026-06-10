@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Build human-readable wine image filenames from wine records."""
+
 import re
 
 

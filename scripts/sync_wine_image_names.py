@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Sync image filenames and image_url fields with current wine metadata."""
+
 import json
-import shutil
 from pathlib import Path
 
-from wine_image_names import assign_image_urls, wine_image_filename
+from wine_image_names import wine_image_filename
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / 'wines_data.json'
@@ -34,7 +34,7 @@ def main():
             old_path.rename(new_path)
             by_url.pop(old_url, None)
             by_url[new_url] = new_path
-            print(f"[{wine['id']}] {old_path.name} -> {new_name}")
+            print(f'[{wine["id"]}] {old_path.name} -> {new_name}')
 
     with open(DATA_PATH, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
