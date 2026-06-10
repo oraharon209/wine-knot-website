@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - cursor/initial-wine-knot-setup
   workflow_dispatch:
     inputs:
       branch:

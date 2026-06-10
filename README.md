@@ -134,14 +134,26 @@ DOCKER_IMAGE_BACKEND=yourusername/wine-knot-backend:latest
 
 Then `docker compose pull backend && docker compose up -d` (no local build needed).
 
-### Push code to GitHub
+Do **not** commit `.env`, `mysql_data`, or `.venv`.
+
+## Git workflow
+
+| Branch | Purpose |
+|--------|---------|
+| `main` | Production — what's live on wineknot.co.il. Pushing here auto-deploys. |
+| `feature/...` | Short-lived branches for new work. Merge into `main` when ready. |
 
 ```bash
-git remote add origin https://github.com/oraharon209/wine-knot-website.git
-git push -u origin cursor/initial-wine-knot-setup
-```
+# Start a small change
+git checkout main
+git pull
+git checkout -b feature/my-change
 
-Do **not** commit `.env`, `mysql_data`, or `.venv`.
+# ... edit, commit ...
+
+git push -u origin feature/my-change
+# Open a PR on GitHub → merge to main → production deploys automatically
+```
 
 ## Auto-deploy (GitHub Actions)
 
@@ -158,12 +170,10 @@ Pushes to `main` trigger `.github/workflows/deploy.yml`, which uses **AWS SSM Ru
    - Secret `AWS_SECRET_ACCESS_KEY` ← `github_actions_secret_access_key`
    - Secret `EC2_INSTANCE_ID` ← `github_actions_ec2_instance_id`
    - Variable `AWS_REGION` = `eu-north-1` (optional)
-   - Variable `DEPLOY_BRANCH` = branch to deploy if not `main` (optional)
 3. On an **existing** server (provisioned before SSM support), SSH in once and install the agent:
    ```bash
    sudo snap install amazon-ssm-agent --classic
    sudo systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent.service
    ```
-4. Merge your deploy branch into `main`, or change the `branches` list in the workflow file.
 
 Manual deploy: **Actions → Deploy → Run workflow** (optional branch input).
