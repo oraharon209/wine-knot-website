@@ -1,6 +1,13 @@
 const express = require('express');
 const pool = require('../config/db');
 const { resolveImageUrl } = require('../lib/storage');
+const {
+  parseSearchParam,
+  parseMaxPriceParam,
+  parseMinRatingParam,
+  parseLimitParam,
+  parseOffsetParam,
+} = require('../lib/queryLimits');
 
 const router = express.Router();
 
@@ -20,7 +27,10 @@ const SORT_MAP = {
 
 router.get('/', async (req, res) => {
   try {
-    const { category, search, max_price, min_rating, sort, include_oos, limit, offset } = req.query;
+    const { category, sort, include_oos } = req.query;
+    const search = parseSearchParam(req.query.search);
+    const max_price = parseMaxPriceParam(req.query.max_price);
+    const min_rating = parseMinRatingParam(req.query.min_rating);
     const conditions = ['w.out_of_stock = 0'];
     const params = [];
 
@@ -39,21 +49,21 @@ router.get('/', async (req, res) => {
       const term = `%${search}%`;
       params.push(term, term, term, term, term);
     }
-    if (max_price) {
+    if (max_price != null) {
       conditions.push('w.sale_price <= ?');
-      params.push(parseFloat(max_price));
+      params.push(max_price);
     }
-    if (min_rating) {
+    if (min_rating != null) {
       conditions.push('w.rating >= ?');
-      params.push(parseFloat(min_rating));
+      params.push(min_rating);
     }
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
     const orderBy = SORT_MAP[sort] || 'w.sale_price ASC';
     const baseFrom = `FROM wines w JOIN categories c ON c.id = w.category_id ${where}`;
 
-    const limitNum = limit ? parseInt(limit, 10) : 0;
-    const offsetNum = offset ? parseInt(offset, 10) : 0;
+    const limitNum = parseLimitParam(req.query.limit);
+    const offsetNum = parseOffsetParam(req.query.offset);
 
     if (limitNum > 0) {
       const [countRows] = await pool.query(`SELECT COUNT(*) AS total ${baseFrom}`, params);

@@ -817,7 +817,7 @@
 
 <div class="controls">
   <div class="search-box">
-    <input type="text" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off">
+    <input type="text" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off" maxlength="64">
   </div>
   <div class="filter-group">
     <label class="sr-only" for="sort">מיון יינות</label>
@@ -827,7 +827,7 @@
       <option value="price_desc">מחיר (גבוה לנמוך)</option>
       <option value="name_asc">שם (א-ת)</option>
     </select>
-    <input type="number" id="maxPrice" placeholder="מחיר מקסימלי ₪" min="0" style="width:130px">
+    <input type="number" id="maxPrice" placeholder="מחיר מקסימלי ₪" min="0" max="100000" style="width:130px">
     <input type="number" id="minRating" placeholder="דירוג מינימלי" min="0" max="100" step="0.1" style="width:130px">
   </div>
   <div class="results-count" id="resultsCount"></div>
@@ -949,6 +949,13 @@ const CART_KEY = 'wineknot_cart';
 const AGE_KEY = 'wineknot_age_verified';
 const HOME_WINES_PAGE_SIZE = 12;
 const INITIAL_FETCH_LIMIT = 12;
+const SEARCH_MAX_LEN = 64;
+const PRICE_MAX_LEN = 10;
+const PRICE_MIN = 0;
+const PRICE_MAX = 100000;
+const RATING_MAX_LEN = 4;
+const RATING_MIN = 0;
+const RATING_MAX = 100;
 
 let categories = [];
 let activeCategory = '';
@@ -961,6 +968,40 @@ let homeWinesTotal = 0;
 let cart = loadCart();
 
 const $ = id => document.getElementById(id);
+
+function sanitizeSearch(value) {
+  return String(value || '').slice(0, SEARCH_MAX_LEN).trim();
+}
+
+function sanitizeMaxPrice(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  if (raw.length > PRICE_MAX_LEN) return '';
+  const n = parseFloat(raw);
+  if (Number.isNaN(n)) return '';
+  return String(Math.min(PRICE_MAX, Math.max(PRICE_MIN, n)));
+}
+
+function sanitizeMinRating(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  if (raw.length > RATING_MAX_LEN) return '';
+  const n = parseFloat(raw);
+  if (Number.isNaN(n)) return '';
+  return String(Math.min(RATING_MAX, Math.max(RATING_MIN, n)));
+}
+
+function applySearchLimits() {
+  const searchEl = $('search');
+  const maxPriceEl = $('maxPrice');
+  const minRatingEl = $('minRating');
+  const search = sanitizeSearch(searchEl.value);
+  if (searchEl.value !== search) searchEl.value = search;
+  const maxPrice = sanitizeMaxPrice(maxPriceEl.value);
+  if (maxPriceEl.value && maxPriceEl.value !== maxPrice) maxPriceEl.value = maxPrice;
+  const minRating = sanitizeMinRating(minRatingEl.value);
+  if (minRatingEl.value && minRatingEl.value !== minRating) minRatingEl.value = minRating;
+}
 
 function loadCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; }
@@ -1321,13 +1362,14 @@ function renderCategoryCards() {
 }
 
 function buildQuery() {
+  applySearchLimits();
   const params = new URLSearchParams();
   if (activeCategory) params.set('category', activeCategory);
-  const search = $('search').value.trim();
+  const search = sanitizeSearch($('search').value);
   if (search) params.set('search', search);
-  const maxPrice = $('maxPrice').value;
+  const maxPrice = sanitizeMaxPrice($('maxPrice').value);
   if (maxPrice) params.set('max_price', maxPrice);
-  const minRating = $('minRating').value;
+  const minRating = sanitizeMinRating($('minRating').value);
   if (minRating) params.set('min_rating', minRating);
   params.set('sort', $('sort').value);
   return params.toString();
@@ -1343,11 +1385,11 @@ function readUrlState() {
   const params = new URLSearchParams(location.search);
   activeCategory = params.get('category') || '';
   const search = params.get('search');
-  if (search) $('search').value = search;
+  if (search) $('search').value = sanitizeSearch(search);
   const maxPrice = params.get('max_price');
-  if (maxPrice) $('maxPrice').value = maxPrice;
+  if (maxPrice) $('maxPrice').value = sanitizeMaxPrice(maxPrice);
   const minRating = params.get('min_rating');
-  if (minRating) $('minRating').value = minRating;
+  if (minRating) $('minRating').value = sanitizeMinRating(minRating);
   const sort = params.get('sort');
   if (sort) $('sort').value = sort;
 }
@@ -1502,6 +1544,28 @@ async function openModal(id) {
 }
 
 function setupFilters() {
+  $('search').addEventListener('input', () => {
+    const trimmed = sanitizeSearch($('search').value);
+    if ($('search').value !== trimmed) $('search').value = trimmed;
+  });
+  $('maxPrice').addEventListener('input', () => {
+    const raw = $('maxPrice').value;
+    if (String(raw).length > PRICE_MAX_LEN) {
+      $('maxPrice').value = sanitizeMaxPrice(String(raw).slice(0, PRICE_MAX_LEN));
+      return;
+    }
+    const n = parseFloat(raw);
+    if (raw !== '' && !Number.isNaN(n) && n > PRICE_MAX) $('maxPrice').value = String(PRICE_MAX);
+  });
+  $('minRating').addEventListener('input', () => {
+    const raw = $('minRating').value;
+    if (String(raw).length > RATING_MAX_LEN) {
+      $('minRating').value = sanitizeMinRating(String(raw).slice(0, RATING_MAX_LEN));
+      return;
+    }
+    const n = parseFloat(raw);
+    if (raw !== '' && !Number.isNaN(n) && n > RATING_MAX) $('minRating').value = String(RATING_MAX);
+  });
   ['search', 'sort', 'maxPrice', 'minRating'].forEach(id => {
     $(id).addEventListener('input', () => {
       clearTimeout(debounceTimer);

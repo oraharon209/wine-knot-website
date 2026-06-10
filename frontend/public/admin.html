@@ -152,7 +152,7 @@
     <div class="row">
       <div class="field" style="flex:2">
         <label>חיפוש יין</label>
-        <input type="text" id="search" placeholder="שם או יקב..." oninput="debounceSearch()">
+        <input type="text" id="search" placeholder="שם או יקב..." maxlength="64" oninput="debounceSearch()">
       </div>
       <div class="field" style="align-self:flex-end">
         <button class="ok" onclick="showNewForm()">+ יין חדש</button>
@@ -210,7 +210,7 @@
       <div class="row" style="margin-top:1rem">
         <div class="field" style="flex:2">
           <label>הוספת יין למומלצים</label>
-          <input type="text" id="recSearch" placeholder="חפשו לפי שם או יקב..." oninput="debounceRecSearch()">
+          <input type="text" id="recSearch" placeholder="חפשו לפי שם או יקב..." maxlength="64" oninput="debounceRecSearch()">
           <div class="rec-add-results" id="recAddResults"></div>
         </div>
       </div>
@@ -221,6 +221,7 @@
 <script>
 const API = '/api/admin';
 const MAX_RECOMMENDED = 50;
+const SEARCH_MAX_LEN = 64;
 let categories = [];
 let wines = [];
 let recommended = [];
@@ -230,6 +231,10 @@ let recSearchTimer;
 let activeTab = 'wines';
 
 const $ = id => document.getElementById(id);
+
+function sanitizeSearch(value) {
+  return String(value || '').slice(0, SEARCH_MAX_LEN).trim();
+}
 
 function headers() {
   return { 'Content-Type': 'application/json' };
@@ -302,7 +307,8 @@ function readForm(prefix) {
 }
 
 async function loadWines(q = '') {
-  const url = q ? `${API}/wines?search=${encodeURIComponent(q)}` : `${API}/wines`;
+  const search = sanitizeSearch(q);
+  const url = search ? `${API}/wines?search=${encodeURIComponent(search)}` : `${API}/wines`;
   wines = await api(url);
   renderTable();
 }
@@ -451,7 +457,9 @@ async function uploadImage() {
 
 function debounceSearch() {
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => loadWines($('search').value.trim()), 300);
+  const q = sanitizeSearch($('search').value);
+  if ($('search').value !== q) $('search').value = q;
+  searchTimer = setTimeout(() => loadWines(q), 300);
 }
 
 function showTab(tab) {
@@ -546,7 +554,8 @@ function debounceRecSearch() {
 }
 
 async function searchWinesToAdd() {
-  const q = $('recSearch').value.trim();
+  const q = sanitizeSearch($('recSearch').value);
+  if ($('recSearch').value !== q) $('recSearch').value = q;
   const box = $('recAddResults');
   if (!q) {
     box.classList.remove('show');

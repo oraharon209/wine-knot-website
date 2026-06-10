@@ -4,6 +4,7 @@ const path = require('path');
 const pool = require('../config/db');
 const storage = require('../lib/storage');
 const logger = require('../lib/logger');
+const { parseSearchParam } = require('../lib/queryLimits');
 
 const router = express.Router();
 
@@ -61,7 +62,7 @@ function imageExt(mimetype, originalname) {
 
 router.get('/wines', async (req, res) => {
   try {
-    const { search } = req.query;
+    const search = parseSearchParam(req.query.search);
     let sql = `SELECT w.*, c.slug AS category, c.name_he AS category_he
                FROM wines w JOIN categories c ON c.id = w.category_id`;
     const params = [];
