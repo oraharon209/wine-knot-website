@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Sync shelf_price and sale_price from wines_data.json into MySQL."""
+
 import json
 import os
 import sys
@@ -17,7 +18,7 @@ def build_sql(wines):
     for w in wines:
         lines.append(
             'UPDATE wines '
-            f"SET shelf_price={w['shelf_price']}, sale_price={w['sale_price']} "
+            f'SET shelf_price={w["shelf_price"]}, sale_price={w["sale_price"]} '
             f"WHERE name='{esc(w['name'])}' AND winery='{esc(w['winery'])}';"
         )
     return '\n'.join(lines) + '\n'

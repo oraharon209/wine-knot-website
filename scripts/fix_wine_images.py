@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 """Normalize existing wine images and report wines that need re-fetching."""
+
 import json
 import sys
+from io import BytesIO
 from pathlib import Path
+
+from PIL import Image
 
 from wine_bottle_validate import is_wine_bottle
 from wine_image_names import wine_image_filename
-from PIL import Image
-from io import BytesIO
-
-from wine_image_normalize import CANVAS_H, CANVAS_W, normalize_bottle_image, needs_background_removal
+from wine_image_normalize import (
+    CANVAS_H,
+    CANVAS_W,
+    needs_background_removal,
+    normalize_bottle_image,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / 'wines_data.json'
@@ -17,8 +23,13 @@ IMG_DIR = ROOT / 'frontend' / 'public' / 'images' / 'wines'
 
 
 REFETCH_REASONS = (
-    'label crop', 'too small', 'no bottle detail', 'scene/label crop', 'missing',
-    'flat graphic', 'dark poster',
+    'label crop',
+    'too small',
+    'no bottle detail',
+    'scene/label crop',
+    'missing',
+    'flat graphic',
+    'dark poster',
 )
 
 
@@ -103,7 +114,9 @@ def main():
     refetch, to_norm, ok = audit(wines)
     print(f'Audit: {len(ok)} ok, {len(to_norm)} to normalize, {len(refetch)} need re-fetch')
 
-    if '--normalize' in sys.argv or not any(a.startswith('--') for a in sys.argv[1:] if a != '--normalize'):
+    if '--normalize' in sys.argv or not any(
+        a.startswith('--') for a in sys.argv[1:] if a != '--normalize'
+    ):
         targets = wines if only_ids is None else [w for w in wines if w['id'] in only_ids]
         done, skip, fail = normalize_all(targets, only_ids)
         print(f'Normalized: {done}, skipped: {skip}, failed: {fail}')

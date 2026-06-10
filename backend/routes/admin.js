@@ -91,7 +91,7 @@ router.get('/categories', async (_req, res) => {
   try {
     const [rows] = await pool.query('SELECT id, slug, name_he FROM categories ORDER BY sort_order');
     res.json(rows);
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'שגיאה' });
   }
 });
@@ -177,7 +177,7 @@ router.patch('/wines/:id/stock', async (req, res) => {
     const out = req.body.out_of_stock ? 1 : 0;
     await pool.query('UPDATE wines SET out_of_stock = ? WHERE id = ?', [out, req.params.id]);
     res.json({ ok: true, out_of_stock: !!out });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'שגיאה' });
   }
 });
