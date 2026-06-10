@@ -76,6 +76,18 @@
       width: 120px; height: 150px; object-fit: contain;
       border: 1px solid var(--border); background: #fff; display: block; margin-bottom: .5rem;
     }
+    .img-upload-msg {
+      display: none;
+      margin-top: .5rem;
+      padding: .55rem .75rem;
+      border-radius: 6px;
+      font-size: .9rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .img-upload-msg.show { display: block; }
+    .img-upload-msg.ok { background: #d4edda; color: #155724; }
+    .img-upload-msg.err { background: #f8d7da; color: #721c24; }
     .check-row { display: flex; align-items: center; gap: .5rem; margin: .5rem 0; }
     .check-row input { width: auto; }
     .actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
@@ -173,7 +185,8 @@
         <img id="editImg" class="img-preview" alt="">
         <label>החלפת תמונה</label>
         <input type="file" id="imgFile" accept="image/*" onchange="previewImage()">
-        <button style="margin-top:.5rem" onclick="uploadImage()">העלה תמונה</button>
+        <button id="imgUploadBtn" style="margin-top:.5rem" onclick="uploadImage()">העלה תמונה</button>
+        <div id="imgUploadMsg" class="img-upload-msg" role="status" aria-live="polite"></div>
       </div>
       <div style="flex:1" id="editFields"></div>
     </div>
@@ -227,6 +240,19 @@ function showMsg(text, ok = true) {
   el.textContent = text;
   el.className = `msg show ${ok ? 'ok' : 'err'}`;
   setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function showImgUploadMsg(text, ok = true) {
+  const el = $('imgUploadMsg');
+  el.textContent = text;
+  el.className = `img-upload-msg show ${ok ? 'ok' : 'err'}`;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  clearTimeout(showImgUploadMsg._timer);
+  showImgUploadMsg._timer = setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function clearImgUploadMsg() {
+  $('imgUploadMsg').classList.remove('show');
 }
 
 async function api(url, opts = {}) {
@@ -306,6 +332,7 @@ function selectWine(id) {
   $('editOos').checked = !!w.out_of_stock;
   $('editImg').src = w.image_url || '';
   $('imgFile').value = '';
+  clearImgUploadMsg();
   $('editPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -371,17 +398,25 @@ async function deleteWine() {
 
 function previewImage() {
   const f = $('imgFile').files[0];
+  clearImgUploadMsg();
   if (f) $('editImg').src = URL.createObjectURL(f);
 }
 
 async function uploadImage() {
   const file = $('imgFile').files[0];
+  const btn = $('imgUploadBtn');
   if (!selectedId || !file) {
-    showMsg('בחרו תמונה קודם', false);
+    const err = 'בחרו תמונה קודם';
+    showMsg(err, false);
+    showImgUploadMsg(err, false);
     return;
   }
+  const wine = wines.find(x => x.id === selectedId);
   const fd = new FormData();
   fd.append('image', file);
+  btn.disabled = true;
+  btn.textContent = 'מעלה...';
+  clearImgUploadMsg();
   try {
     const res = await fetch(`${API}/wines/${selectedId}/image`, {
       method: 'POST',
@@ -395,12 +430,22 @@ async function uploadImage() {
       console.error('upload failed', { wineId: selectedId, status: res.status, file: file.name, size: file.size, error: err });
       throw new Error(err);
     }
-    showMsg('התמונה הועלתה');
+    const success = wine
+      ? `✓ התמונה הועלתה בהצלחה עבור "${wine.name}"`
+      : '✓ התמונה הועלתה בהצלחה';
+    showMsg(success);
+    showImgUploadMsg(success);
     $('editImg').src = data.image_url + '?t=' + Date.now();
+    $('imgFile').value = '';
     await loadWines($('search').value);
   } catch (e) {
     console.error('upload error', { wineId: selectedId, file: file.name, size: file.size, message: e.message });
-    showMsg(e.message || 'שגיאה בהעלאה', false);
+    const err = e.message || 'שגיאה בהעלאה';
+    showMsg(err, false);
+    showImgUploadMsg(err, false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'העלה תמונה';
   }
 }
 
