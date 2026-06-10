@@ -116,7 +116,48 @@ resource "aws_iam_role_policy" "s3_images" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "ec2_ssm_managed" {
+  role       = aws_iam_role.ec2.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
 resource "aws_iam_instance_profile" "ec2" {
   name = "${var.project_name}-ec2"
   role = aws_iam_role.ec2.name
+}
+
+resource "aws_iam_user" "github_actions_deploy" {
+  name = "${var.project_name}-github-actions-deploy"
+
+  tags = {
+    Project = var.project_name
+  }
+}
+
+resource "aws_iam_user_policy" "github_actions_deploy" {
+  name = "${var.project_name}-github-actions-ssm"
+  user = aws_iam_user.github_actions_deploy.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = ["ssm:SendCommand"]
+        Resource = [
+          "arn:aws:ssm:${var.aws_region}:*:document/AWS-RunShellScript",
+          "arn:aws:ec2:${var.aws_region}:*:instance/${aws_instance.web.id}"
+        ]
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["ssm:GetCommandInvocation", "ssm:ListCommandInvocations"]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_access_key" "github_actions_deploy" {
+  user = aws_iam_user.github_actions_deploy.name
 }

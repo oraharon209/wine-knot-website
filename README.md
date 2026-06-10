@@ -142,3 +142,28 @@ git push -u origin cursor/initial-wine-knot-setup
 ```
 
 Do **not** commit `.env`, `mysql_data`, or `.venv`.
+
+## Auto-deploy (GitHub Actions)
+
+Pushes to `main` trigger `.github/workflows/deploy.yml`, which uses **AWS SSM Run Command** to pull the latest code on the EC2 instance and rebuild Docker containers. No SSH from GitHub is required.
+
+### One-time setup
+
+1. Apply Terraform (adds SSM permissions and a deploy IAM user):
+   ```bash
+   cd terraform && terraform apply
+   ```
+2. Copy outputs into GitHub **Settings → Secrets and variables → Actions**:
+   - Secret `AWS_ACCESS_KEY_ID` ← `github_actions_access_key_id`
+   - Secret `AWS_SECRET_ACCESS_KEY` ← `github_actions_secret_access_key`
+   - Secret `EC2_INSTANCE_ID` ← `github_actions_ec2_instance_id`
+   - Variable `AWS_REGION` = `eu-north-1` (optional)
+   - Variable `DEPLOY_BRANCH` = branch to deploy if not `main` (optional)
+3. On an **existing** server (provisioned before SSM support), SSH in once and install the agent:
+   ```bash
+   sudo snap install amazon-ssm-agent --classic
+   sudo systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent.service
+   ```
+4. Merge your deploy branch into `main`, or change the `branches` list in the workflow file.
+
+Manual deploy: **Actions → Deploy → Run workflow** (optional branch input).

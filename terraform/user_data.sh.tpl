@@ -48,6 +48,14 @@ ADMIN_PASS=$(ssm_get "$SSM_PREFIX/admin_password")
 DB_PASS=$(ssm_get "$SSM_PREFIX/db_password")
 ROOT_PASS=$(ssm_get "$SSM_PREFIX/mysql_root_password")
 
+# --- SSM Agent (GitHub Actions deploy via Run Command) ---
+if ! systemctl is-active --quiet amazon-ssm-agent 2>/dev/null; then
+  log "Installing SSM Agent"
+  snap install amazon-ssm-agent --classic || true
+  systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service 2>/dev/null || true
+  systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service 2>/dev/null || true
+fi
+
 # --- Docker ---
 if ! command -v docker >/dev/null 2>&1; then
   log "Installing Docker"

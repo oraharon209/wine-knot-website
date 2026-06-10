@@ -63,3 +63,19 @@ output "s3_images_base_url" {
   description = "Public base URL for wine images (uploads go to /wines/)"
   value       = local.s3_public_base_url
 }
+
+output "github_actions_access_key_id" {
+  description = "Add to GitHub repo secret AWS_ACCESS_KEY_ID"
+  value       = aws_iam_access_key.github_actions_deploy.id
+}
+
+output "github_actions_secret_access_key" {
+  description = "Add to GitHub repo secret AWS_SECRET_ACCESS_KEY (shown once)"
+  value       = aws_iam_access_key.github_actions_deploy.secret
+  sensitive   = true
+}
+
+output "github_actions_ec2_instance_id" {
+  description = "Add to GitHub repo secret EC2_INSTANCE_ID"
+  value       = aws_instance.web.id
+}
