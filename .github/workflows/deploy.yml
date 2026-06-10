@@ -22,7 +22,7 @@ jobs:
     environment: production
     env:
       AWS_REGION: ${{ vars.AWS_REGION || 'eu-north-1' }}
-      DEPLOY_BRANCH: ${{ github.event.inputs.branch || vars.DEPLOY_BRANCH || 'main' }}
+      DEPLOY_BRANCH: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.branch || 'main') || github.ref_name }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -42,13 +42,13 @@ jobs:
           fi
 
           DEPLOY_SCRIPT=$(cat <<'SCRIPT'
-          set -euo pipefail
+          bash -lc 'set -euo pipefail
           APP_DIR=/opt/wine-knot
-          BRANCH='__DEPLOY_BRANCH__'
+          BRANCH=__DEPLOY_BRANCH__
           cd "$APP_DIR"
           sudo -u ubuntu git fetch origin
           sudo -u ubuntu git reset --hard "origin/${BRANCH}"
-          bash scripts/deploy.sh
+          bash scripts/deploy.sh'
           SCRIPT
           )
           DEPLOY_SCRIPT="${DEPLOY_SCRIPT//__DEPLOY_BRANCH__/${DEPLOY_BRANCH}}"
