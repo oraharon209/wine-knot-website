@@ -969,6 +969,18 @@ let cart = loadCart();
 
 const $ = id => document.getElementById(id);
 
+function esc(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function safeImageUrl(url) {
+  const u = String(url || '').trim();
+  if (u.startsWith('/images/wines/') || u.startsWith('https://') || u.startsWith('http://')) {
+    return esc(u);
+  }
+  return '';
+}
+
 function sanitizeSearch(value) {
   return String(value || '').slice(0, SEARCH_MAX_LEN).trim();
 }
@@ -1139,10 +1151,10 @@ function renderCart() {
   container.innerHTML = items.map(item => {
     const free = freeBottles(item.quantity);
     return `
-    <div class="cart-item" data-id="${item.id}">
+    <div class="cart-item" data-id="${esc(item.id)}">
       <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-meta">${item.winery}${item.vintage ? ' · ' + item.vintage : ''}</div>
+        <div class="cart-item-name">${esc(item.name)}</div>
+        <div class="cart-item-meta">${esc(item.winery)}${item.vintage ? ' · ' + esc(item.vintage) : ''}</div>
         <div class="cart-qty">
           <button type="button" data-action="dec" aria-label="הפחת כמות">−</button>
           <span>${item.quantity}</span>
@@ -1231,11 +1243,11 @@ function discountPct(shelf, sale) {
 }
 
 function wineImageHtml(w, { eager = false } = {}) {
-  const alt = w.name.replace(/"/g, '');
-  if (w.image_url) {
+  const src = safeImageUrl(w.image_url);
+  if (src) {
     const loading = eager ? 'eager' : 'lazy';
     const priority = eager ? ' fetchpriority="high"' : '';
-    return `<img src="${w.image_url}" alt="${alt}" width="200" height="200" loading="${loading}" decoding="async"${priority} onerror="this.outerHTML='<span class=no-img>תמונה בקרוב</span>'">`;
+    return `<img src="${src}" alt="${esc(w.name)}" width="200" height="200" loading="${loading}" decoding="async"${priority} onerror="this.outerHTML='<span class=no-img>תמונה בקרוב</span>'">`;
   }
   return '<span class="no-img">תמונה בקרוב</span>';
 }
@@ -1243,14 +1255,14 @@ function wineImageHtml(w, { eager = false } = {}) {
 function wineCardHtml(w, { showRecommendedBadge = false, eagerImage = false } = {}) {
   const disc = discountPct(w.shelf_price, w.sale_price);
   return `
-    <div class="wine-card" data-id="${w.id}">
+    <div class="wine-card" data-id="${esc(w.id)}">
       ${showRecommendedBadge ? '<div class="recommended-badge">מומלץ</div>' : ''}
       ${disc ? `<div class="discount-badge">-${disc}%</div>` : ''}
-      ${w.rating ? `<div class="rating-badge">${w.rating}</div>` : ''}
+      ${w.rating ? `<div class="rating-badge">${esc(w.rating)}</div>` : ''}
       <div class="wine-img">${wineImageHtml(w, { eager: eagerImage })}</div>
       <div class="wine-body">
-        <div class="wine-name">${w.name}</div>
-        <div class="wine-winery">${w.winery || ''}${w.vintage ? ' · ' + w.vintage : ''}</div>
+        <div class="wine-name">${esc(w.name)}</div>
+        <div class="wine-winery">${esc(w.winery || '')}${w.vintage ? ' · ' + esc(w.vintage) : ''}</div>
         <div class="wine-prices">
           <div>
             <span class="price-label">${disc ? 'מחיר מבצע' : 'מחיר'}</span>
@@ -1328,7 +1340,7 @@ function categoryHref(slug) {
 function renderNav() {
   const nav = $('nav');
   nav.innerHTML = `<a href="/" data-cat="" class="${!activeCategory ? 'active' : ''}">הכל</a>` +
-    categories.map(c => `<a href="${categoryHref(c.slug)}" data-cat="${c.slug}" class="${activeCategory === c.slug ? 'active' : ''}">${c.name_he}</a>`).join('');
+    categories.map(c => `<a href="${categoryHref(c.slug)}" data-cat="${esc(c.slug)}" class="${activeCategory === c.slug ? 'active' : ''}">${esc(c.name_he)}</a>`).join('');
   nav.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
@@ -1345,9 +1357,9 @@ function renderCategoryCards() {
   const el = $('categories');
   el.classList.remove('is-loading');
   el.innerHTML = categories.map(c => `
-    <div class="cat-card ${activeCategory === c.slug ? 'active' : ''}" data-cat="${c.slug}">
-      <div>${c.name_he}</div>
-      <div class="count">${c.wine_count} יינות</div>
+    <div class="cat-card ${activeCategory === c.slug ? 'active' : ''}" data-cat="${esc(c.slug)}">
+      <div>${esc(c.name_he)}</div>
+      <div class="count">${esc(c.wine_count)} יינות</div>
     </div>
   `).join('');
   el.querySelectorAll('.cat-card').forEach(card => {
@@ -1508,14 +1520,14 @@ async function openModal(id) {
     const disc = discountPct(w.shelf_price, w.sale_price);
     $('modalImg').innerHTML = wineImageHtml(w);
     $('modalBody').innerHTML = `
-      <h2>${w.name}</h2>
-      <div class="modal-meta">${w.winery} · ${w.country} · ${w.vintage || ''} · ${w.grape || ''}</div>
+      <h2>${esc(w.name)}</h2>
+      <div class="modal-meta">${esc(w.winery)} · ${esc(w.country)} · ${esc(w.vintage || '')} · ${esc(w.grape || '')}</div>
       <div class="wine-prices" style="margin-bottom:.5rem">
-        <span class="sale-price">${w.sale_price} ₪</span>
-        ${disc ? `<span class="shelf-price">${w.shelf_price} ₪</span> <span style="color:#e74c3c;font-weight:600">-${disc}%</span>` : ''}
+        <span class="sale-price">${esc(w.sale_price)} ₪</span>
+        ${disc ? `<span class="shelf-price">${esc(w.shelf_price)} ₪</span> <span style="color:#e74c3c;font-weight:600">-${disc}%</span>` : ''}
       </div>
-      <div>⭐ דירוג: <strong>${w.rating}</strong> · ${w.category_he}</div>
-      ${w.notes ? `<div class="modal-notes">${w.notes}</div>` : ''}
+      <div>⭐ דירוג: <strong>${esc(w.rating)}</strong> · ${esc(w.category_he)}</div>
+      ${w.notes ? `<div class="modal-notes">${esc(w.notes)}</div>` : ''}
       <div class="deal-hint">🎁 ב-12 בקבוקים — בקבוק מתנה חינם!</div>
       <div class="modal-qty-row">
         <button class="btn-add-cart" type="button" data-qty="1">1 בקבוק</button>

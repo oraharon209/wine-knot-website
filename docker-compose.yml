@@ -32,6 +32,8 @@ services:
       S3_BUCKET: ${S3_BUCKET:-}
       AWS_REGION: ${AWS_REGION:-}
       S3_PUBLIC_BASE_URL: ${S3_PUBLIC_BASE_URL:-}
+      ADMIN_AUTH_DISABLED: "true"
+      CORS_ORIGINS: http://localhost:8080,https://wineknot.co.il
     volumes:
       - ./frontend/public/images/wines:/app/uploads/images/wines
     depends_on:

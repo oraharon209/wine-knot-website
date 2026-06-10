@@ -21,7 +21,7 @@ ssh_cidr_blocks = ["203.0.113.10/32"]
 cloudflare_api_token = "your_cloudflare_api_token_here"
 
 # Cloudflare Access — email OTP before /admin.html (who may log in)
-admin_allowed_emails = ["doronchick@gmail.com", "or.aharon209@gmail.com"]
+admin_allowed_emails = ["admin@example.com"]
 
 # Legacy SSM admin_password (no longer used by the app; CF Access is the admin gate).
 # admin_password = "choose-a-strong-password"

@@ -5,8 +5,12 @@ const pool = require('../config/db');
 const storage = require('../lib/storage');
 const logger = require('../lib/logger');
 const { parseSearchParam } = require('../lib/queryLimits');
+const { requireAdmin } = require('../lib/adminAuth');
+const { isValidImageBuffer } = require('../lib/imageValidate');
 
 const router = express.Router();
+
+router.use(requireAdmin);
 
 function wineImageLabel(wine) {
   const winery = (wine.winery || '').split('/')[0].split('(')[0].trim().replace(/\s+/g, ' ');
@@ -344,6 +348,16 @@ router.post('/wines/:id/image', async (req, res, next) => {
       return res.status(400).json({ error: 'לא נבחרה תמונה' });
     }
 
+    if (!isValidImageBuffer(req.file.buffer)) {
+      logger.warn('wine_image_upload', {
+        wineId,
+        status: 'invalid_content',
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+      });
+      return res.status(400).json({ error: 'קובץ התמונה אינו תקין' });
+    }
+
     const ext = imageExt(req.file.mimetype, req.file.originalname);
     const filename = wineImageFilename(req.wineRow, ext);
     logger.info('wine_image_upload', {
@@ -374,7 +388,7 @@ router.post('/wines/:id/image', async (req, res, next) => {
       error: err.message,
       stack: err.stack,
     });
-    res.status(500).json({ error: err.message || 'שגיאה בהעלאה' });
+    res.status(500).json({ error: 'שגיאה בהעלאה' });
   }
 });
 

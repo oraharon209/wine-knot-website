@@ -46,8 +46,6 @@ wine-knot/
 | GET | `/api/categories` | All categories |
 | GET | `/api/wines` | Wine list (with filters) |
 | GET | `/api/wines/:id` | Single wine |
-| POST | `/api/wines` | Add wine |
-| PUT | `/api/wines/:id` | Update wine |
 
 ### Query parameters
 

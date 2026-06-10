@@ -126,40 +126,4 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
-  try {
-    const { name, category_id, winery, country, vintage, grape, rating, shelf_price, sale_price, notes } = req.body;
-    const [result] = await pool.query(
-      `INSERT INTO wines (name, category_id, winery, country, vintage, grape, rating, shelf_price, sale_price, notes)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, category_id, winery, country, vintage, grape, rating, shelf_price, sale_price, notes]
-    );
-    res.status(201).json({ id: result.insertId });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'שגיאה בהוספת יין' });
-  }
-});
-
-router.put('/:id', async (req, res) => {
-  try {
-    const fields = ['name', 'category_id', 'winery', 'country', 'vintage', 'grape', 'rating', 'shelf_price', 'sale_price', 'notes', 'out_of_stock'];
-    const updates = [];
-    const params = [];
-    for (const f of fields) {
-      if (req.body[f] !== undefined) {
-        updates.push(`${f} = ?`);
-        params.push(f === 'out_of_stock' ? (req.body[f] ? 1 : 0) : req.body[f]);
-      }
-    }
-    if (!updates.length) return res.status(400).json({ error: 'אין שדות לעדכון' });
-    params.push(req.params.id);
-    await pool.query(`UPDATE wines SET ${updates.join(', ')} WHERE id = ?`, params);
-    res.json({ ok: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'שגיאה בעדכון יין' });
-  }
-});
-
 module.exports = router;
