@@ -4,6 +4,7 @@ const { resolveImageUrl } = require('../lib/storage');
 const {
   parseSearchParam,
   parseMaxPriceParam,
+  parseMinPriceParam,
   parseMinRatingParam,
   parseLimitParam,
   parseOffsetParam,
@@ -30,6 +31,7 @@ router.get('/', async (req, res) => {
     const { category, sort, include_oos } = req.query;
     const search = parseSearchParam(req.query.search);
     const max_price = parseMaxPriceParam(req.query.max_price);
+    const min_price = parseMinPriceParam(req.query.min_price);
     const min_rating = parseMinRatingParam(req.query.min_rating);
     const conditions = ['w.out_of_stock = 0'];
     const params = [];
@@ -48,6 +50,10 @@ router.get('/', async (req, res) => {
       )`);
       const term = `%${search}%`;
       params.push(term, term, term, term, term);
+    }
+    if (min_price != null) {
+      conditions.push('w.sale_price >= ?');
+      params.push(min_price);
     }
     if (max_price != null) {
       conditions.push('w.sale_price <= ?');

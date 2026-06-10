@@ -135,7 +135,9 @@
       flex-wrap: wrap;
       align-items: center;
     }
-    .filter-group select, .filter-group input[type=number] {
+    .filter-group select,
+    .filter-group input[type=number],
+    .filter-group input.filter-input {
       padding: .6rem .8rem;
       border: 2px solid var(--border);
       border-radius: var(--radius);
@@ -827,8 +829,8 @@
       <option value="price_desc">מחיר (גבוה לנמוך)</option>
       <option value="name_asc">שם (א-ת)</option>
     </select>
-    <input type="number" id="maxPrice" placeholder="מחיר מקסימלי ₪" min="0" max="100000" style="width:130px">
-    <input type="number" id="minRating" placeholder="דירוג מינימלי" min="0" max="100" step="0.1" style="width:130px">
+    <input type="number" class="filter-input" id="minPrice" placeholder="מחיר מינימלי ₪" min="0" max="100000" step="1" autocomplete="off" style="width:130px">
+    <input type="number" class="filter-input" id="maxPrice" placeholder="מחיר מקסימלי ₪" min="0" max="100000" step="1" autocomplete="off" style="width:130px">
   </div>
   <div class="results-count" id="resultsCount"></div>
 </div>
@@ -953,9 +955,6 @@ const SEARCH_MAX_LEN = 64;
 const PRICE_MAX_LEN = 10;
 const PRICE_MIN = 0;
 const PRICE_MAX = 100000;
-const RATING_MAX_LEN = 4;
-const RATING_MIN = 0;
-const RATING_MAX = 100;
 
 let categories = [];
 let activeCategory = '';
@@ -985,34 +984,78 @@ function sanitizeSearch(value) {
   return String(value || '').slice(0, SEARCH_MAX_LEN).trim();
 }
 
-function sanitizeMaxPrice(value) {
-  const raw = String(value || '').trim();
-  if (!raw) return '';
-  if (raw.length > PRICE_MAX_LEN) return '';
-  const n = parseFloat(raw);
-  if (Number.isNaN(n)) return '';
-  return String(Math.min(PRICE_MAX, Math.max(PRICE_MIN, n)));
+function clampTextLength(el, maxLen) {
+  if (el.value.length > maxLen) el.value = el.value.slice(0, maxLen);
 }
 
-function sanitizeMinRating(value) {
+function clampNumberInput(el, { maxLen, min, max }) {
+  const raw = String(el.value);
+  if (raw.length > maxLen) {
+    el.value = raw.slice(0, maxLen);
+  }
+  if (el.value === '') return;
+  const n = parseFloat(el.value);
+  if (Number.isNaN(n)) {
+    el.value = '';
+    return;
+  }
+  if (n > max) el.value = String(max);
+  else if (n < min) el.value = String(min);
+}
+
+function sanitizePrice(value) {
   const raw = String(value || '').trim();
-  if (!raw) return '';
-  if (raw.length > RATING_MAX_LEN) return '';
+  if (!raw || raw.length > PRICE_MAX_LEN) return '';
   const n = parseFloat(raw);
-  if (Number.isNaN(n)) return '';
-  return String(Math.min(RATING_MAX, Math.max(RATING_MIN, n)));
+  if (Number.isNaN(n) || n < PRICE_MIN || n > PRICE_MAX) return '';
+  return String(n);
+}
+
+function normalizePriceRange() {
+  const minEl = $('minPrice');
+  const maxEl = $('maxPrice');
+  const min = parseFloat(sanitizePrice(minEl.value));
+  const max = parseFloat(sanitizePrice(maxEl.value));
+  if (!Number.isNaN(min) && !Number.isNaN(max) && min > max) {
+    minEl.value = String(max);
+    maxEl.value = String(min);
+  }
+}
+
+function bindSearchLimit(el) {
+  const enforce = () => clampTextLength(el, SEARCH_MAX_LEN);
+  el.addEventListener('beforeinput', (e) => {
+    if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteContentForward') return;
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? el.value.length;
+    const inserted = e.data ?? '';
+    const nextLen = el.value.length - (end - start) + inserted.length;
+    if (nextLen > SEARCH_MAX_LEN) e.preventDefault();
+  });
+  el.addEventListener('input', enforce);
+  el.addEventListener('compositionend', enforce);
+  el.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text');
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? el.value.length;
+    el.value = (el.value.slice(0, start) + paste + el.value.slice(end)).slice(0, SEARCH_MAX_LEN);
+    el.setSelectionRange(el.value.length, el.value.length);
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  });
 }
 
 function applySearchLimits() {
   const searchEl = $('search');
+  const minPriceEl = $('minPrice');
   const maxPriceEl = $('maxPrice');
-  const minRatingEl = $('minRating');
   const search = sanitizeSearch(searchEl.value);
   if (searchEl.value !== search) searchEl.value = search;
-  const maxPrice = sanitizeMaxPrice(maxPriceEl.value);
+  const minPrice = sanitizePrice(minPriceEl.value);
+  if (minPriceEl.value && minPriceEl.value !== minPrice) minPriceEl.value = minPrice;
+  const maxPrice = sanitizePrice(maxPriceEl.value);
   if (maxPriceEl.value && maxPriceEl.value !== maxPrice) maxPriceEl.value = maxPrice;
-  const minRating = sanitizeMinRating(minRatingEl.value);
-  if (minRatingEl.value && minRatingEl.value !== minRating) minRatingEl.value = minRating;
+  normalizePriceRange();
 }
 
 function loadCart() {
@@ -1302,8 +1345,8 @@ function bindWineCards(container) {
 function isHomeView() {
   return !activeCategory
     && !$('search').value.trim()
-    && !$('maxPrice').value
-    && !$('minRating').value;
+    && !$('minPrice').value
+    && !$('maxPrice').value;
 }
 
 function updateRecommendedVisibility() {
@@ -1379,10 +1422,10 @@ function buildQuery() {
   if (activeCategory) params.set('category', activeCategory);
   const search = sanitizeSearch($('search').value);
   if (search) params.set('search', search);
-  const maxPrice = sanitizeMaxPrice($('maxPrice').value);
+  const minPrice = sanitizePrice($('minPrice').value);
+  if (minPrice) params.set('min_price', minPrice);
+  const maxPrice = sanitizePrice($('maxPrice').value);
   if (maxPrice) params.set('max_price', maxPrice);
-  const minRating = sanitizeMinRating($('minRating').value);
-  if (minRating) params.set('min_rating', minRating);
   params.set('sort', $('sort').value);
   return params.toString();
 }
@@ -1398,10 +1441,11 @@ function readUrlState() {
   activeCategory = params.get('category') || '';
   const search = params.get('search');
   if (search) $('search').value = sanitizeSearch(search);
+  const minPrice = params.get('min_price');
+  if (minPrice) $('minPrice').value = sanitizePrice(minPrice);
   const maxPrice = params.get('max_price');
-  if (maxPrice) $('maxPrice').value = sanitizeMaxPrice(maxPrice);
-  const minRating = params.get('min_rating');
-  if (minRating) $('minRating').value = sanitizeMinRating(minRating);
+  if (maxPrice) $('maxPrice').value = sanitizePrice(maxPrice);
+  normalizePriceRange();
   const sort = params.get('sort');
   if (sort) $('sort').value = sort;
 }
@@ -1556,29 +1600,14 @@ async function openModal(id) {
 }
 
 function setupFilters() {
-  $('search').addEventListener('input', () => {
-    const trimmed = sanitizeSearch($('search').value);
-    if ($('search').value !== trimmed) $('search').value = trimmed;
+  bindSearchLimit($('search'));
+  $('minPrice').addEventListener('input', () => {
+    clampNumberInput($('minPrice'), { maxLen: PRICE_MAX_LEN, min: PRICE_MIN, max: PRICE_MAX });
   });
   $('maxPrice').addEventListener('input', () => {
-    const raw = $('maxPrice').value;
-    if (String(raw).length > PRICE_MAX_LEN) {
-      $('maxPrice').value = sanitizeMaxPrice(String(raw).slice(0, PRICE_MAX_LEN));
-      return;
-    }
-    const n = parseFloat(raw);
-    if (raw !== '' && !Number.isNaN(n) && n > PRICE_MAX) $('maxPrice').value = String(PRICE_MAX);
+    clampNumberInput($('maxPrice'), { maxLen: PRICE_MAX_LEN, min: PRICE_MIN, max: PRICE_MAX });
   });
-  $('minRating').addEventListener('input', () => {
-    const raw = $('minRating').value;
-    if (String(raw).length > RATING_MAX_LEN) {
-      $('minRating').value = sanitizeMinRating(String(raw).slice(0, RATING_MAX_LEN));
-      return;
-    }
-    const n = parseFloat(raw);
-    if (raw !== '' && !Number.isNaN(n) && n > RATING_MAX) $('minRating').value = String(RATING_MAX);
-  });
-  ['search', 'sort', 'maxPrice', 'minRating'].forEach(id => {
+  ['search', 'sort', 'minPrice', 'maxPrice'].forEach(id => {
     $(id).addEventListener('input', () => {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(loadWines, 300);

@@ -51,8 +51,8 @@ wine-knot/
 
 - `category` — slug (e.g. `red`, `white`)
 - `search` — free-text search
+- `min_price` — minimum price
 - `max_price` — maximum price
-- `min_rating` — minimum rating
 - `sort` — `price_asc`, `price_desc`, `rating_desc`, `name_asc`
 
 ## Update wine data from Excel

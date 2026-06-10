@@ -222,6 +222,13 @@
 const API = '/api/admin';
 const MAX_RECOMMENDED = 50;
 const SEARCH_MAX_LEN = 64;
+const NAME_MAX_LEN = 255;
+const WINERY_MAX_LEN = 255;
+const NOTES_MAX_LEN = 2000;
+const PRICE_MAX_LEN = 10;
+const PRICE_MAX = 100000;
+const RATING_MAX_LEN = 4;
+const RATING_MAX = 100;
 let categories = [];
 let wines = [];
 let recommended = [];
@@ -234,6 +241,68 @@ const $ = id => document.getElementById(id);
 
 function sanitizeSearch(value) {
   return String(value || '').slice(0, SEARCH_MAX_LEN).trim();
+}
+
+function clampDecimalTyping(value, maxLen) {
+  let out = '';
+  let dot = false;
+  for (const ch of String(value || '')) {
+    if (ch >= '0' && ch <= '9') {
+      out += ch;
+    } else if (ch === '.' && !dot) {
+      out += ch;
+      dot = true;
+    }
+    if (out.length >= maxLen) break;
+  }
+  return out.slice(0, maxLen);
+}
+
+function sanitizePriceInput(value) {
+  const raw = clampDecimalTyping(value, PRICE_MAX_LEN).trim();
+  if (!raw) return '';
+  const n = parseFloat(raw);
+  if (Number.isNaN(n)) return raw;
+  return String(Math.min(PRICE_MAX, Math.max(0, n)));
+}
+
+function sanitizeRatingInput(value) {
+  const raw = clampDecimalTyping(value, RATING_MAX_LEN).trim();
+  if (!raw) return '';
+  const n = parseFloat(raw);
+  if (Number.isNaN(n)) return raw;
+  return String(Math.min(RATING_MAX, Math.max(0, n)));
+}
+
+function bindWineFieldInputs(prefix) {
+  const name = $(prefix + 'name');
+  const winery = $(prefix + 'winery');
+  const notes = $(prefix + 'notes');
+  const sale = $(prefix + 'sale_price');
+  const shelf = $(prefix + 'shelf_price');
+  const rating = $(prefix + 'rating');
+
+  name.addEventListener('input', () => {
+    if (name.value.length > NAME_MAX_LEN) name.value = name.value.slice(0, NAME_MAX_LEN);
+  });
+  winery.addEventListener('input', () => {
+    if (winery.value.length > WINERY_MAX_LEN) winery.value = winery.value.slice(0, WINERY_MAX_LEN);
+  });
+  notes.addEventListener('input', () => {
+    if (notes.value.length > NOTES_MAX_LEN) notes.value = notes.value.slice(0, NOTES_MAX_LEN);
+  });
+  [sale, shelf].forEach((el) => {
+    el.addEventListener('input', () => {
+      const clamped = clampDecimalTyping(el.value, PRICE_MAX_LEN);
+      const next = clamped !== el.value ? clamped : sanitizePriceInput(clamped) || clamped;
+      if (el.value !== next) el.value = next;
+    });
+  });
+  rating.addEventListener('input', () => {
+    const clamped = clampDecimalTyping(rating.value, RATING_MAX_LEN);
+    const next = clamped !== rating.value ? clamped : sanitizeRatingInput(clamped) || clamped;
+    if (rating.value !== next) rating.value = next;
+  });
 }
 
 function headers() {
@@ -275,17 +344,17 @@ function wineFieldsHtml(prefix, w = {}) {
   ).join('');
   return `
     <div class="row">
-      <div class="field" style="flex:2"><label>שם היין</label><input id="${prefix}name" value="${esc(w.name||'')}"></div>
-      <div class="field"><label>יקב</label><input id="${prefix}winery" value="${esc(w.winery||'')}"></div>
+      <div class="field" style="flex:2"><label>שם היין</label><input id="${prefix}name" maxlength="${NAME_MAX_LEN}" value="${esc(w.name||'')}"></div>
+      <div class="field"><label>יקב</label><input id="${prefix}winery" maxlength="${WINERY_MAX_LEN}" value="${esc(w.winery||'')}"></div>
     </div>
     <div class="row">
       <div class="field"><label>קטגוריה</label><select id="${prefix}category_id">${catOpts}</select></div>
-      <div class="field sm"><label>מחיר מבצע ₪</label><input type="number" id="${prefix}sale_price" value="${w.sale_price||''}"></div>
-      <div class="field sm"><label>מחיר מדף ₪</label><input type="number" id="${prefix}shelf_price" value="${w.shelf_price||''}"></div>
-      <div class="field sm"><label>דירוג</label><input type="number" step="0.1" id="${prefix}rating" value="${w.rating||''}"></div>
+      <div class="field sm"><label>מחיר מבצע ₪</label><input type="text" inputmode="decimal" maxlength="${PRICE_MAX_LEN}" id="${prefix}sale_price" value="${esc(w.sale_price ?? '')}"></div>
+      <div class="field sm"><label>מחיר מדף ₪</label><input type="text" inputmode="decimal" maxlength="${PRICE_MAX_LEN}" id="${prefix}shelf_price" value="${esc(w.shelf_price ?? '')}"></div>
+      <div class="field sm"><label>דירוג</label><input type="text" inputmode="decimal" maxlength="${RATING_MAX_LEN}" id="${prefix}rating" value="${esc(w.rating ?? '')}"></div>
     </div>
     <div class="row">
-      <div class="field"><label>הערות (VFM וכו')</label><textarea id="${prefix}notes">${esc(w.notes||'')}</textarea></div>
+      <div class="field"><label>הערות (VFM וכו')</label><textarea id="${prefix}notes" maxlength="${NOTES_MAX_LEN}">${esc(w.notes||'')}</textarea></div>
     </div>`;
 }
 
@@ -335,6 +404,7 @@ function selectWine(id) {
   $('editPanel').classList.remove('hidden');
   $('editTitle').textContent = `עריכה: ${w.name}`;
   $('editFields').innerHTML = wineFieldsHtml('edit', w);
+  bindWineFieldInputs('edit');
   $('editOos').checked = !!w.out_of_stock;
   $('editImg').src = w.image_url || '';
   $('imgFile').value = '';
@@ -346,6 +416,7 @@ function showNewForm() {
   $('newForm').classList.remove('hidden');
   $('newFields').innerHTML = wineFieldsHtml('new', {}) +
     `<div class="check-row"><input type="checkbox" id="newOos"><label for="newOos">אזל מהמלאי</label></div>`;
+  bindWineFieldInputs('new');
 }
 
 function hideNewForm() { $('newForm').classList.add('hidden'); }

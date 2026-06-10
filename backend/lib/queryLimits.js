@@ -15,6 +15,14 @@ function parseSearchParam(raw) {
 }
 
 function parseMaxPriceParam(raw) {
+  return parsePriceParam(raw);
+}
+
+function parseMinPriceParam(raw) {
+  return parsePriceParam(raw);
+}
+
+function parsePriceParam(raw) {
   if (raw == null || raw === '') return null;
   const value = String(raw).trim();
   if (!value || value.length > PRICE_MAX_LEN) return null;
@@ -58,6 +66,7 @@ module.exports = {
   OFFSET_MAX,
   parseSearchParam,
   parseMaxPriceParam,
+  parseMinPriceParam,
   parseMinRatingParam,
   parseLimitParam,
   parseOffsetParam,
