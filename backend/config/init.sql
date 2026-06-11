@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS wines (
   sale_price DECIMAL(10,2) NOT NULL,
   notes TEXT,
   image_url VARCHAR(500),
+  image_version BIGINT UNSIGNED NOT NULL DEFAULT 0,
   out_of_stock TINYINT(1) NOT NULL DEFAULT 0,
   FOREIGN KEY (category_id) REFERENCES categories(id)
 );

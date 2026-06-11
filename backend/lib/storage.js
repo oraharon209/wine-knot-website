@@ -31,13 +31,20 @@ function publicUrl(filename) {
   return `/images/wines/${filename}`;
 }
 
-function resolveImageUrl(url) {
+function resolveImageUrl(url, imageVersion) {
   if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  if (useS3() && PUBLIC_BASE) {
-    return `${PUBLIC_BASE}/${S3_PREFIX}/${path.basename(url)}`;
+  let resolved = url;
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    if (useS3() && PUBLIC_BASE) {
+      resolved = `${PUBLIC_BASE}/${S3_PREFIX}/${path.basename(url)}`;
+    }
   }
-  return url;
+  const version = Number(imageVersion);
+  if (version > 0) {
+    const sep = resolved.includes('?') ? '&' : '?';
+    resolved += `${sep}v=${version}`;
+  }
+  return resolved;
 }
 
 async function saveImage(filename, buffer, mimetype) {
@@ -49,7 +56,7 @@ async function saveImage(filename, buffer, mimetype) {
         Key: `${S3_PREFIX}/${filename}`,
         Body: buffer,
         ContentType: mimetype || 'image/jpeg',
-        CacheControl: 'public, max-age=86400',
+        CacheControl: 'public, max-age=3600, must-revalidate',
       }));
       logger.info('image_save', { status: 'ok', storage: 's3', dest, size: buffer.length });
       return publicUrl(filename);

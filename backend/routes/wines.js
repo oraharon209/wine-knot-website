@@ -15,7 +15,7 @@ const router = express.Router();
 function withResolvedImages(rows) {
   return rows.map((row) => ({
     ...row,
-    image_url: resolveImageUrl(row.image_url),
+    image_url: resolveImageUrl(row.image_url, row.image_version),
   }));
 }
 

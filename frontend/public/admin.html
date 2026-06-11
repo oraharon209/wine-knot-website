@@ -512,7 +512,7 @@ async function uploadImage() {
       : '✓ התמונה הועלתה בהצלחה';
     showMsg(success);
     showImgUploadMsg(success);
-    $('editImg').src = data.image_url + '?t=' + Date.now();
+    $('editImg').src = data.image_url;
     $('imgFile').value = '';
     await loadWines($('search').value);
   } catch (e) {

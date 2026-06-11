@@ -79,7 +79,7 @@ router.get('/wines', async (req, res) => {
     const [rows] = await pool.query(sql, params);
     res.json(rows.map((row) => ({
       ...row,
-      image_url: storage.resolveImageUrl(row.image_url),
+      image_url: storage.resolveImageUrl(row.image_url, row.image_version),
     })));
   } catch (err) {
     console.error(err);
@@ -194,7 +194,7 @@ async function fetchRecommendedRows() {
   );
   return rows.map((row) => ({
     ...row,
-    image_url: storage.resolveImageUrl(row.image_url),
+    image_url: storage.resolveImageUrl(row.image_url, row.image_version),
   }));
 }
 
@@ -371,16 +371,25 @@ router.post('/wines/:id/image', async (req, res, next) => {
     });
 
     const imageUrl = await storage.saveImage(filename, req.file.buffer, req.file.mimetype);
-    await pool.query('UPDATE wines SET image_url = ? WHERE id = ?', [imageUrl, wineId]);
+    const imageVersion = Date.now();
+    await pool.query(
+      'UPDATE wines SET image_url = ?, image_version = ? WHERE id = ?',
+      [imageUrl, imageVersion, wineId]
+    );
 
     logger.info('wine_image_upload', {
       wineId,
       status: 'ok',
       filename,
       imageUrl,
+      imageVersion,
       size: req.file.size,
     });
-    res.json({ ok: true, image_url: imageUrl });
+    res.json({
+      ok: true,
+      image_url: storage.resolveImageUrl(imageUrl, imageVersion),
+      image_version: imageVersion,
+    });
   } catch (err) {
     logger.error('wine_image_upload', {
       wineId,
