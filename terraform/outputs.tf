@@ -55,8 +55,13 @@ output "retrieve_secrets_command" {
 }
 
 output "s3_bucket" {
-  description = "S3 bucket for wine bottle images"
+  description = "S3 bucket for wine bottle images (set as GitHub variable S3_BUCKET for sync workflow)"
   value       = aws_s3_bucket.wine_images.bucket
+}
+
+output "sync_from_production" {
+  description = "Snapshot live admin edits into the repo before terraform destroy/apply"
+  value       = "./scripts/sync_from_production.sh  # or: Actions → Sync from production"
 }
 
 output "s3_images_base_url" {

@@ -63,6 +63,32 @@ wine-knot/
 docker compose down -v && docker compose up -d --build
 ```
 
+## Sync live admin changes into the repo
+
+Admin edits (prices, stock, recommended wines, uploaded images) live only on the
+production server until you pull them back. To snapshot everything into
+`wines_data.json`, `init.sql`, and local image files:
+
+```bash
+# One command (SSH to server + S3 images + rebuild seed files)
+./scripts/sync_from_production.sh
+
+# Or, if you already have a mysqldump:
+./scripts/sync_from_production.sh /path/to/live-dump.sql
+```
+
+Requires SSH to the EC2 host (`terraform output public_ip`) and AWS CLI for S3.
+Without SSH (e.g. CI): `./scripts/sync_from_production.sh --via-ssm` with
+`EC2_INSTANCE_ID` and `S3_BUCKET` set.
+
+**GitHub Actions:** run **Sync from production** manually (Actions tab). Set repo
+variable `S3_BUCKET` to `terraform output -raw s3_bucket`. After changing
+`terraform/secrets.tf` IAM, run `terraform apply` once so the deploy user can
+read S3.
+
+Review with `git diff`, then commit and push — future deploys and
+`terraform destroy/apply` will use this data.
+
 ## Wine bottle images
 
 Images are stored in `frontend/public/images/wines/` and served at `/images/wines/`.

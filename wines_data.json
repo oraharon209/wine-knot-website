@@ -44,10 +44,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 65,
-      "sale_price": 60,
+      "shelf_price": 65.0,
+      "sale_price": 60.0,
       "notes": "",
-      "image_url": "/images/wines/דלתון - שרדונה D.jpg"
+      "image_url": "/images/wines/דלתון - שרדונה D.jpg",
+      "out_of_stock": false,
+      "image_version": 1781185924767
     },
     {
       "id": 2,
@@ -59,10 +61,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 65,
-      "sale_price": 60,
+      "shelf_price": 65.0,
+      "sale_price": 60.0,
       "notes": "סוביניון VFM תמורה מעולה - חדש",
-      "image_url": "/images/wines/דלתון - סוביניון בלאן פומה.jpg"
+      "image_url": "/images/wines/דלתון - סוביניון בלאן פומה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840194
     },
     {
       "id": 3,
@@ -74,10 +78,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 65,
-      "sale_price": 60,
+      "shelf_price": 65.0,
+      "sale_price": 60.0,
       "notes": "בלנד ים תיכוני נחמד VFM",
-      "image_url": "/images/wines/כרמל - מדיטריאן וואט 2 לבן VAT2.jpg"
+      "image_url": "/images/wines/כרמל - מדיטריאן וואט 2 לבן VAT2.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840212
     },
     {
       "id": 4,
@@ -89,10 +95,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 80,
-      "sale_price": 60,
+      "shelf_price": 80.0,
+      "sale_price": 60.0,
       "notes": "בלנד גוורץ עם סוביניון בלאן",
-      "image_url": "/images/wines/טוליפ - וויט טוליפ.jpg"
+      "image_url": "/images/wines/טוליפ - וויט טוליפ.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840204
     },
     {
       "id": 5,
@@ -104,10 +112,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "בלנד שרדונה סמיון קומברד",
-      "image_url": "/images/wines/מוני - נחל - שסק לבן.jpg"
+      "image_url": "/images/wines/מוני - נחל - שסק לבן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840217
     },
     {
       "id": 6,
@@ -119,10 +129,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 80,
-      "sale_price": 70,
+      "shelf_price": 80.0,
+      "sale_price": 70.0,
       "notes": "טוב  VFM",
-      "image_url": "/images/wines/יקבי הגולן - גמלא שרדונה.jpg"
+      "image_url": "/images/wines/יקבי הגולן - גמלא שרדונה.jpg",
+      "out_of_stock": true,
+      "image_version": 1780926840209
     },
     {
       "id": 7,
@@ -134,10 +146,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 80,
-      "sale_price": 70,
+      "shelf_price": 80.0,
+      "sale_price": 70.0,
       "notes": "טוב  VFM",
-      "image_url": "/images/wines/טוליפ - אספרו לבן.jpg"
+      "image_url": "/images/wines/טוליפ - אספרו לבן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840202
     },
     {
       "id": 8,
@@ -149,10 +163,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 80,
-      "sale_price": 70,
+      "shelf_price": 80.0,
+      "sale_price": 70.0,
       "notes": "טוב  VFM",
-      "image_url": "/images/wines/מאיה - מארה וויט.jpg"
+      "image_url": "/images/wines/מאיה - מארה וויט.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840217
     },
     {
       "id": 9,
@@ -164,10 +180,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 85,
-      "sale_price": 75,
+      "shelf_price": 85.0,
+      "sale_price": 75.0,
       "notes": "שרדונה  VFM",
-      "image_url": "/images/wines/MAREMMA - שרדונה מטוסקנה 2021.jpg"
+      "image_url": "/images/wines/MAREMMA - שרדונה מטוסקנה 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840178
     },
     {
       "id": 10,
@@ -179,10 +197,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 85,
-      "sale_price": 75,
+      "shelf_price": 85.0,
+      "sale_price": 75.0,
       "notes": "שרדונה  VFM",
-      "image_url": "/images/wines/פסגות - שרדונה.jpg"
+      "image_url": "/images/wines/פסגות - שרדונה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840220
     },
     {
       "id": 11,
@@ -194,10 +214,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 85,
-      "sale_price": 75,
+      "shelf_price": 85.0,
+      "sale_price": 75.0,
       "notes": "גוורץ  VFM",
-      "image_url": "/images/wines/פסגות - גוורצטרמינר.jpg"
+      "image_url": "/images/wines/פסגות - גוורצטרמינר.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840220
     },
     {
       "id": 12,
@@ -209,10 +231,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "טוב מאוד  VFM",
-      "image_url": "/images/wines/לוריא - גוורצטרמינר חצי יבש.jpg"
+      "image_url": "/images/wines/לוריא - גוורצטרמינר חצי יבש.jpg",
+      "out_of_stock": false,
+      "image_version": 1781188715831
     },
     {
       "id": 13,
@@ -224,10 +248,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "טוב מאוד  VFM",
-      "image_url": "/images/wines/לוריא - שרדונה ללא עץ.jpg"
+      "image_url": "/images/wines/לוריא - שרדונה ללא עץ.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840215
     },
     {
       "id": 14,
@@ -239,10 +265,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "בלנד קולומברד שנין גרנאש ויונייה וגוורץ",
-      "image_url": "/images/wines/ויתקין - מסע לבן.jpg"
+      "image_url": "/images/wines/ויתקין - מסע לבן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840199
     },
     {
       "id": 15,
@@ -254,10 +282,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "סוביניון בלאן נחמד וטוב",
-      "image_url": "/images/wines/אדיר - סוביניון בלאן.jpg"
+      "image_url": "/images/wines/אדיר - סוביניון בלאן.png",
+      "out_of_stock": false,
+      "image_version": 0
     },
     {
       "id": 16,
@@ -269,10 +299,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "COLOMBARD",
-      "image_url": "/images/wines/אדיר - קולומבארד 2022.jpg"
+      "image_url": "/images/wines/אדיר - קולומבארד 2022.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840182
     },
     {
       "id": 17,
@@ -284,10 +316,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "שנין  בלאן  חדש של אדיר 2024",
-      "image_url": "/images/wines/אדיר - שנין בלאן.jpg"
+      "image_url": "/images/wines/אדיר - שנין בלאן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840183
     },
     {
       "id": 18,
@@ -299,10 +333,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 80,
+      "shelf_price": 100.0,
+      "sale_price": 80.0,
       "notes": "LOUIS GIRARD",
-      "image_url": "/images/wines/לואיס גירארד - CHABLIS שבלי.jpg"
+      "image_url": "/images/wines/לואיס גירארד - CHABLIS שבלי.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840213
     },
     {
       "id": 19,
@@ -314,10 +350,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 100,
-      "sale_price": 85,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
       "notes": "רזרב",
-      "image_url": "/images/wines/טוליפ - סוביניון בלאן NET.jpg"
+      "image_url": "/images/wines/טוליפ - סוביניון בלאן NET.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840206
     },
     {
       "id": 20,
@@ -329,10 +367,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 90,
+      "shelf_price": 100.0,
+      "sale_price": 90.0,
       "notes": "שהה בחבית",
-      "image_url": "/images/wines/לוריא - שרדונה רזרב.jpg"
+      "image_url": "/images/wines/לוריא - שרדונה רזרב.jpg",
+      "out_of_stock": false,
+      "image_version": 1781188745234
     },
     {
       "id": 21,
@@ -344,10 +384,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 90,
+      "shelf_price": 120.0,
+      "sale_price": 90.0,
       "notes": "חצי יבש הוגל אלזס",
-      "image_url": "/images/wines/הוגל - ג'נטיל GENTIL.jpg"
+      "image_url": "/images/wines/הוגל - ג'נטיל GENTIL.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840196
     },
     {
       "id": 22,
@@ -359,10 +401,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 100,
-      "sale_price": 90,
+      "shelf_price": 100.0,
+      "sale_price": 90.0,
       "notes": "מילס",
-      "image_url": "/images/wines/מילס - שנין בלאן.jpg"
+      "image_url": "/images/wines/מילס - שנין בלאן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840218
     },
     {
       "id": 23,
@@ -374,10 +418,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 90,
+      "shelf_price": 100.0,
+      "sale_price": 90.0,
       "notes": "לא כשר",
-      "image_url": "/images/wines/בוגל - שרדונה ארהב.jpg"
+      "image_url": "/images/wines/בוגל - שרדונה ארהב.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840189
     },
     {
       "id": 24,
@@ -389,10 +435,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 110,
-      "sale_price": 95,
+      "shelf_price": 110.0,
+      "sale_price": 95.0,
       "notes": "פינו גריי",
-      "image_url": "/images/wines/אסף - פינו גריי.jpg"
+      "image_url": "/images/wines/אסף - פינו גריי.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840188
     },
     {
       "id": 25,
@@ -404,10 +452,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 110,
-      "sale_price": 95,
+      "shelf_price": 110.0,
+      "sale_price": 95.0,
       "notes": "קולומברד",
-      "image_url": "/images/wines/אסף - קולומברד.jpg"
+      "image_url": "/images/wines/אסף - קולומברד.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840188
     },
     {
       "id": 26,
@@ -419,10 +469,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 110,
-      "sale_price": 95,
+      "shelf_price": 110.0,
+      "sale_price": 95.0,
       "notes": "שנין בלאן אסף",
-      "image_url": "/images/wines/אסף - שנין בלאן.jpg"
+      "image_url": "/images/wines/אסף - שנין בלאן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840188
     },
     {
       "id": 27,
@@ -434,10 +486,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 95,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "גרסה  של אלכסנדר G.V DE BOURGOGNE",
-      "image_url": "/images/wines/אלכסנדר - CHABLIS שבלי.jpg"
+      "image_url": "/images/wines/אלכסנדר - CHABLIS שבלי.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840183
     },
     {
       "id": 28,
@@ -449,10 +503,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "שבלי אלכסנדר Maison Alexandre",
-      "image_url": "/images/wines/אלכסנדר - CHABLIS שבלי (28).jpg"
+      "image_url": "/images/wines/אלכסנדר - CHABLIS שבלי.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840183
     },
     {
       "id": 29,
@@ -464,10 +520,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 110,
-      "sale_price": 100,
+      "shelf_price": 110.0,
+      "sale_price": 100.0,
       "notes": "Hubert Brochard Sancerre",
-      "image_url": "/images/wines/הובר ברושאר - סנסר SANCERRE.jpg"
+      "image_url": "/images/wines/הובר ברושאר - סנסר SANCERRE.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840196
     },
     {
       "id": 30,
@@ -479,10 +537,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 110,
-      "sale_price": 100,
+      "shelf_price": 110.0,
+      "sale_price": 100.0,
       "notes": "Roland Tissier",
-      "image_url": "/images/wines/רולאן טיסייה - סנסר SANCERRE.jpg"
+      "image_url": "/images/wines/רולאן טיסייה - סנסר SANCERRE.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840224
     },
     {
       "id": 31,
@@ -494,10 +554,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "סה\"כ יוצרו 3000",
-      "image_url": "/images/wines/אדיר - Winemaker edition שרדונה.jpg"
+      "image_url": "/images/wines/אדיר - Winemaker edition שרדונה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840179
     },
     {
       "id": 32,
@@ -509,10 +571,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "סה\"כ יוצרו 4100",
-      "image_url": "/images/wines/אדיר - Winemaker edition ריזלינג.jpg"
+      "image_url": "/images/wines/אדיר - Winemaker edition ריזלינג.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840179
     },
     {
       "id": 33,
@@ -524,10 +588,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "אלזס ריזלינג",
-      "image_url": "/images/wines/טרימבאך - ריזלנג אלזס.jpg"
+      "image_url": "/images/wines/טרימבאך - ריזלנג אלזס.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840208
     },
     {
       "id": 34,
@@ -539,10 +605,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 125,
-      "sale_price": 100,
+      "shelf_price": 125.0,
+      "sale_price": 100.0,
       "notes": "HUGEL",
-      "image_url": "/images/wines/הוגל - הוגל ריזלינג.jpg"
+      "image_url": "/images/wines/הוגל - הוגל ריזלינג.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840197
     },
     {
       "id": 35,
@@ -554,10 +622,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 130,
-      "sale_price": 100,
+      "shelf_price": 130.0,
+      "sale_price": 100.0,
       "notes": "SPHERA דורון רב הון",
-      "image_url": "/images/wines/ספרה - שרדונה.jpg"
+      "image_url": "/images/wines/ספרה - שרדונה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840219
     },
     {
       "id": 36,
@@ -569,10 +639,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 130,
-      "sale_price": 110,
+      "shelf_price": 130.0,
+      "sale_price": 110.0,
       "notes": "CHALIS Seguinot Bordet",
-      "image_url": "/images/wines/דומיין סגינו בורדה - CHABLIS שבלי.jpg"
+      "image_url": "/images/wines/דומיין סגינו בורדה - CHABLIS שבלי.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840191
     },
     {
       "id": 37,
@@ -584,10 +656,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 130,
-      "sale_price": 120,
+      "shelf_price": 130.0,
+      "sale_price": 120.0,
       "notes": "Raziel Blanc רוסאן וויונייה",
-      "image_url": "/images/wines/קסטל - רזיאל לבן.jpg"
+      "image_url": "/images/wines/קסטל - רזיאל לבן.webp",
+      "out_of_stock": false,
+      "image_version": 0
     },
     {
       "id": 38,
@@ -599,10 +673,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 170,
-      "sale_price": 140,
+      "shelf_price": 170.0,
+      "sale_price": 140.0,
       "notes": "שרדונה מדהים כמו בורגון",
-      "image_url": "/images/wines/טוליפ - שרדונה טוליפ.jpg"
+      "image_url": "/images/wines/טוליפ - שרדונה טוליפ.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840207
     },
     {
       "id": 39,
@@ -614,10 +690,12 @@
       "vintage": "2018",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 160,
-      "sale_price": 145,
+      "shelf_price": 160.0,
+      "sale_price": 145.0,
       "notes": "Pouilly Fume  Henri  Bourgeois",
-      "image_url": "/images/wines/הנרי בורגואה - פויי פומה 2018.jpg"
+      "image_url": "/images/wines/הנרי בורגואה - פויי פומה 2018.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840197
     },
     {
       "id": 40,
@@ -629,10 +707,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 155,
-      "sale_price": 150,
+      "shelf_price": 155.0,
+      "sale_price": 150.0,
       "notes": "שרדונה מדהים כמו בורגון",
-      "image_url": "/images/wines/קסטל - שרדונה קסטל C.jpg"
+      "image_url": "/images/wines/קסטל - שרדונה קסטל C.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840223
     },
     {
       "id": 41,
@@ -644,10 +724,12 @@
       "vintage": "",
       "grape": "",
       "rating": 85.0,
-      "shelf_price": 40,
-      "sale_price": 35,
+      "shelf_price": 40.0,
+      "sale_price": 35.0,
       "notes": "לבן/רוזה",
-      "image_url": "/images/wines/למברוסקו - למברוסקו איטלקי מוגז.jpg"
+      "image_url": "/images/wines/למברוסקו - למברוסקו איטלקי מוגז.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840216
     },
     {
       "id": 42,
@@ -659,10 +741,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 160,
-      "sale_price": 150,
+      "shelf_price": 160.0,
+      "sale_price": 150.0,
       "notes": "CHAMPAGNE",
-      "image_url": "/images/wines/שמפניה אמיתית - אלכסנדר בונה.jpg"
+      "image_url": "/images/wines/שמפניה אמיתית - אלכסנדר בונה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840229
     },
     {
       "id": 43,
@@ -674,10 +758,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 250,
-      "sale_price": 210,
+      "shelf_price": 250.0,
+      "sale_price": 210.0,
       "notes": "CHAMPAGNE",
-      "image_url": "/images/wines/שמפניה אמיתית - Moet&Chandon Imperial.jpg"
+      "image_url": "/images/wines/שמפניה אמיתית - Moet&Chandon Imperial.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840228
     },
     {
       "id": 44,
@@ -689,10 +775,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 240,
-      "sale_price": 210,
+      "shelf_price": 240.0,
+      "sale_price": 210.0,
       "notes": "CHAMPAGNE  premia Cru",
-      "image_url": "/images/wines/שמפניה אמיתית - Pierre Gimonnet.jpg"
+      "image_url": "/images/wines/שמפניה אמיתית - Pierre Gimonnet.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840228
     },
     {
       "id": 45,
@@ -704,10 +792,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 170,
-      "sale_price": 160,
+      "shelf_price": 170.0,
+      "sale_price": 160.0,
       "notes": "ה\"שמפניה \" של ירדן בשיטה המסורטית",
-      "image_url": "/images/wines/שמפניה ירדן - רוזה.jpg"
+      "image_url": "/images/wines/שמפניה ירדן - רוזה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840229
     },
     {
       "id": 46,
@@ -719,10 +809,12 @@
       "vintage": "2019",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 180,
-      "sale_price": 170,
+      "shelf_price": 180.0,
+      "sale_price": 170.0,
       "notes": "ה\"שמפניה \" של ירדן בשיטה המסורטית",
-      "image_url": "/images/wines/שמפניה ירדן - בלאן דה בלאן 2019.jpg"
+      "image_url": "/images/wines/שמפניה ירדן - בלאן דה בלאן 2019.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840229
     },
     {
       "id": 47,
@@ -734,10 +826,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 65,
-      "sale_price": 60,
+      "shelf_price": 65.0,
+      "sale_price": 60.0,
       "notes": "VFM Value For Mony",
-      "image_url": "/images/wines/דלתון - רוזה.jpg"
+      "image_url": "/images/wines/דלתון - רוזה.jpg",
+      "out_of_stock": false,
+      "image_version": 1781188416701
     },
     {
       "id": 48,
@@ -749,10 +843,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 80,
-      "sale_price": 65,
+      "shelf_price": 80.0,
+      "sale_price": 65.0,
       "notes": "VFM Value For Mony",
-      "image_url": "/images/wines/טוליפ - פרנק לבן - קב.פרנק-.jpg"
+      "image_url": "/images/wines/טוליפ - פרנק לבן - קב.פרנק-.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840207
     },
     {
       "id": 49,
@@ -764,10 +860,12 @@
       "vintage": "2024",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 100,
-      "sale_price": 80,
+      "shelf_price": 100.0,
+      "sale_price": 80.0,
       "notes": "יין כתום ***",
-      "image_url": "/images/wines/טוליפ - כתום 2024.jpg"
+      "image_url": "/images/wines/טוליפ - כתום 2024.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840204
     },
     {
       "id": 50,
@@ -779,10 +877,12 @@
       "vintage": "2024",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 100,
-      "sale_price": 85,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
       "notes": "יין כתום ***",
-      "image_url": "/images/wines/אדיר - כתום קולומברד 2024.jpg"
+      "image_url": "/images/wines/אדיר - כתום קולומברד 2024.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840181
     },
     {
       "id": 51,
@@ -794,10 +894,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 115,
-      "sale_price": 110,
+      "shelf_price": 115.0,
+      "sale_price": 110.0,
       "notes": "רוזה  מעולה",
-      "image_url": "/images/wines/קסטל - רוזה - קסטל.jpg"
+      "image_url": "/images/wines/קסטל - רוזה - קסטל.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840223
     },
     {
       "id": 52,
@@ -809,10 +911,12 @@
       "vintage": "2018",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "קינוח 375 מ\"ל LATE HARVEST",
-      "image_url": "/images/wines/טוליפ - וויונייה בציר מאוחר 2018.jpg"
+      "image_url": "/images/wines/טוליפ - וויונייה בציר מאוחר 2018.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840204
     },
     {
       "id": 53,
@@ -824,10 +928,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 120,
-      "sale_price": 110,
+      "shelf_price": 120.0,
+      "sale_price": 110.0,
       "notes": "אייס ווין \"אמיתי \"",
-      "image_url": "/images/wines/יקבי הגולן - הייטס ויין.jpg"
+      "image_url": "/images/wines/יקבי הגולן - הייטס ויין.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840210
     },
     {
       "id": 54,
@@ -839,10 +945,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 200,
-      "sale_price": 150,
+      "shelf_price": 200.0,
+      "sale_price": 150.0,
       "notes": "ר צ' ו ט ו",
-      "image_url": "/images/wines/LA DAMA - RECIOTO.jpg"
+      "image_url": "/images/wines/LA DAMA - RECIOTO.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840178
     },
     {
       "id": 55,
@@ -854,10 +962,12 @@
       "vintage": "",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 330,
-      "sale_price": 300,
+      "shelf_price": 330.0,
+      "sale_price": 300.0,
       "notes": "סגנון פורט של אסף פז -ויתקין מטורף",
-      "image_url": "/images/wines/ויתקין - פורט סטייל - NV.jpg"
+      "image_url": "/images/wines/ויתקין - פורט סטייל - NV.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840200
     },
     {
       "id": 56,
@@ -869,10 +979,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "טוב V.F.M",
-      "image_url": "/images/wines/הרי הגליל - סתיו אדום.jpg"
+      "image_url": "/images/wines/הרי הגליל - סתיו אדום.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840199
     },
     {
       "id": 57,
@@ -884,10 +996,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "טוב V.F.M",
-      "image_url": "/images/wines/הרי הגליל - אלון - אלה.jpg"
+      "image_url": "/images/wines/הרי הגליל - אלון - אלה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840198
     },
     {
       "id": 58,
@@ -899,10 +1013,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "טוב V.F.M",
-      "image_url": "/images/wines/הרי הגליל - קברנה.jpg"
+      "image_url": "/images/wines/הרי הגליל - קברנה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840199
     },
     {
       "id": 59,
@@ -914,10 +1030,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "טוב V.F.M",
-      "image_url": "/images/wines/הרי הגליל - מרלו.jpg"
+      "image_url": "/images/wines/הרי הגליל - מרלו.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840198
     },
     {
       "id": 60,
@@ -929,10 +1047,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "טוב V.F.M",
-      "image_url": "/images/wines/תבור - קברנה ארטיזנל.jpg"
+      "image_url": "/images/wines/תבור - קברנה ארטיזנל.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840230
     },
     {
       "id": 61,
@@ -944,10 +1064,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "טוב V.F.M",
-      "image_url": "/images/wines/תבור - שירז ארטיזנל.jpg"
+      "image_url": "/images/wines/תבור - שירז ארטיזנל.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840230
     },
     {
       "id": 62,
@@ -959,10 +1081,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "טוב V.F.M",
-      "image_url": "/images/wines/תבור - מרלו ארטיזנל.jpg"
+      "image_url": "/images/wines/תבור - מרלו ארטיזנל.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840229
     },
     {
       "id": 63,
@@ -974,10 +1098,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "יותר טוב V.F.M",
-      "image_url": "/images/wines/דלתון - סדרת אסטייט קברנה.jpg"
+      "image_url": "/images/wines/דלתון - סדרת אסטייט קברנה.jpg",
+      "out_of_stock": false,
+      "image_version": 1781183213485
     },
     {
       "id": 64,
@@ -989,10 +1115,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "יותר טוב V.F.M",
-      "image_url": "/images/wines/דלתון - סדרת אסטייט שירז.jpg"
+      "image_url": "/images/wines/דלתון - סדרת אסטייט שירז.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840193
     },
     {
       "id": 65,
@@ -1004,10 +1132,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "יותר טוב V.F.M",
-      "image_url": "/images/wines/דלתון - סדרת אסטייט מרלו.jpg"
+      "image_url": "/images/wines/דלתון - סדרת אסטייט מרלו.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840193
     },
     {
       "id": 66,
@@ -1019,10 +1149,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "יותר טוב V.F.M",
-      "image_url": "/images/wines/דלתון - סדרת אסטייט פטיט סירה.jpg"
+      "image_url": "/images/wines/דלתון - סדרת אסטייט פטיט סירה.jpg",
+      "out_of_stock": false,
+      "image_version": 1781183130939
     },
     {
       "id": 67,
@@ -1034,10 +1166,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "מעולה V.F.M",
-      "image_url": "/images/wines/טוליפ - סדרת טוליפ קברנה.jpg"
+      "image_url": "/images/wines/טוליפ - סדרת טוליפ קברנה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840205
     },
     {
       "id": 68,
@@ -1049,10 +1183,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 70,
-      "sale_price": 60,
+      "shelf_price": 70.0,
+      "sale_price": 60.0,
       "notes": "מעולה V.F.M",
-      "image_url": "/images/wines/טוליפ - סדרת טוליפ פטיט סירה חדש.jpg"
+      "image_url": "/images/wines/טוליפ - סדרת טוליפ פטיט סירה חדש.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840205
     },
     {
       "id": 69,
@@ -1064,10 +1200,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 75,
-      "sale_price": 60,
+      "shelf_price": 75.0,
+      "sale_price": 60.0,
       "notes": "זנים ים תיכוניים VFM",
-      "image_url": "/images/wines/כרמל - מדיטראניאן 4VATS.jpg"
+      "image_url": "/images/wines/כרמל - מדיטראניאן 4VATS.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840212
     },
     {
       "id": 70,
@@ -1079,10 +1217,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 70,
-      "sale_price": 70,
+      "shelf_price": 70.0,
+      "sale_price": 70.0,
       "notes": "קברנה גמלא",
-      "image_url": "/images/wines/יקבי הגולן - גמלא קברנה.jpg"
+      "image_url": "/images/wines/יקבי הגולן - גמלא קברנה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840209
     },
     {
       "id": 71,
@@ -1094,10 +1234,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 75,
+      "shelf_price": 90.0,
+      "sale_price": 75.0,
       "notes": "בלנד סירה מרלו ק.פרנק",
-      "image_url": "/images/wines/טוליפ - אספרו 2022.jpg"
+      "image_url": "/images/wines/טוליפ - אספרו 2022.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840202
     },
     {
       "id": 72,
@@ -1109,10 +1251,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 75,
+      "shelf_price": 90.0,
+      "sale_price": 75.0,
       "notes": "בלנד ק.ס ק. פרנק ,מרלו,שירז גרנאש",
-      "image_url": "/images/wines/דלתון - עלמה אדום.jpg"
+      "image_url": "/images/wines/דלתון - עלמה אדום.jpg",
+      "out_of_stock": false,
+      "image_version": 1781188358968
     },
     {
       "id": 73,
@@ -1124,10 +1268,12 @@
       "vintage": "2023",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 75,
+      "shelf_price": 90.0,
+      "sale_price": 75.0,
       "notes": "קברנה 50%  מרלו 50%  שנה בחבית",
-      "image_url": "/images/wines/לוריא - קברנה מרלו 50 50 2023.jpg"
+      "image_url": "/images/wines/לוריא - קברנה מרלו 50 50 2023.jpg",
+      "out_of_stock": true,
+      "image_version": 1780926840215
     },
     {
       "id": 74,
@@ -1139,10 +1285,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 75,
+      "shelf_price": 90.0,
+      "sale_price": 75.0,
       "notes": "קברנה שירז קב. פרנק",
-      "image_url": "/images/wines/לוריא - טרסה.jpg"
+      "image_url": "/images/wines/לוריא - טרסה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840214
     },
     {
       "id": 75,
@@ -1154,10 +1302,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "קברנה פרנק עם 15% מרלו שנה בחבית",
-      "image_url": "/images/wines/כמיסה - אטא ETA קברנה פרנק.jpg"
+      "image_url": "/images/wines/כמיסה - אטא ETA קברנה פרנק.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840211
     },
     {
       "id": 76,
@@ -1169,10 +1319,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 85,
-      "sale_price": 80,
+      "shelf_price": 85.0,
+      "sale_price": 80.0,
       "notes": "בלנד - קריניאן סירה גרנאש קב.פרנק",
-      "image_url": "/images/wines/ויתקין - מסע אדום.jpg"
+      "image_url": "/images/wines/ויתקין - מסע אדום.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840199
     },
     {
       "id": 77,
@@ -1184,10 +1336,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 85,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
       "notes": "מומלץ ביותר מחיר פיצוץ",
-      "image_url": "/images/wines/אדיר - קברנה כרם בן זמרה.jpg"
+      "image_url": "/images/wines/אדיר - קברנה כרם בן זמרה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840182
     },
     {
       "id": 78,
@@ -1199,10 +1353,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 85,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
       "notes": "מומלץ ביותר מחיר פיצוץ",
-      "image_url": "/images/wines/אדיר - שירז כרם בן זמרה.jpg"
+      "image_url": "/images/wines/אדיר - שירז כרם בן זמרה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840183
     },
     {
       "id": 79,
@@ -1214,10 +1370,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 85,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
       "notes": "לראשונה מרלו מעולה אדיר כרם בן זמרה",
-      "image_url": "/images/wines/אדיר - מרלו כרם בן זמרה.jpg"
+      "image_url": "/images/wines/אדיר - מרלו כרם בן זמרה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840181
     },
     {
       "id": 80,
@@ -1229,10 +1387,12 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 90,
-      "sale_price": 85,
+      "shelf_price": 90.0,
+      "sale_price": 85.0,
       "notes": "בלנד אדום של מאיה יקב בת של טוליפ",
-      "image_url": "/images/wines/מאיה - מארה רד RED.jpg"
+      "image_url": "/images/wines/מאיה - מארה רד RED.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840217
     },
     {
       "id": 81,
@@ -1244,10 +1404,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 95,
-      "sale_price": 85,
+      "shelf_price": 95.0,
+      "sale_price": 85.0,
       "notes": "קברנה  שור 2022",
-      "image_url": "/images/wines/שילה - שור קברנה.jpg"
+      "image_url": "/images/wines/שילה - שור קברנה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840228
     },
     {
       "id": 82,
@@ -1259,10 +1421,12 @@
       "vintage": "2023",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 95,
-      "sale_price": 85,
+      "shelf_price": 95.0,
+      "sale_price": 85.0,
       "notes": "מרלו שור 2023",
-      "image_url": "/images/wines/שילה - שור מרלו 2023.jpg"
+      "image_url": "/images/wines/שילה - שור מרלו 2023.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840228
     },
     {
       "id": 83,
@@ -1274,10 +1438,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 85,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
       "notes": "בלנד של קב.פרנק ומרלו",
-      "image_url": "/images/wines/טוליפ - פראנק מרלו רזרב.jpg"
+      "image_url": "/images/wines/טוליפ - פראנק מרלו רזרב.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840207
     },
     {
       "id": 84,
@@ -1289,10 +1455,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 100,
-      "sale_price": 85,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
       "notes": "סירה  רזרב מדהים בסט סלר",
-      "image_url": "/images/wines/טוליפ - סירה רזרב.jpg"
+      "image_url": "/images/wines/טוליפ - סירה רזרב.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840207
     },
     {
       "id": 85,
@@ -1304,10 +1472,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 90,
+      "shelf_price": 100.0,
+      "sale_price": 90.0,
       "notes": "קברנה סוביניון  חדש",
-      "image_url": "/images/wines/פסגות - קברנה סוביניון חדש.jpg"
+      "image_url": "/images/wines/פסגות - קברנה סוביניון חדש.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840220
     },
     {
       "id": 86,
@@ -1319,10 +1489,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 110,
-      "sale_price": 95,
+      "shelf_price": 110.0,
+      "sale_price": 95.0,
       "notes": "מעולה",
-      "image_url": "/images/wines/לוריא - קברנה.jpg"
+      "image_url": "/images/wines/לוריא - קברנה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840215
     },
     {
       "id": 87,
@@ -1334,10 +1506,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 110,
-      "sale_price": 100,
+      "shelf_price": 110.0,
+      "sale_price": 100.0,
       "notes": "בלנד",
-      "image_url": "/images/wines/פסגות - EDOM אדום.jpg"
+      "image_url": "/images/wines/פסגות - EDOM אדום.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840220
     },
     {
       "id": 88,
@@ -1349,10 +1523,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "סה\"כ יוצרו 12600 בלנד שירז פטיט ק.פרנק",
-      "image_url": "/images/wines/אדיר - אדיר a חדש 2022.jpg"
+      "image_url": "/images/wines/אדיר - אדיר a חדש 2022.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840180
     },
     {
       "id": 89,
@@ -1364,10 +1540,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "סה\"כ יוצרו 3000",
-      "image_url": "/images/wines/אדיר - Winemaker edition מלבק.jpg"
+      "image_url": "/images/wines/אדיר - Winemaker edition מלבק.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840178
     },
     {
       "id": 90,
@@ -1379,10 +1557,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "סה\"כ יוצרו 5500",
-      "image_url": "/images/wines/אדיר - Winemaker edition מרסלן.jpg"
+      "image_url": "/images/wines/אדיר - Winemaker edition מרסלן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840179
     },
     {
       "id": 91,
@@ -1394,10 +1574,12 @@
       "vintage": "2020",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "בלנד קברנה סירה 2020  שנה בחבית",
-      "image_url": "/images/wines/רימון האגם הצפוני - בלנד קברנה סירה 2020.jpg"
+      "image_url": "/images/wines/רימון האגם הצפוני - בלנד קברנה סירה 2020.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840225
     },
     {
       "id": 92,
@@ -1409,10 +1591,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 120,
-      "sale_price": 100,
+      "shelf_price": 120.0,
+      "sale_price": 100.0,
       "notes": "מרלו ירדן מעולה",
-      "image_url": "/images/wines/יקבי הגולן - ירדן מרלו.jpg"
+      "image_url": "/images/wines/יקבי הגולן - ירדן מרלו.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840210
     },
     {
       "id": 93,
@@ -1424,10 +1608,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 130,
-      "sale_price": 110,
+      "shelf_price": 130.0,
+      "sale_price": 110.0,
       "notes": "בלנד ים תיכוני של קריניאן סירה ודוריף  2021",
-      "image_url": "/images/wines/מאיה - מאיה נוסטרום.jpg"
+      "image_url": "/images/wines/מאיה - מאיה נוסטרום.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840217
     },
     {
       "id": 94,
@@ -1439,10 +1625,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 110,
-      "sale_price": 110,
+      "shelf_price": 110.0,
+      "sale_price": 110.0,
       "notes": "בלנד  סירה - פטי וורדו  50-50 30 חודשי חבית",
-      "image_url": "/images/wines/היין של דורון - DORON סירה פטי ורדו 2021.jpg"
+      "image_url": "/images/wines/היין של דורון - DORON סירה פטי ורדו 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840197
     },
     {
       "id": 95,
@@ -1454,10 +1642,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 130,
-      "sale_price": 115,
+      "shelf_price": 130.0,
+      "sale_price": 115.0,
       "notes": "קריניאן מעולה",
-      "image_url": "/images/wines/ויתקין - קריניאן.jpg"
+      "image_url": "/images/wines/ויתקין - קריניאן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840201
     },
     {
       "id": 96,
@@ -1469,10 +1659,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 130,
-      "sale_price": 115,
+      "shelf_price": 130.0,
+      "sale_price": 115.0,
       "notes": "20  חודשי חבית",
-      "image_url": "/images/wines/בן חיים - סנה טרדישן קברנה מרלו.jpg"
+      "image_url": "/images/wines/בן חיים - סנה טרדישן קברנה מרלו.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840189
     },
     {
       "id": 97,
@@ -1484,10 +1676,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 130,
-      "sale_price": 115,
+      "shelf_price": 130.0,
+      "sale_price": 115.0,
       "notes": "20  חודשי חבית",
-      "image_url": "/images/wines/בן חיים - סנה טרדישן סירה קברנה מרלו.jpg"
+      "image_url": "/images/wines/בן חיים - סנה טרדישן סירה קברנה מרלו.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840189
     },
     {
       "id": 98,
@@ -1499,10 +1693,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 130,
-      "sale_price": 115,
+      "shelf_price": 130.0,
+      "sale_price": 115.0,
       "notes": "שירז מצויין",
-      "image_url": "/images/wines/דלתון - שירז Family Collection.jpg"
+      "image_url": "/images/wines/דלתון - שירז Family Collection.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840195
     },
     {
       "id": 99,
@@ -1514,10 +1710,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 130,
-      "sale_price": 115,
+      "shelf_price": 130.0,
+      "sale_price": 115.0,
       "notes": "קברנה סוביניון מצויין",
-      "image_url": "/images/wines/דלתון - קברנה Family Collection.jpg"
+      "image_url": "/images/wines/דלתון - קברנה Family Collection.jpg",
+      "out_of_stock": false,
+      "image_version": 1781188235208
     },
     {
       "id": 100,
@@ -1529,10 +1727,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 130,
-      "sale_price": 115,
+      "shelf_price": 130.0,
+      "sale_price": 115.0,
       "notes": "קברנה פרנק מצויין",
-      "image_url": "/images/wines/דלתון - קברנה פרנק Family Collection.jpg"
+      "image_url": "/images/wines/דלתון - קברנה פרנק Family Collection.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840195
     },
     {
       "id": 101,
@@ -1544,10 +1744,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 130,
-      "sale_price": 120,
+      "shelf_price": 130.0,
+      "sale_price": 120.0,
       "notes": "בלנד מעניין מלבק ,ק.פרנק , פטי וורדו",
-      "image_url": "/images/wines/כמיסה - סיגמה בלנד 28 חודשי חבית 2021.jpg"
+      "image_url": "/images/wines/כמיסה - סיגמה בלנד 28 חודשי חבית 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840212
     },
     {
       "id": 102,
@@ -1559,10 +1761,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 130,
-      "sale_price": 120,
+      "shelf_price": 130.0,
+      "sale_price": 120.0,
       "notes": "קברנה - 85% מרלו 10% פטי וורדו 5%",
-      "image_url": "/images/wines/כמיסה - סיגמה קברנה 28 חודשי חבית 2021.jpg"
+      "image_url": "/images/wines/כמיסה - סיגמה קברנה 28 חודשי חבית 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840212
     },
     {
       "id": 103,
@@ -1574,10 +1778,12 @@
       "vintage": "2020",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 130,
-      "sale_price": 120,
+      "shelf_price": 130.0,
+      "sale_price": 120.0,
       "notes": "קברנה מעולה שנתיים בחבית",
-      "image_url": "/images/wines/מילס - מילס קברנה סוביניון רזרב 2020.jpg"
+      "image_url": "/images/wines/מילס - מילס קברנה סוביניון רזרב 2020.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840218
     },
     {
       "id": 104,
@@ -1589,10 +1795,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 135,
-      "sale_price": 120,
+      "shelf_price": 135.0,
+      "sale_price": 120.0,
       "notes": "פינו נואר ישראלי היחיד ברשימה",
-      "image_url": "/images/wines/ויתקין - פינו נואר.jpg"
+      "image_url": "/images/wines/ויתקין - פינו נואר.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840201
     },
     {
       "id": 105,
@@ -1604,10 +1812,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 130,
-      "sale_price": 120,
+      "shelf_price": 130.0,
+      "sale_price": 120.0,
       "notes": "בלנד  קברנה שירז פ.וורדו מלבק מרלו ק.פרנק",
-      "image_url": "/images/wines/יתיר - הר עמשא.jpg"
+      "image_url": "/images/wines/יתיר - הר עמשא.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840210
     },
     {
       "id": 106,
@@ -1619,10 +1829,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 140,
-      "sale_price": 125,
+      "shelf_price": 140.0,
+      "sale_price": 125.0,
       "notes": "יין הדגל של פסגות   חזר למלאי",
-      "image_url": "/images/wines/פסגות - PEAK פיק.jpg"
+      "image_url": "/images/wines/פסגות - PEAK פיק.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840220
     },
     {
       "id": 107,
@@ -1634,10 +1846,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 140,
-      "sale_price": 125,
+      "shelf_price": 140.0,
+      "sale_price": 125.0,
       "notes": "קברנה  סוד 2022",
-      "image_url": "/images/wines/שילה - סוד רזרב קברנה.jpg"
+      "image_url": "/images/wines/שילה - סוד רזרב קברנה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840227
     },
     {
       "id": 108,
@@ -1649,10 +1863,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 150,
-      "sale_price": 125,
+      "shelf_price": 150.0,
+      "sale_price": 125.0,
       "notes": "מעולה",
-      "image_url": "/images/wines/לוריא - קברה פרנק.jpg"
+      "image_url": "/images/wines/לוריא - קברה פרנק.jpg",
+      "out_of_stock": false,
+      "image_version": 1781189287988
     },
     {
       "id": 109,
@@ -1664,10 +1880,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 150,
-      "sale_price": 130,
+      "shelf_price": 150.0,
+      "sale_price": 130.0,
       "notes": "קב. סוביניון  קב.פרנק ומרלו ופטי וורדו 20 חודש",
-      "image_url": "/images/wines/טוליפ - אנפולד UNFOLD 2022.jpg"
+      "image_url": "/images/wines/טוליפ - אנפולד UNFOLD 2022.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840201
     },
     {
       "id": 110,
@@ -1679,10 +1897,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 140,
-      "sale_price": 130,
+      "shelf_price": 140.0,
+      "sale_price": 130.0,
       "notes": "מעולה",
-      "image_url": "/images/wines/לוריא - ברברה רזרב.jpg"
+      "image_url": "/images/wines/לוריא - ברברה רזרב.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840213
     },
     {
       "id": 111,
@@ -1694,10 +1914,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 140,
-      "sale_price": 130,
+      "shelf_price": 140.0,
+      "sale_price": 130.0,
       "notes": "פטי קסטל",
-      "image_url": "/images/wines/קסטל - פטיט קסטל.jpg"
+      "image_url": "/images/wines/קסטל - פטיט קסטל.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840222
     },
     {
       "id": 112,
@@ -1709,10 +1931,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 180,
-      "sale_price": 140,
+      "shelf_price": 180.0,
+      "sale_price": 140.0,
       "notes": "מורבדר מעולה ונדיר צבע פינו נואר מיוחד",
-      "image_url": "/images/wines/טוליפ - מורבדר (סדרת הינן) 2021.jpg"
+      "image_url": "/images/wines/טוליפ - מורבדר (סדרת הינן) 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840205
     },
     {
       "id": 113,
@@ -1724,10 +1948,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 150,
-      "sale_price": 140,
+      "shelf_price": 150.0,
+      "sale_price": 140.0,
       "notes": "יין מעולה בלנד ים תיכוני של כרמל",
-      "image_url": "/images/wines/כרמל - מדיטראניאן.jpg"
+      "image_url": "/images/wines/כרמל - מדיטראניאן.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840212
     },
     {
       "id": 114,
@@ -1739,10 +1965,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 140,
-      "sale_price": 145,
+      "shelf_price": 140.0,
+      "sale_price": 145.0,
       "notes": "הבלנד האגדי ק.ס  מרלו,סירה,ק.פרנק,פטי וורדו",
-      "image_url": "/images/wines/הרי הגליל - יראון.jpg"
+      "image_url": "/images/wines/הרי הגליל - יראון.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840198
     },
     {
       "id": 115,
@@ -1754,10 +1982,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 150,
-      "sale_price": 145,
+      "shelf_price": 150.0,
+      "sale_price": 145.0,
       "notes": "קברנה מעולה",
-      "image_url": "/images/wines/שאטו גולן - קברנה.jpg"
+      "image_url": "/images/wines/שאטו גולן - קברנה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840226
     },
     {
       "id": 116,
@@ -1769,10 +1999,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 150,
-      "sale_price": 145,
+      "shelf_price": 150.0,
+      "sale_price": 145.0,
       "notes": "ירדן  פטי וורדו  מעולה",
-      "image_url": "/images/wines/יקבי גולן - ירדן פטי וורדו 2021.jpg"
+      "image_url": "/images/wines/יקבי גולן - ירדן פטי וורדו 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840208
     },
     {
       "id": 117,
@@ -1784,10 +2016,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 150,
-      "sale_price": 145,
+      "shelf_price": 150.0,
+      "sale_price": 145.0,
       "notes": "ירדן קברנה",
-      "image_url": "/images/wines/יקבי גולן - ירדן קברנה סוביניון 2022.jpg"
+      "image_url": "/images/wines/יקבי גולן - ירדן קברנה סוביניון 2022.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840209
     },
     {
       "id": 118,
@@ -1799,10 +2033,12 @@
       "vintage": "",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 160,
-      "sale_price": 145,
+      "shelf_price": 160.0,
+      "sale_price": 145.0,
       "notes": "סירה קריניאן וגרנאש",
-      "image_url": "/images/wines/רזיאל - בלנד רזיאל.jpg"
+      "image_url": "/images/wines/רזיאל - בלנד רזיאל.webp",
+      "out_of_stock": false,
+      "image_version": 0
     },
     {
       "id": 119,
@@ -1814,10 +2050,12 @@
       "vintage": "2017",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 180,
-      "sale_price": 160,
+      "shelf_price": 180.0,
+      "sale_price": 160.0,
       "notes": "24  חודשי חבית",
-      "image_url": "/images/wines/בן חיים - קברנה רזרב 2017.jpg"
+      "image_url": "/images/wines/בן חיים - קברנה רזרב 2017.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840190
     },
     {
       "id": 120,
@@ -1829,10 +2067,12 @@
       "vintage": "2020",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 200,
-      "sale_price": 180,
+      "shelf_price": 200.0,
+      "sale_price": 180.0,
       "notes": "ירדן קברנה מתיישן",
-      "image_url": "/images/wines/יקבי גולן - ירדן קברנה סוביניון 2020-2021.jpg"
+      "image_url": "/images/wines/יקבי גולן - ירדן קברנה סוביניון 2020-2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840208
     },
     {
       "id": 121,
@@ -1844,10 +2084,12 @@
       "vintage": "",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 170,
-      "sale_price": 160,
+      "shelf_price": 170.0,
+      "sale_price": 160.0,
       "notes": "כרם יחידני מעולה",
-      "image_url": "/images/wines/דלתון - נדב סינגל ויניארד.jpg"
+      "image_url": "/images/wines/דלתון - נדב סינגל ויניארד.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840192
     },
     {
       "id": 122,
@@ -1859,10 +2101,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 180,
-      "sale_price": 160,
+      "shelf_price": 180.0,
+      "sale_price": 160.0,
       "notes": "בלנד מדהים קברנה מרלו קב. פרנק",
-      "image_url": "/images/wines/לוריא - גראנד ויטאל 2022.jpg"
+      "image_url": "/images/wines/לוריא - גראנד ויטאל 2022.webp",
+      "out_of_stock": false,
+      "image_version": 1781188807713
     },
     {
       "id": 123,
@@ -1874,10 +2118,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 200,
-      "sale_price": 160,
+      "shelf_price": 200.0,
+      "sale_price": 160.0,
       "notes": "בלאק   מעולה   2022 חדש בלנד בורדולזי",
-      "image_url": "/images/wines/טוליפ - בלאק טוליפ 2022.jpg"
+      "image_url": "/images/wines/טוליפ - בלאק טוליפ 2022.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840204
     },
     {
       "id": 124,
@@ -1889,10 +2135,12 @@
       "vintage": "2015",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 300,
-      "sale_price": 220,
+      "shelf_price": 300.0,
+      "sale_price": 220.0,
       "notes": "בלאק   מעולה   2015 מתיישן   בלנד בורדולזי",
-      "image_url": "/images/wines/טוליפ - בלאק טוליפ 2015.jpg"
+      "image_url": "/images/wines/טוליפ - בלאק טוליפ 2015.jpg",
+      "out_of_stock": true,
+      "image_version": 1780926840203
     },
     {
       "id": 125,
@@ -1904,10 +2152,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 185,
-      "sale_price": 170,
+      "shelf_price": 185.0,
+      "sale_price": 170.0,
       "notes": "בלנד   קברנה ,פטי וורדו ושירז 18 בחבית",
-      "image_url": "/images/wines/כמיסה - אומגה 2021.jpg"
+      "image_url": "/images/wines/כמיסה - אומגה 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840210
     },
     {
       "id": 126,
@@ -1919,10 +2169,12 @@
       "vintage": "2018",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 220,
-      "sale_price": 170,
+      "shelf_price": 220.0,
+      "sale_price": 170.0,
       "notes": "קברנה מדהים 2018 24 חודשי חבית",
-      "image_url": "/images/wines/רימון האגם הצפוני - קברנה רזרב 2018.jpg"
+      "image_url": "/images/wines/רימון האגם הצפוני - קברנה רזרב 2018.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840225
     },
     {
       "id": 127,
@@ -1934,10 +2186,12 @@
       "vintage": "2018",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 240,
-      "sale_price": 170,
+      "shelf_price": 240.0,
+      "sale_price": 170.0,
       "notes": "מלבק - קברנה פרנק  מרלו2018 24 חודשי חבית",
-      "image_url": "/images/wines/רימון האגם הצפוני - בלנד רזרב 2018.jpg"
+      "image_url": "/images/wines/רימון האגם הצפוני - בלנד רזרב 2018.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840225
     },
     {
       "id": 128,
@@ -1949,10 +2203,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 200,
-      "sale_price": 170,
+      "shelf_price": 200.0,
+      "sale_price": 170.0,
       "notes": "סה\"כ יוצרו 5600",
-      "image_url": "/images/wines/אדיר - פלאטו 2022 PLATO.jpg"
+      "image_url": "/images/wines/אדיר - פלאטו 2022 PLATO.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840182
     },
     {
       "id": 129,
@@ -1964,10 +2220,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 200,
-      "sale_price": 180,
+      "shelf_price": 200.0,
+      "sale_price": 180.0,
       "notes": "תניא קברנה ויטאל 2021",
-      "image_url": "/images/wines/תניא - תניא קברנה ויטאל 2021.jpg"
+      "image_url": "/images/wines/תניא - תניא קברנה ויטאל 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840230
     },
     {
       "id": 130,
@@ -1979,10 +2237,12 @@
       "vintage": "2020",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 220,
-      "sale_price": 180,
+      "shelf_price": 220.0,
+      "sale_price": 180.0,
       "notes": "בלנד מדהים קברנה מרלו קב. פרנק",
-      "image_url": "/images/wines/לוריא - גראנד ויטאל 2020.jpg"
+      "image_url": "/images/wines/לוריא - גראנד ויטאל 2020.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840213
     },
     {
       "id": 131,
@@ -1994,10 +2254,12 @@
       "vintage": "",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 210,
-      "sale_price": 185,
+      "shelf_price": 210.0,
+      "sale_price": 185.0,
       "notes": "פטי וורדו  וגרנאש 2021",
-      "image_url": "/images/wines/שאטו גולן - רוח (בלנד פטי וורדו וגרנאש).jpg"
+      "image_url": "/images/wines/שאטו גולן - רוח (בלנד פטי וורדו וגרנאש).jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840226
     },
     {
       "id": 132,
@@ -2009,10 +2271,12 @@
       "vintage": "",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 200,
-      "sale_price": 185,
+      "shelf_price": 200.0,
+      "sale_price": 185.0,
       "notes": "2020 בלנד בורדולזי מושלם",
-      "image_url": "/images/wines/שילה - מוזאיק - פסיפס.jpg"
+      "image_url": "/images/wines/שילה - מוזאיק - פסיפס.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840227
     },
     {
       "id": 133,
@@ -2024,10 +2288,12 @@
       "vintage": "",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 230,
-      "sale_price": 200,
+      "shelf_price": 230.0,
+      "sale_price": 200.0,
       "notes": "הדגל בלנד קברנה מרלו פ.וורדו קב.פרנק 15 חודש",
-      "image_url": "/images/wines/דלתון - TRUE NORTH.jpg"
+      "image_url": "/images/wines/דלתון - TRUE NORTH.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840192
     },
     {
       "id": 134,
@@ -2039,10 +2305,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 230,
-      "sale_price": 200,
+      "shelf_price": 230.0,
+      "sale_price": 200.0,
       "notes": "יין  הדגל של רקנאטי",
-      "image_url": "/images/wines/רקנאטי - קברנה ספיישל רזרב 2021.jpg"
+      "image_url": "/images/wines/רקנאטי - קברנה ספיישל רזרב 2021.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840226
     },
     {
       "id": 135,
@@ -2054,10 +2322,12 @@
       "vintage": "2019",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 300,
-      "sale_price": 240,
+      "shelf_price": 300.0,
+      "sale_price": 240.0,
       "notes": "קברנה  ק.פרנק פ.וורדו וסירה 2019 24 חודשי חבית",
-      "image_url": "/images/wines/רימון האגם הצפוני - מאסטרו בלנד 2019.jpg"
+      "image_url": "/images/wines/רימון האגם הצפוני - מאסטרו בלנד 2019.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840225
     },
     {
       "id": 136,
@@ -2069,10 +2339,12 @@
       "vintage": "",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 285,
-      "sale_price": 270,
+      "shelf_price": 285.0,
+      "sale_price": 270.0,
       "notes": "היין הגדול  של  קסטל 2022",
-      "image_url": "/images/wines/קסטל - קסטל גרנד וין.jpg"
+      "image_url": "/images/wines/קסטל - קסטל גרנד וין.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840223
     },
     {
       "id": 137,
@@ -2084,10 +2356,12 @@
       "vintage": "2020",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 300,
-      "sale_price": 280,
+      "shelf_price": 300.0,
+      "sale_price": 280.0,
       "notes": "יין מדהים 70 קברנה 30 מרלו 24 חודש חבית",
-      "image_url": "/images/wines/מכפלה - מכפלה 2020.jpg"
+      "image_url": "/images/wines/מכפלה - מכפלה 2020.png",
+      "out_of_stock": false,
+      "image_version": 0
     },
     {
       "id": 138,
@@ -2099,10 +2373,12 @@
       "vintage": "2020",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 350,
-      "sale_price": 300,
+      "shelf_price": 350.0,
+      "sale_price": 300.0,
       "notes": "אלפא, יין הדגל,2020   26  חודשי חבית",
-      "image_url": "/images/wines/כמיסה - אלפה ALPHA 2020.jpg"
+      "image_url": "/images/wines/כמיסה - אלפה ALPHA 2020.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840211
     },
     {
       "id": 139,
@@ -2114,10 +2390,12 @@
       "vintage": "2022",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 310,
-      "sale_price": 300,
+      "shelf_price": 310.0,
+      "sale_price": 300.0,
       "notes": "יין  הדגל של יתיר בין ה3-5 הכי טובים בארץ",
-      "image_url": "/images/wines/יתיר - יער יתיר 2022.jpg"
+      "image_url": "/images/wines/יתיר - יער יתיר 2022.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840210
     },
     {
       "id": 140,
@@ -2129,10 +2407,12 @@
       "vintage": "2019",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 350,
-      "sale_price": 300,
+      "shelf_price": 350.0,
+      "sale_price": 300.0,
       "notes": "30  חודשי חבית",
-      "image_url": "/images/wines/בן חיים - קברנה גראנד רזרב 2019.jpg"
+      "image_url": "/images/wines/בן חיים - קברנה גראנד רזרב 2019.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840190
     },
     {
       "id": 141,
@@ -2144,10 +2424,12 @@
       "vintage": "2020",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 360,
-      "sale_price": 330,
+      "shelf_price": 360.0,
+      "sale_price": 330.0,
       "notes": "המערה  האגדי בלנד קברנה מרלו  .פ.וורדו",
-      "image_url": "/images/wines/המערה - המערה 2020.jpg"
+      "image_url": "/images/wines/המערה - המערה 2020.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840197
     },
     {
       "id": 142,
@@ -2159,10 +2441,12 @@
       "vintage": "2016",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 500,
-      "sale_price": 450,
+      "shelf_price": 500.0,
+      "sale_price": 450.0,
       "notes": "בלנד ייחודי  2016   24 חודשים בחבית",
-      "image_url": "/images/wines/לוריא - יין חגיגי לעשור ייננות 10X 2016.jpg"
+      "image_url": "/images/wines/לוריא - יין חגיגי לעשור ייננות 10X 2016.webp",
+      "out_of_stock": false,
+      "image_version": 1781188790472
     },
     {
       "id": 143,
@@ -2174,10 +2458,12 @@
       "vintage": "2014",
       "grape": "",
       "rating": 97.0,
-      "shelf_price": 560,
-      "sale_price": 450,
+      "shelf_price": 560.0,
+      "sale_price": 450.0,
       "notes": "בלנד קברנה,ק.פרנק,מרלו,סירה,פ.וורדו 36 בחבית+",
-      "image_url": "/images/wines/טוליפ - FINGER PRINT 2014.jpg"
+      "image_url": "/images/wines/טוליפ - FINGER PRINT 2014.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840201
     },
     {
       "id": 144,
@@ -2189,10 +2475,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 600,
-      "sale_price": 500,
+      "shelf_price": 600.0,
+      "sale_price": 500.0,
       "notes": "בלאק   מעולה  2021 חדש בלנד מגנום 1.5 ליטר",
-      "image_url": "/images/wines/טוליפ - בלאק טוליפ 2021 MAGNUM.jpg"
+      "image_url": "/images/wines/טוליפ - בלאק טוליפ 2021 MAGNUM.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840203
     },
     {
       "id": 145,
@@ -2204,10 +2492,12 @@
       "vintage": "2015",
       "grape": "",
       "rating": 97.0,
-      "shelf_price": 700,
-      "sale_price": 600,
+      "shelf_price": 700.0,
+      "sale_price": 600.0,
       "notes": "בלאק   מעולה   2015 מתיישן   מגנום  1.5L",
-      "image_url": "/images/wines/טוליפ - בלאק טוליפ 2015 MAGNUM.jpg"
+      "image_url": "/images/wines/טוליפ - בלאק טוליפ 2015 MAGNUM.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840203
     },
     {
       "id": 146,
@@ -2219,10 +2509,12 @@
       "vintage": "2016",
       "grape": "",
       "rating": 98.0,
-      "shelf_price": 700,
-      "sale_price": 600,
+      "shelf_price": 700.0,
+      "sale_price": 600.0,
       "notes": "אלפא, יין הדגל,2016   60  חודשי חבית",
-      "image_url": "/images/wines/דלתה - אלפה ALPHA 60 שנת 2016.jpg"
+      "image_url": "/images/wines/דלתה - אלפה ALPHA 60 שנת 2016.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840192
     },
     {
       "id": 147,
@@ -2234,10 +2526,12 @@
       "vintage": "2015",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 160,
-      "sale_price": 140,
+      "shelf_price": 160.0,
+      "sale_price": 140.0,
       "notes": "אמרונה טוב",
-      "image_url": "/images/wines/אמרונה AMARONE - וואלפאנטנה 2015 DOCG.jpg"
+      "image_url": "/images/wines/אמרונה AMARONE - וואלפאנטנה 2015 DOCG.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840187
     },
     {
       "id": 148,
@@ -2249,10 +2543,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 200,
-      "sale_price": 170,
+      "shelf_price": 200.0,
+      "sale_price": 170.0,
       "notes": "אמרונה טוב",
-      "image_url": "/images/wines/אמרונה AMARONE - G 2021 DOCG CONTI TAMERO.jpg"
+      "image_url": "/images/wines/אמרונה AMARONE - G 2021 DOCG CONTI TAMERO.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840184
     },
     {
       "id": 149,
@@ -2264,10 +2560,12 @@
       "vintage": "2017",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 200,
-      "sale_price": 180,
+      "shelf_price": 200.0,
+      "sale_price": 180.0,
       "notes": "2021",
-      "image_url": "/images/wines/אמרונה AMARONE - גוארירי ריצ'ארדי 2017 3CRU.jpg"
+      "image_url": "/images/wines/אמרונה AMARONE - גוארירי ריצ'ארדי 2017 3CRU.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840187
     },
     {
       "id": 150,
@@ -2279,10 +2577,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 260,
-      "sale_price": 210,
+      "shelf_price": 260.0,
+      "sale_price": 210.0,
       "notes": "חדש 2021  מעולה",
-      "image_url": "/images/wines/אמרונה AMARONE - GABIA D'ORO גאביה.jpg"
+      "image_url": "/images/wines/אמרונה AMARONE - GABIA D'ORO גאביה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840184
     },
     {
       "id": 151,
@@ -2294,10 +2594,12 @@
       "vintage": "",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 260,
-      "sale_price": 230,
+      "shelf_price": 260.0,
+      "sale_price": 230.0,
       "notes": "טומאסי",
-      "image_url": "/images/wines/אמרונה AMARONE - TOMASI טומסי המהולל.jpg"
+      "image_url": "/images/wines/אמרונה AMARONE - TOMASI טומסי המהולל.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840187
     },
     {
       "id": 152,
@@ -2309,10 +2611,12 @@
       "vintage": "",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 260,
-      "sale_price": 230,
+      "shelf_price": 260.0,
+      "sale_price": 230.0,
       "notes": "טומאסי  Il Sestante",
-      "image_url": "/images/wines/אמרונה AMARONE - TOMASI איל ססטנט.jpg"
+      "image_url": "/images/wines/אמרונה AMARONE - TOMASI איל ססטנט.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840184
     },
     {
       "id": 153,
@@ -2324,10 +2628,12 @@
       "vintage": "",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 260,
-      "sale_price": 230,
+      "shelf_price": 260.0,
+      "sale_price": 230.0,
       "notes": "מאסי",
-      "image_url": "/images/wines/אמרונה AMARONE - מאסי המהולל לא פחות MASI costasera.jpg"
+      "image_url": "/images/wines/אמרונה AMARONE - מאסי המהולל לא פחות MASI costasera.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840187
     },
     {
       "id": 154,
@@ -2339,10 +2645,12 @@
       "vintage": "",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 300,
-      "sale_price": 270,
+      "shelf_price": 300.0,
+      "sale_price": 270.0,
       "notes": "יבוא אישי",
-      "image_url": "/images/wines/אמרונה AMARONE - Costa Arente Amarone.jpg"
+      "image_url": "/images/wines/אמרונה AMARONE - Costa Arente Amarone.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840183
     },
     {
       "id": 155,
@@ -2354,10 +2662,12 @@
       "vintage": "2016",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 145,
-      "sale_price": 130,
+      "shelf_price": 145.0,
+      "sale_price": 130.0,
       "notes": "FAUSTINO  1",
-      "image_url": "/images/wines/ריוחה - פאוסטינו 1 2016.jpg"
+      "image_url": "/images/wines/ריוחה - פאוסטינו 1 2016.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840224
     },
     {
       "id": 156,
@@ -2369,10 +2679,12 @@
       "vintage": "2020",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 150,
-      "sale_price": 130,
+      "shelf_price": 150.0,
+      "sale_price": 130.0,
       "notes": "Paradiso di Ccacuci יבוא אישי",
-      "image_url": "/images/wines/סופר טוסקן - PAVLA 2020.jpg"
+      "image_url": "/images/wines/סופר טוסקן - PAVLA 2020.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840219
     },
     {
       "id": 157,
@@ -2384,10 +2696,12 @@
       "vintage": "2016",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 250,
-      "sale_price": 200,
+      "shelf_price": 250.0,
+      "sale_price": 200.0,
       "notes": "Il Poggione",
-      "image_url": "/images/wines/ברונלו דה מונטלצינו - ברונלו של אילפוג'יונה 2016.jpg"
+      "image_url": "/images/wines/ברונלו דה מונטלצינו - ברונלו של אילפוג'יונה 2016.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840191
     },
     {
       "id": 158,
@@ -2399,10 +2713,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 200,
-      "sale_price": 170,
+      "shelf_price": 200.0,
+      "sale_price": 170.0,
       "notes": "Chateaunef-Du-Pape",
-      "image_url": "/images/wines/שאטונפ דה פאפ - Victor Bernard.jpg"
+      "image_url": "/images/wines/שאטונפ דה פאפ - Victor Bernard.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840226
     },
     {
       "id": 159,
@@ -2414,10 +2730,12 @@
       "vintage": "",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 220,
-      "sale_price": 200,
+      "shelf_price": 220.0,
+      "sale_price": 200.0,
       "notes": "Chateaunef-Du-Pape",
-      "image_url": "/images/wines/שאטונפ דה פאפ - שאפוטייה.jpg"
+      "image_url": "/images/wines/שאטונפ דה פאפ - שאפוטייה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840227
     },
     {
       "id": 160,
@@ -2429,10 +2747,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 220,
-      "sale_price": 190,
+      "shelf_price": 220.0,
+      "sale_price": 190.0,
       "notes": "בארולו מצויין",
-      "image_url": "/images/wines/בארולו - בארולו PRUNOTTO.jpg"
+      "image_url": "/images/wines/בארולו - בארולו PRUNOTTO.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840189
     },
     {
       "id": 161,
@@ -2444,10 +2764,12 @@
       "vintage": "2016",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 200,
-      "sale_price": 170,
+      "shelf_price": 200.0,
+      "sale_price": 170.0,
       "notes": "בארולו   -",
-      "image_url": "/images/wines/בארולו - בארולו BATASIOLO 2016.jpg"
+      "image_url": "/images/wines/בארולו - בארולו BATASIOLO 2016.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840189
     },
     {
       "id": 162,
@@ -2459,10 +2781,12 @@
       "vintage": "2019",
       "grape": "",
       "rating": 96.0,
-      "shelf_price": 250,
-      "sale_price": 230,
+      "shelf_price": 250.0,
+      "sale_price": 230.0,
       "notes": "יבוא אישי",
-      "image_url": "/images/wines/בארולו - REVA BAROLO 2019.jpg"
+      "image_url": "/images/wines/בארולו - REVA BAROLO 2019.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840188
     },
     {
       "id": 163,
@@ -2474,10 +2798,12 @@
       "vintage": "",
       "grape": "",
       "rating": 94.0,
-      "shelf_price": 220,
-      "sale_price": 190,
+      "shelf_price": 220.0,
+      "sale_price": 190.0,
       "notes": "ברברסקו מצויין",
-      "image_url": "/images/wines/ברברסקו - פרודוטורי דה ברברסקו.jpg"
+      "image_url": "/images/wines/ברברסקו - פרודוטורי דה ברברסקו.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840190
     },
     {
       "id": 164,
@@ -2489,10 +2815,12 @@
       "vintage": "",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 190,
-      "sale_price": 170,
+      "shelf_price": 190.0,
+      "sale_price": 170.0,
       "notes": "ברברסקו מצויין",
-      "image_url": "/images/wines/ברברסקו - ברברסקו PRUNOTTO.jpg"
+      "image_url": "/images/wines/ברברסקו - ברברסקו PRUNOTTO.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840190
     },
     {
       "id": 165,
@@ -2504,10 +2832,12 @@
       "vintage": "",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 100,
-      "sale_price": 90,
+      "shelf_price": 100.0,
+      "sale_price": 90.0,
       "notes": "פרמיטיבו (זינפנדל)",
-      "image_url": "/images/wines/פרמיטיבו גראן אפאסו - פרמיטיבו איטליה.jpg"
+      "image_url": "/images/wines/פרמיטיבו גראן אפאסו - פרמיטיבו איטליה.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840221
     },
     {
       "id": 166,
@@ -2519,10 +2849,12 @@
       "vintage": "",
       "grape": "",
       "rating": 90.0,
-      "shelf_price": 90,
-      "sale_price": 80,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
       "notes": "זינפנדל נחמד וקברנה חצי יבש ...",
-      "image_url": "/images/wines/ברינגר ארהב - קברנה - זינפנדל.jpg"
+      "image_url": "/images/wines/ברינגר ארהב - קברנה - זינפנדל.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840191
     },
     {
       "id": 167,
@@ -2534,10 +2866,12 @@
       "vintage": "2019",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 110,
-      "sale_price": 100,
+      "shelf_price": 110.0,
+      "sale_price": 100.0,
       "notes": "קיאנטי קלסיקו",
-      "image_url": "/images/wines/קיאנטי קלאסיקו - Bindi Sergardi 2019.jpg"
+      "image_url": "/images/wines/קיאנטי קלאסיקו - Bindi Sergardi 2019.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840221
     },
     {
       "id": 168,
@@ -2549,10 +2883,12 @@
       "vintage": "2021",
       "grape": "",
       "rating": 92.0,
-      "shelf_price": 145,
-      "sale_price": 130,
+      "shelf_price": 145.0,
+      "sale_price": 130.0,
       "notes": "קיאנטי קלסיקו",
-      "image_url": "/images/wines/קיאנטי קלאסיקו - Fonterutoli 2021 Mazzei.jpg"
+      "image_url": "/images/wines/קיאנטי קלאסיקו - Fonterutoli 2021 Mazzei.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840222
     },
     {
       "id": 169,
@@ -2564,10 +2900,12 @@
       "vintage": "2016",
       "grape": "",
       "rating": 93.0,
-      "shelf_price": 220,
-      "sale_price": 180,
+      "shelf_price": 220.0,
+      "sale_price": 180.0,
       "notes": "Capannele  מעולה",
-      "image_url": "/images/wines/קיאנטי קלאסיקו - CAPANNELLE 2016 gran selezione.jpg"
+      "image_url": "/images/wines/קיאנטי קלאסיקו - CAPANNELLE 2016 gran selezione.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840222
     },
     {
       "id": 170,
@@ -2579,10 +2917,12 @@
       "vintage": "",
       "grape": "",
       "rating": 98.0,
-      "shelf_price": 650,
-      "sale_price": 650,
+      "shelf_price": 650.0,
+      "sale_price": 650.0,
       "notes": "מציאה בשיאו",
-      "image_url": "/images/wines/לנש באג - Chateau LYNCH BAGES 94.jpg"
+      "image_url": "/images/wines/לנש באג - Chateau LYNCH BAGES 94.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840216
     },
     {
       "id": 171,
@@ -2594,10 +2934,12 @@
       "vintage": "1983",
       "grape": "",
       "rating": 98.0,
-      "shelf_price": 700,
-      "sale_price": 700,
+      "shelf_price": 700.0,
+      "sale_price": 700.0,
       "notes": "מציאה בשיאו ציון 91 RP",
-      "image_url": "/images/wines/קוס דה אסטורנל - Cos D'Estournel 1983.jpg"
+      "image_url": "/images/wines/קוס דה אסטורנל - Cos D'Estournel 1983.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840221
     },
     {
       "id": 172,
@@ -2609,10 +2951,21 @@
       "vintage": "2012",
       "grape": "",
       "rating": 99.0,
-      "shelf_price": 1300,
-      "sale_price": 1000,
+      "shelf_price": 1300.0,
+      "sale_price": 1000.0,
       "notes": "יחיד ומיוחד ציון 93 RP",
-      "image_url": "/images/wines/קוס דה אסטורנל - Cos D'Estournel 2012.jpg"
+      "image_url": "/images/wines/קוס דה אסטורנל - Cos D'Estournel 2012.jpg",
+      "out_of_stock": false,
+      "image_version": 1780926840221
     }
+  ],
+  "recommended_wine_ids": [
+    123,
+    88,
+    77,
+    101,
+    94,
+    27,
+    10
   ]
 }

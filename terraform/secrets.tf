@@ -153,6 +153,17 @@ resource "aws_iam_user_policy" "github_actions_deploy" {
         Effect   = "Allow"
         Action   = ["ssm:GetCommandInvocation", "ssm:ListCommandInvocations"]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.wine_images.arn,
+          "${aws_s3_bucket.wine_images.arn}/*"
+        ]
       }
     ]
   })

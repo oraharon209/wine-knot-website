@@ -1,0 +1,70 @@
+name: Sync from production
+
+# Pull live admin edits (prices, stock, recommended, images) into the repo.
+# Does NOT deploy — run this before terraform destroy/apply or when admin data
+# should become the new seed. Manual trigger only.
+on:
+  workflow_dispatch:
+    inputs:
+      commit_message:
+        description: Git commit message
+        required: false
+        default: Sync live admin catalog from production
+
+concurrency:
+  group: sync-from-production
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION || 'eu-north-1' }}
+      EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+      S3_BUCKET: ${{ vars.S3_BUCKET }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Validate configuration
+        run: |
+          set -euo pipefail
+          if [ -z "$EC2_INSTANCE_ID" ]; then
+            echo "EC2_INSTANCE_ID secret is not set"
+            exit 1
+          fi
+          if [ -z "$S3_BUCKET" ]; then
+            echo "S3_BUCKET repository variable is not set (Settings → Variables)"
+            exit 1
+          fi
+
+      - name: Sync catalog and images from production
+        run: |
+          set -euo pipefail
+          chmod +x scripts/dump_production_via_ssm.sh scripts/sync_from_production.sh
+          ./scripts/sync_from_production.sh --via-ssm
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          if git diff --quiet wines_data.json backend/config/init.sql frontend/public/images/wines/ \
+            && [ -z "$(git ls-files --others --exclude-standard frontend/public/images/wines/)" ]; then
+            echo "No catalog changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add wines_data.json backend/config/init.sql frontend/public/images/wines/
+          git commit -m "${{ github.event.inputs.commit_message }}"
+          git push

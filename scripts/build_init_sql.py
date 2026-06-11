@@ -43,8 +43,15 @@ def main():
         '  sale_price DECIMAL(10,2) NOT NULL,',
         '  notes TEXT,',
         '  image_url VARCHAR(500),',
+        '  image_version BIGINT UNSIGNED NOT NULL DEFAULT 0,',
         '  out_of_stock TINYINT(1) NOT NULL DEFAULT 0,',
         '  FOREIGN KEY (category_id) REFERENCES categories(id)',
+        ');',
+        '',
+        'CREATE TABLE IF NOT EXISTS recommended_wines (',
+        '  wine_id INT NOT NULL PRIMARY KEY,',
+        '  sort_order INT NOT NULL DEFAULT 0,',
+        '  FOREIGN KEY (wine_id) REFERENCES wines(id) ON DELETE CASCADE',
         ');',
         '',
         'INSERT INTO categories (slug, name_he, sort_order) VALUES',
@@ -58,25 +65,50 @@ def main():
 
     slug_to_id = {c['slug']: i + 1 for i, c in enumerate(data['categories'])}
 
-    lines.append(
-        'INSERT INTO wines (name, category_id, winery, country, vintage, grape, '
-        'rating, shelf_price, sale_price, notes, image_url, out_of_stock) VALUES'
+    has_ids = all(w.get('id') for w in data['wines'])
+    wine_cols = (
+        'id, name, category_id, winery, country, vintage, grape, '
+        'rating, shelf_price, sale_price, notes, image_url, image_version, out_of_stock'
+        if has_ids
+        else 'name, category_id, winery, country, vintage, grape, '
+        'rating, shelf_price, sale_price, notes, image_url, image_version, out_of_stock'
     )
+    lines.append(f'INSERT INTO wines ({wine_cols}) VALUES')
     wine_vals = []
+    max_id = 0
     for w in data['wines']:
         cid = slug_to_id[w['category']]
         rating = w['rating'] if w.get('rating') is not None else 'NULL'
+        oos = 1 if w.get('out_of_stock') else 0
+        image_version = int(w.get('image_version') or 0)
+        wine_id = w.get('id')
+        if wine_id:
+            max_id = max(max_id, int(wine_id))
+        prefix = f'{wine_id}, ' if has_ids else ''
         wine_vals.append(
-            f'  ({esc(w["name"])}, {cid}, {esc(w["winery"])}, {esc(w["country"])}, '
+            f'  ({prefix}{esc(w["name"])}, {cid}, {esc(w["winery"])}, {esc(w["country"])}, '
             f'{esc(w.get("vintage"))}, {esc(w.get("grape"))}, {rating}, '
             f'{w["shelf_price"]}, {w["sale_price"]}, {esc(w.get("notes"))}, '
-            f'{esc(w.get("image_url"))}, 0)'
+            f'{esc(w.get("image_url"))}, {image_version}, {oos})'
         )
     lines.append(',\n'.join(wine_vals) + ';')
+    if has_ids and max_id:
+        lines.append(f'ALTER TABLE wines AUTO_INCREMENT = {max_id + 1};')
+
+    recommended = data.get('recommended_wine_ids') or []
+    if recommended:
+        lines.append('')
+        lines.append('INSERT INTO recommended_wines (wine_id, sort_order) VALUES')
+        rec_vals = [
+            f'  ({wine_id}, {i})'
+            for i, wine_id in enumerate(recommended)
+        ]
+        lines.append(',\n'.join(rec_vals) + ';')
 
     with open(out_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
-    print(f'Wrote {out_path} with {len(data["wines"])} wines')
+    rec_n = len(recommended)
+    print(f'Wrote {out_path} with {len(data["wines"])} wines, {rec_n} recommended')
 
 
 if __name__ == '__main__':
