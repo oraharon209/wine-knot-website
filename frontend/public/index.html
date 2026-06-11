@@ -7,6 +7,7 @@
   <meta name="description" content="Wine Knot — חנות יין אונליין. מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.">
   <link rel="dns-prefetch" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com">
   <link rel="preconnect" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com" crossorigin>
+  <link rel="preload" as="image" href="/images/bottles-hero.jpeg">
   <style>
     :root {
       --wine: #6b1d3a;
@@ -76,16 +77,44 @@
 
     /* Hero */
     .hero {
-      background: linear-gradient(rgba(74,18,40,.75), rgba(74,18,40,.75)),
-        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%234a1228" width="1200" height="400"/><circle fill="%236b1d3a" cx="200" cy="200" r="150" opacity=".3"/><circle fill="%23c9a84c" cx="900" cy="100" r="80" opacity=".2"/></svg>');
-      background-size: cover;
+      position: relative;
+      overflow: hidden;
       color: #fff;
       text-align: center;
-      padding: 4rem 1.5rem;
-      min-height: 220px;
+      padding: clamp(3rem, 8vw, 5rem) 1.5rem clamp(2.5rem, 6vw, 4rem);
+      min-height: clamp(260px, 38vw, 420px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background:
+        linear-gradient(105deg, rgba(26,8,16,.82) 0%, rgba(74,18,40,.55) 45%, rgba(74,18,40,.35) 100%),
+        linear-gradient(to top, rgba(26,8,16,.92) 0%, transparent 55%),
+        url('/images/bottles-hero.jpeg') center center / cover no-repeat;
     }
-    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: .5rem; }
-    .hero p { font-size: 1.1rem; opacity: .9; max-width: 600px; margin: 0 auto 2rem; }
+    .hero-accent {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: .85;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      margin-bottom: .5rem;
+      text-shadow: 0 2px 24px rgba(0,0,0,.45);
+      letter-spacing: .5px;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      opacity: .95;
+      max-width: 600px;
+      margin: 0 auto;
+      text-shadow: 0 1px 12px rgba(0,0,0,.4);
+      line-height: 1.7;
+    }
 
     /* Promo banner */
     .promo {
@@ -799,14 +828,15 @@
 </header>
 
 <main id="main">
-<div class="promo">
-  🎁 מבצע: ב-12 בקבוקים — בקבוק מתנה חינם! | מתנה פרימיום ב-24 בקבוקים
-</div>
-
 <section class="hero">
   <h1>Wine Knot</h1>
   <p>חנות היין שלך — מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.</p>
+  <div class="hero-accent" aria-hidden="true"></div>
 </section>
+
+<div class="promo">
+  🎁 מבצע: ב-12 בקבוקים — בקבוק מתנה חינם! | מתנה פרימיום ב-24 בקבוקים
+</div>
 
 <section class="recommended hidden" id="recommendedSection">
   <div class="recommended-header">
