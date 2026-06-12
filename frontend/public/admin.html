@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ניהול יינות | Wine Knot</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -239,8 +242,12 @@ let activeTab = 'wines';
 
 const $ = id => document.getElementById(id);
 
-function sanitizeSearch(value) {
-  return String(value || '').slice(0, SEARCH_MAX_LEN).trim();
+function clampSearchInput(value) {
+  return String(value || '').slice(0, SEARCH_MAX_LEN);
+}
+
+function searchQuery(value) {
+  return clampSearchInput(value).trim();
 }
 
 function clampDecimalTyping(value, maxLen) {
@@ -334,7 +341,15 @@ async function api(url, opts = {}) {
   const text = await res.text();
   let data = {};
   try { data = text ? JSON.parse(text) : {}; } catch { /* HTML error page from server */ }
-  if (!res.ok) throw new Error(data.error || (res.status === 404 ? 'הפעולה לא זמינה בשרת' : 'שגיאה'));
+  if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error('נדרשת הרשאת מנהל — היכנסו דרך Cloudflare Access עם כתובת מייל מאושרת, או רעננו את הדף');
+    }
+    if (res.status === 403 && text.includes('Cloudflare Access')) {
+      throw new Error('נדרשת הזדהות — הזינו את קוד האימות שנשלח למייל המאושר');
+    }
+    throw new Error(data.error || (res.status === 404 ? 'הפעולה לא זמינה בשרת' : 'שגיאה'));
+  }
   return data;
 }
 
@@ -376,7 +391,7 @@ function readForm(prefix) {
 }
 
 async function loadWines(q = '') {
-  const search = sanitizeSearch(q);
+  const search = searchQuery(q);
   const url = search ? `${API}/wines?search=${encodeURIComponent(search)}` : `${API}/wines`;
   wines = await api(url);
   renderTable();
@@ -528,8 +543,7 @@ async function uploadImage() {
 
 function debounceSearch() {
   clearTimeout(searchTimer);
-  const q = sanitizeSearch($('search').value);
-  if ($('search').value !== q) $('search').value = q;
+  const q = searchQuery($('search').value);
   searchTimer = setTimeout(() => loadWines(q), 300);
 }
 
@@ -625,8 +639,7 @@ function debounceRecSearch() {
 }
 
 async function searchWinesToAdd() {
-  const q = sanitizeSearch($('recSearch').value);
-  if ($('recSearch').value !== q) $('recSearch').value = q;
+  const q = searchQuery($('recSearch').value);
   const box = $('recAddResults');
   if (!q) {
     box.classList.remove('show');

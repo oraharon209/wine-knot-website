@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wine Knot | חנות יין אונליין</title>
   <meta name="description" content="Wine Knot — חנות יין אונליין. מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="dns-prefetch" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com">
   <link rel="preconnect" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com" crossorigin>
   <link rel="preload" as="image" href="/images/bottles-hero.jpeg">
@@ -1011,8 +1014,12 @@ function safeImageUrl(url) {
   return '';
 }
 
-function sanitizeSearch(value) {
-  return String(value || '').slice(0, SEARCH_MAX_LEN).trim();
+function clampSearchInput(value) {
+  return String(value || '').slice(0, SEARCH_MAX_LEN);
+}
+
+function searchQuery(value) {
+  return clampSearchInput(value).trim();
 }
 
 function clampTextLength(el, maxLen) {
@@ -1080,7 +1087,7 @@ function applySearchLimits() {
   const searchEl = $('search');
   const minPriceEl = $('minPrice');
   const maxPriceEl = $('maxPrice');
-  const search = sanitizeSearch(searchEl.value);
+  const search = clampSearchInput(searchEl.value);
   if (searchEl.value !== search) searchEl.value = search;
   const minPrice = sanitizePrice(minPriceEl.value);
   if (minPriceEl.value && minPriceEl.value !== minPrice) minPriceEl.value = minPrice;
@@ -1145,6 +1152,10 @@ function formatPrice(amount) {
   return '₪' + Number(amount).toLocaleString('he-IL', { maximumFractionDigits: 0 });
 }
 
+function roundPrice(amount) {
+  return Math.round(Number(amount));
+}
+
 function formatBottleQty(qty) {
   return qty === 1 ? 'בקבוק אחד' : `${qty} בקבוקים`;
 }
@@ -1181,20 +1192,31 @@ function buildCartWhatsAppMessage() {
   ];
 
   let totalFree = 0;
+  let totalQty = 0;
   items.forEach(item => {
     const label = cartWineLabel(item);
+    const winery = (item.winery || '').trim();
     const lineTotal = item.sale_price * item.quantity;
     const free = freeBottles(item.quantity);
+    const freeValue = roundPrice(item.sale_price);
     totalFree += free;
+    totalQty += item.quantity;
     lines.push(label);
+    if (winery) lines.push(`מיקב: ${winery}`);
     lines.push(`   ${formatCartQty(item)} · ${formatPrice(lineTotal)}`);
+    if (free) {
+      const giftLabel = free === 1 ? 'בקבוק מתנה' : `${free} בקבוקי מתנה`;
+      const eachLabel = free > 1 ? ' כל אחד' : '';
+      lines.push(`   🎁 ${giftLabel} בשווי ${formatPrice(freeValue)}${eachLabel}`);
+    }
     lines.push('');
   });
 
   lines.push('──────────────');
   lines.push(`סה״כ לתשלום: ${formatPrice(cartTotalAmount())}`);
   if (totalFree) {
-    lines.push(`🎁 בקבוקי מתנה: ${totalFree}`);
+    const avgGiftValue = totalQty ? roundPrice(cartTotalAmount() / totalQty) : 0;
+    lines.push(`🎁 סה"כ ${totalFree} בקבוקי מתנה (שווי ממוצע ${formatPrice(avgGiftValue)} לבקבוק)`);
   }
   lines.push('');
   lines.push('תודה!');
@@ -1451,7 +1473,7 @@ function buildQuery() {
   applySearchLimits();
   const params = new URLSearchParams();
   if (activeCategory) params.set('category', activeCategory);
-  const search = sanitizeSearch($('search').value);
+  const search = searchQuery($('search').value);
   if (search) params.set('search', search);
   const minPrice = sanitizePrice($('minPrice').value);
   if (minPrice) params.set('min_price', minPrice);
@@ -1471,7 +1493,7 @@ function readUrlState() {
   const params = new URLSearchParams(location.search);
   activeCategory = params.get('category') || '';
   const search = params.get('search');
-  if (search) $('search').value = sanitizeSearch(search);
+  if (search) $('search').value = searchQuery(search);
   const minPrice = params.get('min_price');
   if (minPrice) $('minPrice').value = sanitizePrice(minPrice);
   const maxPrice = params.get('max_price');
@@ -1621,9 +1643,16 @@ async function openModal(id) {
     });
     $('orderBtn').addEventListener('click', () => {
       const label = cartWineLabel({ name: w.name, vintage: w.vintage || '' });
-      const msg = encodeURIComponent(
-        `שלום Wine Knot,\n\nמעוניין/ת ב:\n${label}\n${formatPrice(w.sale_price)}`
-      );
+      const winery = (w.winery || '').trim();
+      const lines = [
+        'שלום Wine Knot,',
+        '',
+        'מעוניין/ת ב:',
+        label,
+      ];
+      if (winery) lines.push(`מיקב: ${winery}`);
+      lines.push(formatPrice(w.sale_price));
+      const msg = encodeURIComponent(lines.join('\n'));
       window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank');
     });
     $('modal').classList.add('open');

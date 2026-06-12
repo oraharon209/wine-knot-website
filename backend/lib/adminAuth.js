@@ -10,7 +10,7 @@ function requireAdmin(req, res, next) {
   }
 
   const cfEmail = req.headers['cf-access-authenticated-user-email'];
-  if (cfEmail) {
+  if (cfEmail && String(cfEmail).trim()) {
     return next();
   }
 

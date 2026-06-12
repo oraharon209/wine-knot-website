@@ -1,6 +1,10 @@
 # Production / AWS: HTTPS on 443 for Cloudflare Full SSL.
 # Usage: docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
 services:
+  backend:
+    environment:
+      ADMIN_AUTH_DISABLED: "false"
+
   nginx:
     ports:
       - "${HTTP_PORT:-8080}:80"
