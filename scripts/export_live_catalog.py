@@ -87,7 +87,10 @@ def main():
     try:
         import mysql.connector
     except ImportError:
-        print('Install mysql-connector-python: .venv/bin/pip install mysql-connector-python', file=sys.stderr)
+        print(
+            'Install mysql-connector-python: .venv/bin/pip install mysql-connector-python',
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     conn = mysql.connector.connect(
