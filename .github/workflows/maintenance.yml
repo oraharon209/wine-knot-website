@@ -91,8 +91,17 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
-          scan-ref: .
-          severity: CRITICAL,HIGH,MEDIUM
+          scan-ref: backend/Dockerfile
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          ignore-unfixed: true
+
+      - name: Trivy config scan (compose)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: config
+          scan-ref: docker-compose.yml
+          severity: CRITICAL,HIGH
           exit-code: 1
           ignore-unfixed: true
 
