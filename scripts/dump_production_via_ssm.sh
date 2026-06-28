@@ -78,5 +78,5 @@ if [ "$STATUS" != "Success" ]; then
   exit 1
 fi
 
-aws s3 cp "s3://$S3_BUCKET/$S3_KEY" "$OUT_FILE" --region "$AWS_REGION"
+aws s3 cp "s3://$S3_BUCKET/$S3_KEY" "$OUT_FILE" --region "$AWS_REGION" --only-show-errors >&2
 echo "$OUT_FILE"

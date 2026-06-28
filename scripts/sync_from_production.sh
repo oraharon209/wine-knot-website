@@ -41,7 +41,7 @@ fi
 
 if [ "$VIA_SSM" = true ]; then
   echo "Dumping production MySQL via SSM ..."
-  DUMP_FILE="$("$ROOT/scripts/dump_production_via_ssm.sh")"
+  DUMP_FILE="$("$ROOT/scripts/dump_production_via_ssm.sh" | tail -1)"
 elif [ -z "$DUMP_FILE" ]; then
   if [ -z "$SSH_HOST" ]; then
     echo "Set SSH_HOST=ubuntu@<ip>, use --via-ssm, or pass /path/to/live-dump.sql"
