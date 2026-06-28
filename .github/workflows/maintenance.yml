@@ -123,7 +123,7 @@ jobs:
           npm audit fix || true
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: automation/npm-audit-fix
