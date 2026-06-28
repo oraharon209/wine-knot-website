@@ -1,0 +1,38 @@
+# Opens PRs when dependencies or base images have updates or known vulnerabilities.
+# Enable "Dependabot security updates" in repo Settings → Code security for auto-fix PRs.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    groups:
+      aws-sdk:
+        patterns:
+          - "@aws-sdk/*"
+
+  - package-ecosystem: docker
+    directory: /backend
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: docker
+    directory: /frontend
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 10

@@ -81,10 +81,10 @@ Requires SSH to the EC2 host (`terraform output public_ip`) and AWS CLI for S3.
 Without SSH (e.g. CI): `./scripts/sync_from_production.sh --via-ssm` with
 `EC2_INSTANCE_ID` and `S3_BUCKET` set.
 
-**GitHub Actions:** run **Sync from production** manually (Actions tab). Set repo
-variable `S3_BUCKET` to `terraform output -raw s3_bucket`. After changing
-`terraform/secrets.tf` IAM, run `terraform apply` once so the deploy user can
-read S3.
+**GitHub Actions:** **Sync from production** runs every Sunday at 04:00 UTC and can
+be triggered manually (Actions tab). Set repo variable `S3_BUCKET` to
+`terraform output -raw s3_bucket`. After changing `terraform/secrets.tf` IAM, run
+`terraform apply` once so the deploy user can read S3.
 
 Review with `git diff`, then commit and push — future deploys and
 `terraform destroy/apply` will use this data.

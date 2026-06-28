@@ -1,0 +1,138 @@
+name: Maintenance
+
+# Monthly dependency and image audit; run manually after a Dependabot or CodeQL alert.
+# Dependabot opens fix PRs automatically — this workflow verifies the repo and can apply npm fixes.
+on:
+  schedule:
+    # 1st of each month, 06:00 UTC
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+    inputs:
+      apply_npm_fixes:
+        description: Run npm audit fix and open a PR if changes are needed
+        type: boolean
+        default: false
+      reason:
+        description: Why this run was triggered
+        type: choice
+        options:
+          - scheduled
+          - vulnerability-alert
+          - manual
+        default: manual
+
+concurrency:
+  group: maintenance
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  audit:
+    name: Audit dependencies and images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: npm audit
+        working-directory: backend
+        env:
+          TRIGGER_REASON: ${{ github.event.inputs.reason || 'scheduled' }}
+        run: |
+          set +e
+          npm audit --audit-level=moderate 2>&1 | tee audit.txt
+          code=$?
+          set -euo pipefail
+          echo "## npm audit" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat audit.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          if [ "$code" -ne 0 ]; then
+            echo "::warning::npm audit reported moderate or higher severity issues"
+            if [ "${{ github.event_name }}" = "schedule" ] || [ "$TRIGGER_REASON" = "vulnerability-alert" ]; then
+              exit 1
+            fi
+          fi
+
+      - name: Report pinned base images
+        run: |
+          set -euo pipefail
+          echo "## Base images" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -hE '^FROM |image:' backend/Dockerfile frontend/Dockerfile docker-compose.yml docker-compose.production.yml \
+            | sed 's/^[[:space:]]*//' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          ignore-unfixed: true
+
+      - name: Trivy config scan (Dockerfiles)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: config
+          scan-ref: .
+          severity: CRITICAL,HIGH,MEDIUM
+          exit-code: 1
+          ignore-unfixed: true
+
+  apply-npm-fixes:
+    name: Apply npm audit fixes
+    needs: audit
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.apply_npm_fixes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: npm audit fix
+        working-directory: backend
+        run: |
+          set -euo pipefail
+          npm ci
+          npm audit fix || true
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/npm-audit-fix
+          delete-branch: true
+          commit-message: Fix npm audit findings
+          title: "chore(deps): apply npm audit fixes"
+          body: |
+            Automated npm audit fix triggered by the **Maintenance** workflow
+            (reason: `${{ inputs.reason }}`).
+
+            Review `npm audit` output in the workflow run and merge after CI passes.
+          labels: dependencies, security
