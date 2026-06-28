@@ -110,7 +110,8 @@ resource "aws_iam_role_policy" "s3_images" {
       ]
       Resource = [
         aws_s3_bucket.wine_images.arn,
-        "${aws_s3_bucket.wine_images.arn}/wines/*"
+        "${aws_s3_bucket.wine_images.arn}/wines/*",
+        "${aws_s3_bucket.wine_images.arn}/_sync/*"
       ]
     }]
   })
