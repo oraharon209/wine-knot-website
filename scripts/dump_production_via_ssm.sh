@@ -18,16 +18,16 @@ if [ -z "$INSTANCE_ID" ] || [ -z "$S3_BUCKET" ]; then
 fi
 
 REMOTE=$(cat <<'SCRIPT'
-set -euo pipefail
+bash -lc 'set -euo pipefail
 cd /opt/wine-knot
-ROOT_PASS=$(grep '^MYSQL_ROOT_PASSWORD=' .env | cut -d= -f2-)
-BUCKET=$(grep '^S3_BUCKET=' .env | cut -d= -f2-)
+ROOT_PASS=$(grep ^MYSQL_ROOT_PASSWORD= .env | cut -d= -f2-)
+BUCKET=$(grep ^S3_BUCKET= .env | cut -d= -f2-)
 docker compose -f docker-compose.yml -f docker-compose.production.yml \
   exec -T mysql mysqldump -u root -p"$ROOT_PASS" \
   --no-tablespaces --single-transaction \
   wineknot categories wines recommended_wines \
   | aws s3 cp - "s3://${BUCKET}/_sync/catalog-latest.sql"
-echo "Uploaded catalog dump to S3"
+echo "Uploaded catalog dump to S3"'
 SCRIPT
 )
 
