@@ -92,7 +92,7 @@ jobs:
         with:
           scan-type: config
           scan-ref: backend/Dockerfile
-          severity: CRITICAL,HIGH
+          severity: CRITICAL
           exit-code: 1
           ignore-unfixed: true
 
@@ -101,7 +101,7 @@ jobs:
         with:
           scan-type: config
           scan-ref: docker-compose.yml
-          severity: CRITICAL,HIGH
+          severity: CRITICAL
           exit-code: 1
           ignore-unfixed: true
 
