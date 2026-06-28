@@ -63,17 +63,27 @@ fi
 
 # shellcheck disable=SC1091
 source .env 2>/dev/null || true
-DB_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-rootpass}"
+export MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-rootpass}"
+DB_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD"
 IMPORT_DB="${SYNC_IMPORT_DB:-wineknot_sync}"
+
+if [ "$VIA_SSM" = true ]; then
+  # CI runner: discard any stale compose volume so root password matches MYSQL_ROOT_PASSWORD
+  "${COMPOSE[@]}" down -v 2>/dev/null || true
+fi
 
 echo "Starting local MySQL ..."
 "${COMPOSE[@]}" up -d mysql
-for _ in $(seq 1 30); do
-  if "${COMPOSE[@]}" exec -T mysql mysqladmin ping -h localhost -u root -p"$DB_ROOT_PASSWORD" --silent 2>/dev/null; then
+for _ in $(seq 1 60); do
+  if "${COMPOSE[@]}" exec -T mysql mysql -u root -p"$DB_ROOT_PASSWORD" -e "SELECT 1" >/dev/null 2>&1; then
     break
   fi
   sleep 2
 done
+if ! "${COMPOSE[@]}" exec -T mysql mysql -u root -p"$DB_ROOT_PASSWORD" -e "SELECT 1" >/dev/null 2>&1; then
+  echo "Local MySQL did not become ready" >&2
+  exit 1
+fi
 
 echo "Importing dump into local database $IMPORT_DB ..."
 "${COMPOSE[@]}" exec -T mysql mysql -u root -p"$DB_ROOT_PASSWORD" -e "DROP DATABASE IF EXISTS $IMPORT_DB; CREATE DATABASE $IMPORT_DB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"

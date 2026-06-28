@@ -29,6 +29,9 @@ jobs:
       AWS_REGION: ${{ vars.AWS_REGION || 'eu-north-1' }}
       EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
       S3_BUCKET: ${{ vars.S3_BUCKET }}
+      # Ephemeral CI MySQL — not production credentials
+      MYSQL_ROOT_PASSWORD: rootpass
+      SYNC_IMPORT_DB: wineknot_sync
     steps:
       - name: Checkout
         uses: actions/checkout@v4
