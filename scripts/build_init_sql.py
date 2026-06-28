@@ -3,6 +3,7 @@
 
 import json
 import sys
+from pathlib import Path
 
 
 def esc(s):
@@ -12,8 +13,9 @@ def esc(s):
 
 
 def main():
-    data_path = sys.argv[1] if len(sys.argv) > 1 else '/home/or/wine-knot/wines_data.json'
-    out_path = sys.argv[2] if len(sys.argv) > 2 else '/home/or/wine-knot/backend/config/init.sql'
+    root = Path(__file__).resolve().parent.parent
+    data_path = Path(sys.argv[1]) if len(sys.argv) > 1 else root / 'wines_data.json'
+    out_path = Path(sys.argv[2]) if len(sys.argv) > 2 else root / 'backend/config/init.sql'
 
     with open(data_path, encoding='utf-8') as f:
         data = json.load(f)
