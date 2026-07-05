@@ -82,7 +82,7 @@
       "sale_price": 60.0,
       "notes": "בלנד ים תיכוני נחמד VFM",
       "image_url": "/images/wines/כרמל - מדיטריאן וואט 2 לבן VAT2.jpg",
-      "out_of_stock": false,
+      "out_of_stock": true,
       "image_version": 1780926840212
     },
     {
@@ -1204,7 +1204,7 @@
       "sale_price": 60.0,
       "notes": "זנים ים תיכוניים VFM",
       "image_url": "/images/wines/כרמל - מדיטראניאן 4VATS.jpg",
-      "out_of_stock": false,
+      "out_of_stock": true,
       "image_version": 1780926840212
     },
     {
@@ -1387,8 +1387,8 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 90.0,
-      "sale_price": 85.0,
+      "shelf_price": 85.0,
+      "sale_price": 75.0,
       "notes": "בלנד אדום של מאיה יקב בת של טוליפ",
       "image_url": "/images/wines/מאיה - מארה רד RED.jpg",
       "out_of_stock": false,
@@ -3144,6 +3144,57 @@
       "image_url": "/images/wines/יקבי הגולן - ירדן קצרין שרדונה.png",
       "out_of_stock": false,
       "image_version": 1782545664692
+    },
+    {
+      "id": 192,
+      "name": "מאיה פינק",
+      "category": "rose",
+      "category_he": "רוזה",
+      "winery": "מאיה - טוליפ",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 92.0,
+      "shelf_price": 85.0,
+      "sale_price": 70.0,
+      "notes": "הרוזה של יקב מאיה (טוליפ)",
+      "image_url": "/images/wines/מאיה - טוליפ - מאיה פינק.jpg",
+      "out_of_stock": false,
+      "image_version": 1782721645628
+    },
+    {
+      "id": 193,
+      "name": "פינו גריג'יו",
+      "category": "white",
+      "category_he": "לבן",
+      "winery": "לוריא",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 92.0,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
+      "notes": "פינו גריגיו מעולה של לוריא",
+      "image_url": "/images/wines/לוריא - פינו גריג'יו.jpg",
+      "out_of_stock": false,
+      "image_version": 1783093888579
+    },
+    {
+      "id": 194,
+      "name": "רוסאן",
+      "category": "white",
+      "category_he": "לבן",
+      "winery": "לוריא",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 92.0,
+      "shelf_price": 100.0,
+      "sale_price": 85.0,
+      "notes": "רוסאן מיוחד של לוריא",
+      "image_url": "/images/wines/לוריא - רוסאן.jpg",
+      "out_of_stock": false,
+      "image_version": 1783094079253
     }
   ],
   "recommended_wine_ids": [
