@@ -508,7 +508,7 @@
       "notes": "שבלי אלכסנדר Maison Alexandre",
       "image_url": "/images/wines/אלכסנדר - CHABLIS שבלי.jpg",
       "out_of_stock": false,
-      "image_version": 1780926840183
+      "image_version": 1787394177372
     },
     {
       "id": 29,
@@ -3263,6 +3263,40 @@
       "image_url": "/images/wines/דלתון - מוסקטו דלתון.jpg",
       "out_of_stock": false,
       "image_version": 1785587736655
+    },
+    {
+      "id": 199,
+      "name": "שבלי דומיין פוריי FOURREY",
+      "category": "white",
+      "category_he": "לבן",
+      "winery": "Domain Fourrey",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 93.0,
+      "shelf_price": 135.0,
+      "sale_price": 120.0,
+      "notes": "CHABLIS מעולה",
+      "image_url": "/images/wines/Domain Fourrey - שבלי דומיין פוריי FOURREY.jpg",
+      "out_of_stock": false,
+      "image_version": 1787390717377
+    },
+    {
+      "id": 200,
+      "name": "שבלי דומיין פוריי FOURREY פרמיה קרו",
+      "category": "white",
+      "category_he": "לבן",
+      "winery": "Domain Fourrey",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 94.0,
+      "shelf_price": 190.0,
+      "sale_price": 145.0,
+      "notes": "שבלי מצויין  PREMIER CRU  רמה גבוהה",
+      "image_url": "/images/wines/Domain Fourrey - שבלי דומיין פוריי FOURREY פרמיה קרו.jpg",
+      "out_of_stock": false,
+      "image_version": 1787390870203
     }
   ],
   "recommended_wine_ids": [
