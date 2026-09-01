@@ -31,7 +31,12 @@ Production (`wineknot.co.il/admin.html`): Cloudflare Access email OTP for allowl
 wine-knot/
 ├── docker-compose.yml      # MySQL + Backend + Nginx
 ├── wines_data.json         # Wine catalog (seed data)
-├── frontend/public/        # Hebrew RTL storefront
+├── frontend/public/        # Hebrew RTL storefront (static: index.html + css/site.css + js/app.js)
+│   ├── css/site.css        # Design tokens + components (see docs/design/03-design-system.md)
+│   ├── js/app.js           # Catalog, filters, /wine/:id route, cart, WhatsApp order
+│   ├── fonts/              # Self-hosted Frank Ruhl Libre + Assistant (Hebrew/Latin woff2)
+│   └── admin.html          # Admin panel (unchanged)
+├── docs/design/            # Redesign audit, direction and design system
 ├── backend/                # Express REST API
 ├── nginx/                  # Reverse proxy config
 ├── terraform/              # AWS deployment (optional)
