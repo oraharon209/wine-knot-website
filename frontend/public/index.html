@@ -18,7 +18,7 @@
       --gold: #c9a84c;
       --cream: #faf7f2;
       --text: #2c1810;
-      --muted: #7a6a62;
+      --muted: #5f514a;
       --border: #e8ddd4;
       --shadow: 0 4px 20px rgba(107,29,58,.12);
       --radius: 12px;
@@ -42,6 +42,7 @@
       border: 0;
     }
     a { color: inherit; text-decoration: none; }
+    .logo { text-decoration: none; }
 
     /* Header */
     .header {
@@ -267,6 +268,9 @@
       text-align: center;
       cursor: pointer;
       transition: all .2s;
+      font: inherit;
+      color: inherit;
+      width: 100%;
     }
     .cat-card:hover, .cat-card.active {
       border-color: var(--wine);
@@ -367,6 +371,17 @@
     .wine-body { padding: .85rem 1rem 1rem; flex: 1; display: flex; flex-direction: column; }
     .wine-cat { font-size: .7rem; color: #5a5a5a; margin-bottom: .25rem; }
     .wine-name { font-weight: 500; font-size: .95rem; margin-bottom: .2rem; line-height: 1.35; color: #1a3a5c; }
+    .wine-open {
+      background: none;
+      border: none;
+      font: inherit;
+      font-weight: inherit;
+      color: inherit;
+      cursor: pointer;
+      text-align: inherit;
+      padding: 0;
+      width: 100%;
+    }
     .wine-winery { font-size: .8rem; color: #666; margin-bottom: .6rem; }
     .wine-prices { display: flex; align-items: baseline; gap: .5rem; margin-top: auto; }
     .sale-price { font-size: 1.15rem; font-weight: 700; color: #111; }
@@ -748,6 +763,7 @@
       padding: 1.5rem;
       font-size: .85rem;
     }
+    .footer a { text-decoration: underline; text-underline-offset: 3px; }
 
     /* Loading */
     #winesContainer { min-height: 480px; }
@@ -847,17 +863,31 @@
       .header-inner { padding: 1rem; }
     }
   </style>
+  <link rel="stylesheet" href="/css/compliance.css">
+  <script>
+    (function () {
+      try {
+        var s = JSON.parse(localStorage.getItem('wineknot_a11y') || '{}');
+        var h = document.documentElement;
+        if (s.font) h.setAttribute('data-a11y-font', String(s.font));
+        if (s.contrast) h.classList.add('a11y-contrast');
+        if (s.grayscale) h.classList.add('a11y-grayscale');
+        if (s.links) h.classList.add('a11y-highlight-links');
+        if (s.noMotion) h.classList.add('a11y-no-motion');
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 <script>if(localStorage.getItem('wineknot_age_verified')!=='1')document.body.classList.add('age-gate-active');</script>
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo">Wine <span>Knot</span></div>
-    <nav class="nav" id="nav"></nav>
-    <button class="cart-btn" id="cartBtn" type="button">
+    <a class="logo" href="/">Wine <span>Knot</span></a>
+    <nav class="nav" id="nav" aria-label="קטגוריות יינות"></nav>
+    <button class="cart-btn" id="cartBtn" type="button" aria-haspopup="dialog" aria-controls="cartDrawer" aria-expanded="false">
       🛒 עגלה
-      <span class="cart-badge" id="cartBadge" data-count="0">0</span>
+      <span class="cart-badge" id="cartBadge" data-count="0" aria-label="פריטים בעגלה">0</span>
     </button>
   </div>
 </header>
@@ -875,7 +905,8 @@
 
 <div class="controls">
   <div class="search-box">
-    <input type="text" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off" maxlength="64">
+    <label class="sr-only" for="search">חיפוש יינות לפי שם, יקב או מדינה</label>
+    <input type="search" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off" maxlength="64">
   </div>
   <div class="mobile-category-filter" id="mobileCategoryFilter">
     <label for="mobileCategorySelect">קטגוריה</label>
@@ -891,10 +922,12 @@
       <option value="price_desc">מחיר (גבוה לנמוך)</option>
       <option value="name_asc">שם (א-ת)</option>
     </select>
+    <label class="sr-only" for="minPrice">מחיר מינימלי בשקלים</label>
     <input type="number" class="filter-input" id="minPrice" placeholder="מחיר מינימלי ₪" min="0" max="100000" step="1" autocomplete="off" style="width:130px">
+    <label class="sr-only" for="maxPrice">מחיר מקסימלי בשקלים</label>
     <input type="number" class="filter-input" id="maxPrice" placeholder="מחיר מקסימלי ₪" min="0" max="100000" step="1" autocomplete="off" style="width:130px">
   </div>
-  <div class="results-count" id="resultsCount"></div>
+  <div class="results-count" id="resultsCount" role="status" aria-live="polite"></div>
 </div>
 
 <section class="recommended hidden" id="recommendedSection">
@@ -907,7 +940,7 @@
   <div class="recommended-grid" id="recommendedGrid"></div>
 </section>
 
-<div class="categories is-loading" id="categories">
+<div class="categories is-loading" id="categories" role="group" aria-label="סינון לפי קטגוריה">
   <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
   <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
   <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
@@ -916,7 +949,8 @@
   <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
 </div>
 
-<div id="winesContainer">
+<h2 class="sr-only" id="winesHeading">היינות</h2>
+<div id="winesContainer" aria-labelledby="winesHeading">
   <div class="wines-grid" id="winesGridSkeleton" aria-hidden="true">
     <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
     <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
@@ -932,7 +966,6 @@
     <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
   </div>
 </div>
-</main>
 
 <section class="about" id="about">
   <h2>אודותינו</h2>
@@ -956,28 +989,34 @@
   <p>נשמח לעזור בבחירת היין המושלם</p>
   <div class="contact-links">
     <a href="tel:050-8496666" id="phoneLink">📞 050-8496666</a>
-    <a href="https://wa.me/972508496666" id="waLink" target="_blank">💬 וואטסאפ</a>
+    <a href="https://wa.me/972508496666" id="waLink" target="_blank" rel="noopener noreferrer">💬 וואטסאפ</a>
     <a href="mailto:doronchick@gmail.com" id="emailLink">✉️ doronchick@gmail.com</a>
   </div>
 </section>
+</main>
 
 <footer class="footer">
   <p>© 2026 Wine Knot. אזהרה: צריכה מופרזת של אלכוהול מסכנת חיים ומזיקה לבריאות.</p>
+  <p class="footer-legal">
+    <a href="/accessibility.html">הצהרת נגישות</a>
+    <a href="/privacy.html">מדיניות פרטיות ועוגיות</a>
+    <button type="button" data-open-cookies>הגדרת עוגיות</button>
+  </p>
 </footer>
 
 <div class="modal-overlay" id="modal">
-  <div class="modal">
-    <button class="modal-close" id="modalClose">✕</button>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <button class="modal-close" id="modalClose" type="button" aria-label="סגור">✕</button>
     <div class="modal-img" id="modalImg">🍷</div>
     <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
 
 <div class="cart-overlay" id="cartOverlay">
-  <div class="cart-drawer">
+  <div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" tabindex="-1">
     <div class="cart-header">
-      <h2>🛒 העגלה שלי</h2>
-      <button class="cart-close" id="cartClose" type="button" aria-label="סגור">✕</button>
+      <h2 id="cartTitle">🛒 העגלה שלי</h2>
+      <button class="cart-close" id="cartClose" type="button" aria-label="סגור עגלה">✕</button>
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-footer" id="cartFooter">
@@ -990,7 +1029,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <div class="age-gate" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
   <div class="age-gate-card">
@@ -1320,15 +1359,59 @@ function renderCart() {
   waBtn.disabled = false;
 }
 
+let lastFocus = null;
+let releaseFocusTrap = null;
+
+function getFocusable(container) {
+  return [...container.querySelectorAll(
+    'a[href], button:not([disabled]), textarea, input:not([disabled]), select, [tabindex]:not([tabindex="-1"])'
+  )].filter(el => !el.hasAttribute('hidden') && el.offsetParent !== null);
+}
+
+function trapFocus(container) {
+  if (releaseFocusTrap) releaseFocusTrap();
+  function onKey(e) {
+    if (e.key !== 'Tab') return;
+    const els = getFocusable(container);
+    if (!els.length) return;
+    const first = els[0];
+    const last = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+  container.addEventListener('keydown', onKey);
+  releaseFocusTrap = () => {
+    container.removeEventListener('keydown', onKey);
+    releaseFocusTrap = null;
+  };
+}
+
+function restoreFocus() {
+  if (releaseFocusTrap) releaseFocusTrap();
+  if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+  lastFocus = null;
+}
+
 function openCart() {
+  lastFocus = document.activeElement;
   renderCart();
   $('cartOverlay').classList.add('open');
+  $('cartBtn').setAttribute('aria-expanded', 'true');
   document.body.style.overflow = 'hidden';
+  trapFocus($('cartDrawer'));
+  $('cartClose').focus();
 }
 
 function closeCart() {
   $('cartOverlay').classList.remove('open');
+  $('cartBtn').setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
+  restoreFocus();
 }
 
 let toastTimer;
@@ -1348,7 +1431,7 @@ function setupCart() {
   });
   $('cartWhatsAppBtn').addEventListener('click', () => {
     const msg = encodeURIComponent(buildCartWhatsAppMessage());
-    window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank');
+    window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank', 'noopener,noreferrer');
   });
   updateCartBadge();
   renderCart();
@@ -1389,13 +1472,13 @@ function wineImageHtml(w, { eager = false } = {}) {
 function wineCardHtml(w, { showRecommendedBadge = false, eagerImage = false } = {}) {
   const disc = discountPct(w.shelf_price, w.sale_price);
   return `
-    <div class="wine-card" data-id="${esc(w.id)}">
+    <article class="wine-card" data-id="${esc(w.id)}">
       ${showRecommendedBadge ? '<div class="recommended-badge">מומלץ</div>' : ''}
       ${disc ? `<div class="discount-badge">-${disc}%</div>` : ''}
       ${w.rating ? `<div class="rating-badge">${esc(w.rating)}</div>` : ''}
       <div class="wine-img">${wineImageHtml(w, { eager: eagerImage })}</div>
       <div class="wine-body">
-        <div class="wine-name">${esc(w.name)}</div>
+        <h3 class="wine-name"><button class="wine-open" type="button" data-open-id="${esc(w.id)}">${esc(w.name)}</button></h3>
         <div class="wine-winery">${esc(w.winery || '')}${w.vintage ? ' · ' + esc(w.vintage) : ''}</div>
         <div class="wine-prices">
           <div>
@@ -1413,14 +1496,20 @@ function wineCardHtml(w, { showRecommendedBadge = false, eagerImage = false } = 
           </button>
         </div>
       </div>
-    </div>`;
+    </article>`;
 }
 
 function bindWineCards(container) {
   container.querySelectorAll('.wine-card').forEach(card => {
     card.addEventListener('click', e => {
-      if (e.target.closest('.btn-qty, .btn-add-cart')) return;
+      if (e.target.closest('.btn-qty, .btn-add-cart, .wine-open')) return;
       openModal(card.dataset.id);
+    });
+  });
+  container.querySelectorAll('.wine-open').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      openModal(btn.dataset.openId);
     });
   });
   container.querySelectorAll('.btn-qty, .btn-add-cart').forEach(btn => {
@@ -1473,8 +1562,8 @@ function categoryHref(slug) {
 
 function renderNav() {
   const nav = $('nav');
-  nav.innerHTML = `<a href="/" data-cat="" class="${!activeCategory ? 'active' : ''}">הכל</a>` +
-    categories.map(c => `<a href="${categoryHref(c.slug)}" data-cat="${esc(c.slug)}" class="${activeCategory === c.slug ? 'active' : ''}">${esc(c.name_he)}</a>`).join('');
+  nav.innerHTML = `<a href="/" data-cat="" class="${!activeCategory ? 'active' : ''}" ${!activeCategory ? 'aria-current="page"' : ''}>הכל</a>` +
+    categories.map(c => `<a href="${categoryHref(c.slug)}" data-cat="${esc(c.slug)}" class="${activeCategory === c.slug ? 'active' : ''}" ${activeCategory === c.slug ? 'aria-current="page"' : ''}>${esc(c.name_he)}</a>`).join('');
   nav.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
@@ -1504,10 +1593,10 @@ function renderCategoryCards() {
   const el = $('categories');
   el.classList.remove('is-loading');
   el.innerHTML = categories.map(c => `
-    <div class="cat-card ${activeCategory === c.slug ? 'active' : ''}" data-cat="${esc(c.slug)}">
+    <button type="button" class="cat-card ${activeCategory === c.slug ? 'active' : ''}" data-cat="${esc(c.slug)}" ${activeCategory === c.slug ? 'aria-current="true"' : ''}>
       <div>${esc(c.name_he)}</div>
       <div class="count">${esc(c.wine_count)} יינות</div>
-    </div>
+    </button>
   `).join('');
   el.querySelectorAll('.cat-card').forEach(card => {
     card.addEventListener('click', () => {
@@ -1671,7 +1760,7 @@ async function openModal(id) {
     const disc = discountPct(w.shelf_price, w.sale_price);
     $('modalImg').innerHTML = wineImageHtml(w);
     $('modalBody').innerHTML = `
-      <h2>${esc(w.name)}</h2>
+      <h2 id="modalTitle">${esc(w.name)}</h2>
       <div class="modal-meta">${esc(w.winery)} · ${esc(w.country)} · ${esc(w.vintage || '')} · ${esc(w.grape || '')}</div>
       <div class="wine-prices" style="margin-bottom:.5rem">
         <span class="sale-price">${esc(w.sale_price)} ₪</span>
@@ -1707,10 +1796,18 @@ async function openModal(id) {
       if (winery) lines.push(`מיקב: ${winery}`);
       lines.push(formatPrice(w.sale_price));
       const msg = encodeURIComponent(lines.join('\n'));
-      window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank');
+      window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank', 'noopener,noreferrer');
     });
+    lastFocus = document.activeElement;
     $('modal').classList.add('open');
+    trapFocus($('modal').querySelector('.modal'));
+    $('modalClose').focus();
   } catch { /* ignore */ }
+}
+
+function closeModal() {
+  $('modal').classList.remove('open');
+  restoreFocus();
 }
 
 function setupFilters() {
@@ -1733,8 +1830,13 @@ function setupFilters() {
   });
 }
 
-$('modalClose').addEventListener('click', () => $('modal').classList.remove('open'));
-$('modal').addEventListener('click', e => { if (e.target === $('modal')) $('modal').classList.remove('open'); });
+$('modalClose').addEventListener('click', closeModal);
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if ($('modal').classList.contains('open')) closeModal();
+  else if ($('cartOverlay').classList.contains('open')) closeCart();
+});
 
 function setupAgeGate() {
   if (localStorage.getItem(AGE_KEY) === '1') {
@@ -1742,9 +1844,14 @@ function setupAgeGate() {
     return true;
   }
 
+  trapFocus($('ageGate'));
+  $('ageGateYes').focus();
+
   $('ageGateYes').addEventListener('click', () => {
+    if (releaseFocusTrap) releaseFocusTrap();
     localStorage.setItem(AGE_KEY, '1');
     document.body.classList.remove('age-gate-active');
+    document.dispatchEvent(new Event('wineknot:age-verified'));
     init();
   });
 
@@ -1760,6 +1867,7 @@ async function init() {
   $('phoneLink').href = `tel:${CONTACT.phone}`;
   $('phoneLink').textContent = `📞 ${CONTACT.phone}`;
   $('waLink').href = `https://wa.me/${CONTACT.whatsapp}`;
+  $('waLink').rel = 'noopener noreferrer';
   $('emailLink').href = `mailto:${CONTACT.email}`;
   $('emailLink').textContent = `✉️ ${CONTACT.email}`;
 
@@ -1780,5 +1888,6 @@ async function init() {
 
 if (setupAgeGate()) init();
 </script>
+<script src="/js/compliance.js"></script>
 </body>
 </html>

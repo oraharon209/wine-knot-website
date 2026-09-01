@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הצהרת נגישות | Wine Knot</title>
+  <meta name="description" content="הצהרת הנגישות של חנות היין Wine Knot לפי תקנות שוויון זכויות לאנשים עם מוגבלות ותקן ישראלי 5568.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
+  <link rel="stylesheet" href="/css/compliance.css">
+  <style>
+    :root {
+      --wine: #6b1d3a;
+      --wine-dark: #4a1228;
+      --gold: #c9a84c;
+      --cream: #faf7f2;
+      --text: #2c1810;
+      --muted: #5f514a;
+      --border: #e8ddd4;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    .header {
+      background: linear-gradient(135deg, var(--wine-dark), var(--wine));
+      color: #fff;
+    }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .logo span { color: var(--gold); }
+    .footer {
+      background: #1a0a10;
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: .85rem;
+    }
+  </style>
+  <script>
+    (function () {
+      try {
+        var s = JSON.parse(localStorage.getItem('wineknot_a11y') || '{}');
+        var h = document.documentElement;
+        if (s.font) h.setAttribute('data-a11y-font', String(s.font));
+        if (s.contrast) h.classList.add('a11y-contrast');
+        if (s.grayscale) h.classList.add('a11y-grayscale');
+        if (s.links) h.classList.add('a11y-highlight-links');
+        if (s.noMotion) h.classList.add('a11y-no-motion');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="legal-page">
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="/">Wine <span>Knot</span></a>
+      <a href="/" style="color:#fff;text-decoration:underline">חזרה לחנות</a>
+    </div>
+  </header>
+
+  <main id="main" class="legal-wrap">
+    <a class="legal-back" href="/">← חזרה לחנות</a>
+    <article class="legal-card">
+      <p class="legal-meta">עודכן לאחרונה: 1 בספטמבר 2026</p>
+      <h1>הצהרת נגישות</h1>
+
+      <h2>מחויבות</h2>
+      <p>
+        חברת Wine Knot ltd פועלת להנגשת אתר החנות
+        <a href="https://wineknot.co.il">wineknot.co.il</a>
+        בהתאם לחוק שוויון זכויות לאנשים עם מוגבלות, התשנ״ח–1998,
+        לתקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע״ג–2013,
+        ולתקן הישראלי ת״י 5568 ברמת AA, המבוסס על הנחיות WCAG 2.0.
+      </p>
+
+      <h2>התאמות באתר</h2>
+      <ul>
+        <li>מבנה סמנטי, ניווט מקלדת וקישור «דלג לתוכן»</li>
+        <li>תוויות לטפסים, טקסט חלופי לתמונות מוצר, ומצבי מיקוד גלויים</li>
+        <li>חלונות (פרטי יין, עגלה, אימות גיל) עם תפקידי ARIA וסגירה ב־Escape</li>
+        <li>תמיכה בהעדפת מערכת להפחתת תנועה (prefers-reduced-motion)</li>
+        <li>כלי נגישות קבוע: גודל טקסט, ניגודיות, גווני אפור, הדגשת קישורים ועצירת אנימציות</li>
+      </ul>
+
+      <h2>מגבלות ידועות</h2>
+      <ul>
+        <li>חלק מתמונות הבקבוקים מתארות את שם היין ולא את כל פרטי התווית הוויזואליים</li>
+        <li>הזמנה בוואטסאפ מובילה לשירות של צד שלישי (WhatsApp / Meta) שאינו בשליטתנו</li>
+        <li>אין באתר נגן וידאו או קבצי PDF כרגע; אם יתווספו — יונגשו בנפרד</li>
+      </ul>
+      <p>אם נתקלתם בתוכן שאינו נגיש, נשמח לתקן לפי הפנייה אלינו.</p>
+
+      <h2>רכז נגישות</h2>
+      <p>
+        רכז הנגישות באתר: <strong>דורון אהרון</strong>, Wine Knot ltd.<br>
+        טלפון: <a href="tel:050-8496666">050-8496666</a><br>
+        דוא״ל: <a href="mailto:doronchick@gmail.com">doronchick@gmail.com</a><br>
+        וואטסאפ: <a href="https://wa.me/972508496666" rel="noopener noreferrer" target="_blank">050-8496666</a>
+      </p>
+      <p>פניות בנושא נגישות יטופלו בהקדם האפשרי ובדרך כלל תוך עד 14 ימי עסקים.</p>
+
+      <h2>דרכי פנייה נוספות</h2>
+      <p>
+        ניתן גם לפנות לנציבות שוויון זכויות לאנשים עם מוגבלות במשרד המשפטים בנוגע לזכויות נגישות.
+        מידע נוסף באתר הנציבות.
+      </p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Wine Knot. אזהרה: צריכה מופרזת של אלכוהול מסכנת חיים ומזיקה לבריאות.</p>
+    <p class="footer-legal">
+      <a href="/accessibility.html" aria-current="page">הצהרת נגישות</a>
+      <a href="/privacy.html">מדיניות פרטיות ועוגיות</a>
+      <button type="button" data-open-cookies>הגדרת עוגיות</button>
+    </p>
+  </footer>
+  <script src="/js/compliance.js"></script>
+</body>
+</html>
