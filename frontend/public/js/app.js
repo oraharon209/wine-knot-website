@@ -691,7 +691,7 @@
     let w;
     try { w = await fetchWine(id); } catch {
       view.innerHTML = `
-        <nav class="crumbs" aria-label="פירורי לחם"><ul role="list" style="display:contents"><li><a href="/" data-route="home">כל היינות</a></li></ul></nav>
+        <nav class="crumbs" aria-label="פירורי לחם"><ul role="list"><li><a href="/" data-route="home">כל היינות</a></li></ul></nav>
         <div class="empty"><h3>היין הזה לא נמצא</h3><p>אולי הוא הוסר מהרשימה. כל היינות שבמלאי נמצאים בדף הבית.</p>
         <div class="actions"><a class="btn btn-primary" href="/" data-route="home">לכל היינות</a></div></div>`;
       document.title = 'יין לא נמצא | Wine Knot';
@@ -704,7 +704,7 @@
 
     view.innerHTML = `
       <nav class="crumbs" aria-label="פירורי לחם">
-        <ul role="list" style="display:contents">
+        <ul role="list">
           <li><a href="/" data-route="home">כל היינות</a></li>
           ${w.category ? `<li><a href="${categoryHref(w.category)}" data-cat="${esc(w.category)}">${esc(w.category_he || categoryName(w.category))}</a></li>` : ''}
           <li aria-current="page">${esc(w.name)}</li>

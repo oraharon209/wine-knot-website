@@ -481,6 +481,7 @@ input[type=search]::-webkit-search-decoration, input[type=search]::-webkit-searc
 .toolbar-more[open] > summary { margin-bottom: var(--s-3); }
 .toolbar-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
 .toolbar-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); }
+.toolbar-controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4); margin-inline-start: auto; }
 .active-filters { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
 .active-filters:empty { display: none; }
 .view-toggle { display: inline-flex; gap: var(--s-1); }
@@ -507,7 +508,8 @@ input[type=search]::-webkit-search-decoration, input[type=search]::-webkit-searc
 /* --------------------------------------------------------------------------
    10. Product page
    -------------------------------------------------------------------------- */
-.crumbs { display: flex; flex-wrap: wrap; gap: var(--s-2); font-size: var(--fs-meta); color: var(--ink-3); padding-block: var(--s-4); }
+.crumbs { font-size: var(--fs-meta); color: var(--ink-3); padding-block: var(--s-4); }
+.crumbs ul { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .crumbs a { text-decoration: none; color: var(--ink-2); }
 .crumbs a:hover { text-decoration: underline; }
 .crumbs li + li::before { content: '/'; margin-inline-end: var(--s-2); color: var(--line-strong); }
