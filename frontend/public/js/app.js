@@ -466,8 +466,10 @@
   }
 
   function renderStart() {
-    const types = state.categories.map((c) => ({ href: categoryHref(c.slug), label: c.name_he, count: stockCount(c.slug), cat: c.slug })).filter((t) => t.count);
-    $('startTypes').innerHTML = types.map((t) => `<a href="${t.href}" data-cat="${esc(t.cat)}"><span>${esc(t.label)}</span><span class="count num">${t.count}</span></a>`).join('');
+    $('startScores').innerHTML = ['95', '93', '90'].map((min) => {
+      const n = state.wines.filter((w) => w.rating >= Number(min)).length;
+      return n ? `<a href="/?min_rating=${min}" data-rating="${min}"><span>${min} ומעלה</span><span class="count num">${n}</span></a>` : '';
+    }).join('') + `<a class="more" href="/?sort=rating_desc" data-sort="rating_desc">כל היינות לפי ציון</a>`;
 
     $('startBudget').innerHTML = PRICE_BANDS.map((b) => {
       const n = state.wines.filter((w) => w.sale_price >= b.min && (b.max == null || w.sale_price < b.max)).length;
@@ -895,7 +897,7 @@
         navigate(a.getAttribute('href'));
         return;
       }
-      if ('cat' in a.dataset || 'winery' in a.dataset || 'price' in a.dataset || a.dataset.route === 'home' || a.pathname === '/') {
+      if ('cat' in a.dataset || 'winery' in a.dataset || 'price' in a.dataset || 'rating' in a.dataset || 'sort' in a.dataset || a.dataset.route === 'home' || a.pathname === '/') {
         e.preventDefault();
         const url = new URL(a.href);
         const goingHomeFromProduct = state.route.name !== 'home';
@@ -911,6 +913,8 @@
         if ('cat' in a.dataset) { patch.category = a.dataset.cat; }
         if ('winery' in a.dataset) { patch.winery = a.dataset.winery; patch.category = ''; }
         if ('price' in a.dataset) { patch.price = a.dataset.price; patch.category = ''; }
+        if ('rating' in a.dataset) { patch.min_rating = a.dataset.rating; patch.category = ''; }
+        if ('sort' in a.dataset) { patch.sort = a.dataset.sort; }
         if (a.dataset.route === 'home' || (a.pathname === '/' && !p.toString() && !url.hash)) {
           resetFilters();
           setFilters({}, { replace: false });
