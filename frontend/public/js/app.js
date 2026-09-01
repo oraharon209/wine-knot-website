@@ -47,7 +47,7 @@
     return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function clean(s) {
-    return String(s ?? '').replace(/\s+/g, ' ').replace(/\s*,\s*$/, '').trim();
+    return String(s ?? '').replace(/\s+/g, ' ').replace(/[\s,\-–]+$/, '').trim();
   }
   function cmpName(a, b) {
     return collator.compare(clean(a.name), clean(b.name));
