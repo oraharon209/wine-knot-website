@@ -2,869 +2,29 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wine Knot | חנות יין אונליין</title>
-  <meta name="description" content="Wine Knot — חנות יין אונליין. מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Wine Knot | חנות יין בחיפה — הרשימה של דורון</title>
+  <meta name="description" content="Wine Knot — חנות יין מחיפה עם משלוח עד הבית. כל יין ברשימה נבחר, דורג וקיבל שורה מדורון אהרון, מומחה ליין כ־30 שנה. יינות ישראליים ומחו״ל, הזמנה בוואטסאפ, בקבוק מתנה על כל ארגז.">
+  <link rel="canonical" href="https://wineknot.co.il/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Wine Knot">
+  <meta property="og:title" content="Wine Knot | חנות יין בחיפה — הרשימה של דורון">
+  <meta property="og:description" content="יינות שדורון טעם, דירג וכתב עליהם שורה. משלוח עד הבית, הזמנה בוואטסאפ.">
+  <meta property="og:image" content="https://wineknot.co.il/images/bottles-hero.jpeg">
+  <meta property="og:locale" content="he_IL">
+  <meta name="theme-color" content="#f2eee7">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="dns-prefetch" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com">
   <link rel="preconnect" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com" crossorigin>
-  <link rel="preload" as="image" href="/images/bottles-hero.jpeg">
-  <style>
-    :root {
-      --wine: #6b1d3a;
-      --wine-dark: #4a1228;
-      --gold: #c9a84c;
-      --cream: #faf7f2;
-      --text: #2c1810;
-      --muted: #5f514a;
-      --border: #e8ddd4;
-      --shadow: 0 4px 20px rgba(107,29,58,.12);
-      --radius: 12px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: var(--cream);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-    a { color: inherit; text-decoration: none; }
-    .logo { text-decoration: none; }
-
-    /* Header */
-    .header {
-      background: linear-gradient(135deg, var(--wine-dark), var(--wine));
-      color: #fff;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,.2);
-    }
-    .header-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-    .logo span { color: var(--gold); }
-    .nav { display: flex; gap: .5rem; flex-wrap: wrap; }
-    .nav a {
-      padding: .4rem .9rem;
-      border-radius: 20px;
-      font-size: .9rem;
-      transition: background .2s;
-      cursor: pointer;
-    }
-    .nav a:hover, .nav a.active { background: rgba(255,255,255,.15); }
-    .mobile-category-filter {
-      display: none;
-      width: 100%;
-    }
-    .mobile-category-filter label {
-      display: block;
-      margin-bottom: .35rem;
-      color: var(--muted);
-      font-size: .9rem;
-      font-weight: 600;
-    }
-    .mobile-category-filter select {
-      width: 100%;
-      padding: .75rem .8rem;
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      font-family: inherit;
-      background: #fff;
-      font-size: .95rem;
-      direction: rtl;
-    }
-
-    /* Hero */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      color: #fff;
-      text-align: center;
-      padding: clamp(3rem, 8vw, 5rem) 1.5rem clamp(2.5rem, 6vw, 4rem);
-      min-height: clamp(260px, 38vw, 420px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background:
-        linear-gradient(105deg, rgba(26,8,16,.82) 0%, rgba(74,18,40,.55) 45%, rgba(74,18,40,.35) 100%),
-        linear-gradient(to top, rgba(26,8,16,.92) 0%, transparent 55%),
-        url('/images/bottles-hero.jpeg') center center / cover no-repeat;
-    }
-    .hero-accent {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      opacity: .85;
-    }
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      margin-bottom: .5rem;
-      text-shadow: 0 2px 24px rgba(0,0,0,.45);
-      letter-spacing: .5px;
-    }
-    .hero p {
-      font-size: clamp(1rem, 2.2vw, 1.15rem);
-      opacity: .95;
-      max-width: 600px;
-      margin: 0 auto;
-      text-shadow: 0 1px 12px rgba(0,0,0,.4);
-      line-height: 1.7;
-    }
-
-    /* Promo banner */
-    .promo {
-      background: var(--gold);
-      color: var(--wine-dark);
-      text-align: center;
-      padding: .8rem 1rem;
-      font-weight: 600;
-      font-size: .95rem;
-    }
-
-    /* Search & filters */
-    .controls {
-      max-width: 1280px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      align-items: center;
-    }
-    .search-box {
-      flex: 1;
-      min-width: 220px;
-      position: relative;
-    }
-    .search-box input {
-      width: 100%;
-      padding: .75rem 2.5rem .75rem 1rem;
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      font-family: inherit;
-      font-size: 1rem;
-      background: #fff;
-      direction: rtl;
-    }
-    .search-box::before {
-      content: '🔍';
-      position: absolute;
-      right: .8rem;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-    }
-    .filter-group {
-      display: flex;
-      gap: .5rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .filter-group select,
-    .filter-group input[type=number],
-    .filter-group input.filter-input {
-      padding: .6rem .8rem;
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      font-family: inherit;
-      background: #fff;
-      font-size: .9rem;
-    }
-    .results-count {
-      color: var(--muted);
-      font-size: .9rem;
-      width: 100%;
-    }
-
-    /* Recommended */
-    .recommended {
-      max-width: 1280px;
-      margin: 0 auto 2rem;
-      padding: 0 1.5rem;
-    }
-    .recommended.hidden { display: none; }
-    .recommended-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
-      flex-wrap: wrap;
-    }
-    .recommended-header h2 {
-      font-size: 1.6rem;
-      color: var(--wine);
-    }
-    .recommended-header p {
-      color: var(--muted);
-      font-size: .95rem;
-    }
-    .recommended-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.25rem;
-    }
-    .recommended-grid .wine-card {
-      border-color: var(--gold);
-      box-shadow: var(--shadow);
-    }
-    .recommended-badge {
-      position: absolute;
-      top: .6rem;
-      right: .6rem;
-      background: var(--gold);
-      color: var(--wine-dark);
-      font-size: .7rem;
-      font-weight: 700;
-      padding: .2rem .5rem;
-      border-radius: 4px;
-      z-index: 1;
-    }
-
-    /* Category cards */
-    .categories {
-      max-width: 1280px;
-      margin: 0 auto 2rem;
-      padding: 0 1.5rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: .8rem;
-    }
-    .cat-card {
-      background: #fff;
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all .2s;
-      font: inherit;
-      color: inherit;
-      width: 100%;
-    }
-    .cat-card:hover, .cat-card.active {
-      border-color: var(--wine);
-      background: var(--wine);
-      color: #fff;
-    }
-    .cat-card .count { font-size: .8rem; opacity: .7; }
-    .skeleton {
-      pointer-events: none;
-      color: transparent !important;
-      user-select: none;
-      background: linear-gradient(90deg, #ece7e1 25%, #f5f1ec 50%, #ece7e1 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s ease-in-out infinite;
-      border-color: #ece7e1 !important;
-    }
-    .cat-card.skeleton { min-height: 72px; }
-    .wine-card.skeleton { min-height: 360px; content-visibility: visible; }
-    .wine-card.skeleton .wine-img,
-    .wine-card.skeleton .wine-body > * { visibility: hidden; }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    .nav { min-height: 2.2rem; }
-
-    /* Wine grid */
-    .wines-grid {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
-    }
-    .wine-card {
-      background: #fff;
-      border-radius: 8px;
-      border: 1px solid #e2e2e2;
-      overflow: hidden;
-      cursor: pointer;
-      transition: box-shadow .2s, border-color .2s;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      contain-intrinsic-size: 360px;
-      content-visibility: auto;
-    }
-    .wine-card:hover {
-      border-color: #bbb;
-      box-shadow: 0 2px 12px rgba(0,0,0,.08);
-    }
-    .wine-img {
-      height: 220px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      overflow: hidden;
-    }
-    .wine-img img {
-      width: 200px;
-      height: 200px;
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-    .wine-img .no-img {
-      color: var(--muted);
-      font-size: .85rem;
-      text-align: center;
-    }
-    .discount-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: #e74c3c;
-      color: #fff;
-      padding: .2rem .6rem;
-      border-radius: 20px;
-      font-size: .8rem;
-      font-weight: 700;
-    }
-    .rating-badge {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #f5f5f5;
-      color: #555;
-      padding: .15rem .5rem;
-      border-radius: 4px;
-      font-size: .75rem;
-      font-weight: 600;
-      border: 1px solid #e0e0e0;
-    }
-    .wine-body { padding: .85rem 1rem 1rem; flex: 1; display: flex; flex-direction: column; }
-    .wine-cat { font-size: .7rem; color: #5a5a5a; margin-bottom: .25rem; }
-    .wine-name { font-weight: 500; font-size: .95rem; margin-bottom: .2rem; line-height: 1.35; color: #1a3a5c; }
-    .wine-open {
-      background: none;
-      border: none;
-      font: inherit;
-      font-weight: inherit;
-      color: inherit;
-      cursor: pointer;
-      text-align: inherit;
-      padding: 0;
-      width: 100%;
-    }
-    .wine-winery { font-size: .8rem; color: #666; margin-bottom: .6rem; }
-    .wine-prices { display: flex; align-items: baseline; gap: .5rem; margin-top: auto; }
-    .sale-price { font-size: 1.15rem; font-weight: 700; color: #111; }
-    .shelf-price { font-size: .85rem; color: #999; text-decoration: line-through; }
-    .price-label { font-size: .7rem; color: #5a5a5a; display: block; margin-bottom: .15rem; }
-
-    .show-more-wrap {
-      max-width: 1280px;
-      margin: 2rem auto 3rem;
-      padding: 0 1.5rem;
-      text-align: center;
-    }
-    .btn-show-more {
-      background: #fff;
-      color: var(--wine);
-      border: 2px solid var(--wine);
-      padding: .85rem 2.5rem;
-      border-radius: var(--radius);
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background .2s, color .2s;
-    }
-    .btn-show-more:hover {
-      background: var(--wine);
-      color: #fff;
-    }
-
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.6);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: #fff;
-      border-radius: var(--radius);
-      max-width: 500px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-    }
-    .modal-close {
-      position: absolute;
-      top: .8rem;
-      left: .8rem;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--muted);
-    }
-    .modal-img {
-      height: 300px;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-    }
-    .modal-img img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-    .modal-body { padding: 1.5rem; }
-    .modal-body h2 { font-size: 1.4rem; margin-bottom: .5rem; }
-    .modal-meta { color: var(--muted); font-size: .9rem; margin-bottom: 1rem; }
-    .modal-notes { background: var(--cream); padding: 1rem; border-radius: 8px; margin: 1rem 0; font-size: .9rem; }
-    .btn-whatsapp {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: .5rem;
-      background: #25d366;
-      color: #fff;
-      padding: .9rem;
-      border-radius: var(--radius);
-      font-weight: 600;
-      font-size: 1rem;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 1rem;
-      font-family: inherit;
-    }
-    .btn-whatsapp:hover { background: #1da851; }
-    .btn-whatsapp:disabled { background: #aaa; cursor: not-allowed; }
-
-    .wine-qty-btns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: .4rem;
-      margin-top: .75rem;
-    }
-    .btn-qty, .btn-add-cart {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: .25rem;
-      background: var(--wine);
-      color: #fff;
-      padding: .55rem .4rem;
-      border-radius: var(--radius);
-      font-weight: 600;
-      font-size: .82rem;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background .2s;
-    }
-    .btn-qty:hover, .btn-add-cart:hover { background: var(--wine-dark); }
-    .btn-qty-deal {
-      grid-column: 1 / -1;
-      flex-direction: column;
-      gap: .15rem;
-      padding: .55rem .65rem;
-      background: linear-gradient(135deg, #1a6b3c, #228b4a);
-      line-height: 1.25;
-    }
-    .btn-qty-deal:hover { background: linear-gradient(135deg, #145a32, #1a6b3c); }
-    .btn-qty-deal .deal-main {
-      font-size: .92rem;
-      font-weight: 700;
-      letter-spacing: .01em;
-    }
-    .btn-qty-deal .deal-sub {
-      font-size: .68rem;
-      font-weight: 500;
-      opacity: .92;
-    }
-    .modal-qty-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: .5rem;
-      margin: 1rem 0 .5rem;
-    }
-    .modal-qty-row .btn-qty-deal { grid-column: 1 / -1; }
-    .deal-hint {
-      font-size: .88rem;
-      color: #1a6b3c;
-      font-weight: 600;
-      background: #e8f5e9;
-      border-radius: var(--radius);
-      padding: .65rem .85rem;
-      margin-bottom: .75rem;
-      line-height: 1.4;
-    }
-    .cart-free-note {
-      font-size: .78rem;
-      color: #1a6b3c;
-      font-weight: 600;
-      margin-top: .2rem;
-    }
-
-    /* Cart button in header */
-    .cart-btn {
-      position: relative;
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      padding: .45rem 1rem;
-      border-radius: 20px;
-      font-family: inherit;
-      font-size: .9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background .2s;
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-    }
-    .cart-btn:hover { background: rgba(255,255,255,.22); }
-    .cart-badge {
-      background: var(--gold);
-      color: var(--wine-dark);
-      font-size: .75rem;
-      font-weight: 700;
-      min-width: 1.25rem;
-      height: 1.25rem;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 .25rem;
-    }
-    .cart-badge:empty, .cart-badge[data-count="0"] { display: none; }
-
-    /* Cart drawer */
-    .cart-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.5);
-      z-index: 300;
-    }
-    .cart-overlay.open { display: block; }
-    .cart-drawer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: min(400px, 100vw);
-      height: 100%;
-      background: #fff;
-      box-shadow: 4px 0 24px rgba(0,0,0,.15);
-      display: flex;
-      flex-direction: column;
-      transform: translateX(-100%);
-      transition: transform .3s ease;
-    }
-    .cart-overlay.open .cart-drawer { transform: translateX(0); }
-    .cart-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--cream);
-    }
-    .cart-header h2 { font-size: 1.2rem; color: var(--wine); }
-    .cart-close {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-      color: var(--muted);
-      line-height: 1;
-    }
-    .cart-items {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem 1.5rem;
-    }
-    .cart-empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 3rem 1rem;
-      font-size: .95rem;
-    }
-    .cart-item {
-      display: flex;
-      gap: .75rem;
-      align-items: flex-start;
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .cart-item-info { flex: 1; min-width: 0; }
-    .cart-item-name { font-weight: 600; font-size: .95rem; margin-bottom: .15rem; }
-    .cart-item-meta { font-size: .8rem; color: var(--muted); margin-bottom: .4rem; }
-    .cart-item-price { font-weight: 700; color: var(--wine); font-size: .95rem; }
-    .cart-qty {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      margin-top: .5rem;
-    }
-    .cart-qty button {
-      width: 28px;
-      height: 28px;
-      border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-      line-height: 1;
-      color: var(--text);
-    }
-    .cart-qty button:hover { border-color: var(--wine); color: var(--wine); }
-    .cart-qty span { font-weight: 600; min-width: 1.5rem; text-align: center; }
-    .cart-item-remove {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 1.1rem;
-      padding: .2rem;
-      line-height: 1;
-    }
-    .cart-item-remove:hover { color: #e74c3c; }
-    .cart-footer {
-      padding: 1.25rem 1.5rem;
-      border-top: 1px solid var(--border);
-      background: var(--cream);
-    }
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: var(--wine);
-    }
-    .cart-footer .btn-whatsapp { margin-top: 0; }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--wine);
-      color: #fff;
-      padding: .75rem 1.5rem;
-      border-radius: var(--radius);
-      font-weight: 500;
-      z-index: 400;
-      opacity: 0;
-      transition: transform .3s, opacity .3s;
-      pointer-events: none;
-    }
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-
-    /* About */
-    .about {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 3.5rem 1.5rem;
-      text-align: center;
-    }
-    .about h2 {
-      font-size: 1.8rem;
-      color: var(--wine);
-      margin-bottom: 1.25rem;
-    }
-    .about-text {
-      font-size: 1.05rem;
-      line-height: 1.85;
-      color: var(--text);
-    }
-    .about-text p { margin-bottom: 1rem; }
-    .about-text p:last-child { margin-bottom: 0; }
-    .about-highlight {
-      display: inline-block;
-      margin-top: .5rem;
-      padding: .75rem 1.25rem;
-      background: #e8f5e9;
-      color: #1a6b3c;
-      border-radius: var(--radius);
-      font-weight: 600;
-      font-size: 1rem;
-    }
-
-    /* Contact */
-    .contact {
-      background: var(--wine-dark);
-      color: #fff;
-      padding: 3rem 1.5rem;
-      text-align: center;
-    }
-    .contact h2 { font-size: 1.8rem; margin-bottom: 1rem; }
-    .contact-links { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
-    .contact-links a {
-      background: rgba(255,255,255,.1);
-      padding: .8rem 1.5rem;
-      border-radius: var(--radius);
-      transition: background .2s;
-    }
-    .contact-links a:hover { background: rgba(255,255,255,.2); }
-
-    /* Footer */
-    .footer {
-      background: #1a0a10;
-      color: rgba(255,255,255,.6);
-      text-align: center;
-      padding: 1.5rem;
-      font-size: .85rem;
-    }
-    .footer a { text-decoration: underline; text-underline-offset: 3px; }
-
-    /* Loading */
-    #winesContainer { min-height: 480px; }
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: var(--muted);
-      font-size: 1.1rem;
-    }
-    .categories.is-loading { min-height: 88px; }
-    .spinner {
-      display: inline-block;
-      width: 40px; height: 40px;
-      border: 3px solid var(--border);
-      border-top-color: var(--wine);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin-bottom: 1rem;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Age gate */
-    body.age-gate-active { overflow: hidden; }
-    body.age-gate-active > :not(#ageGate) { filter: blur(4px); pointer-events: none; user-select: none; }
-    body.age-gate-active .age-gate { display: flex; }
-    .age-gate {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 500;
-      background: rgba(26, 10, 16, .85);
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .age-gate-card {
-      background: #fff;
-      border-radius: var(--radius);
-      max-width: 420px;
-      width: 100%;
-      overflow: hidden;
-      box-shadow: 0 8px 40px rgba(0,0,0,.35);
-      text-align: center;
-    }
-    .age-gate-header {
-      background: linear-gradient(135deg, var(--wine-dark), var(--wine));
-      color: #fff;
-      padding: 1.75rem 1.5rem 1.25rem;
-    }
-    .age-gate-header .age-gate-icon { font-size: 2.5rem; margin-bottom: .5rem; }
-    .age-gate-header h2 { font-size: 1.5rem; margin-bottom: .35rem; }
-    .age-gate-header p { font-size: .9rem; opacity: .9; line-height: 1.5; }
-    .age-gate-body { padding: 1.5rem; }
-    .age-gate-question { font-size: 1.05rem; font-weight: 600; margin-bottom: 1.25rem; color: var(--text); }
-    .age-gate-actions { display: flex; flex-direction: column; gap: .65rem; }
-    .age-gate-actions button {
-      padding: .85rem 1rem;
-      border-radius: var(--radius);
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: background .2s, transform .1s;
-    }
-    .age-gate-actions button:active { transform: scale(.98); }
-    .btn-age-yes {
-      background: var(--wine);
-      color: #fff;
-    }
-    .btn-age-yes:hover { background: var(--wine-dark); }
-    .btn-age-no {
-      background: var(--cream);
-      color: var(--muted);
-      border: 1px solid var(--border) !important;
-    }
-    .btn-age-no:hover { border-color: var(--wine) !important; color: var(--wine); }
-    .age-gate-rejected { display: none; padding: 1.5rem; }
-    .age-gate-rejected.show { display: block; }
-    .age-gate-rejected p { color: var(--muted); line-height: 1.6; margin-bottom: .5rem; }
-    .age-gate-rejected .rejected-icon { font-size: 2rem; margin-bottom: .75rem; }
-
-    @media (max-width: 768px) {
-      .header-inner { justify-content: center; }
-      .nav { display: none; }
-      .controls { flex-direction: column; }
-      .search-box,
-      .filter-group,
-      .mobile-category-filter { width: 100%; }
-      .filter-group > * { flex: 1 1 100%; }
-      .mobile-category-filter { display: block; }
-      .categories { display: none; }
-      .recommended { margin-top: -.5rem; }
-    }
-
-    @media (max-width: 600px) {
-      .header-inner { padding: 1rem; }
-    }
-  </style>
-  <link rel="stylesheet" href="/css/compliance.css">
+  <link rel="preload" href="/fonts/frank-ruhl-libre-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/assistant-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="/images/bottles-hero.jpeg" media="(min-width: 1024px)">
+  <link rel="stylesheet" href="/css/site.css?v=2">
+  <link rel="stylesheet" href="/css/compliance.css?v=2">
   <script>
+    document.documentElement.classList.add('has-js');
     (function () {
       try {
         var s = JSON.parse(localStorage.getItem('wineknot_a11y') || '{}');
@@ -877,1017 +37,383 @@
       } catch (e) {}
     })();
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "Wine Knot",
+    "url": "https://wineknot.co.il/",
+    "image": "https://wineknot.co.il/images/bottles-hero.jpeg",
+    "logo": "https://wineknot.co.il/favicon.png",
+    "telephone": "+972-50-849-6666",
+    "email": "doronchick@gmail.com",
+    "address": { "@type": "PostalAddress", "addressLocality": "חיפה", "addressCountry": "IL" },
+    "priceRange": "₪₪",
+    "founder": { "@type": "Person", "name": "דורון אהרון" }
+  }
+  </script>
 </head>
 <body>
 <script>if(localStorage.getItem('wineknot_age_verified')!=='1')document.body.classList.add('age-gate-active');</script>
 
-<header class="header">
-  <div class="header-inner">
-    <a class="logo" href="/">Wine <span>Knot</span></a>
-    <nav class="nav" id="nav" aria-label="קטגוריות יינות"></nav>
-    <button class="cart-btn" id="cartBtn" type="button" aria-haspopup="dialog" aria-controls="cartDrawer" aria-expanded="false">
-      🛒 עגלה
-      <span class="cart-badge" id="cartBadge" data-count="0" aria-label="פריטים בעגלה">0</span>
-    </button>
+<svg hidden aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.8a1 1 0 0 0 1-.8L21 8H6.2"/><circle cx="9.5" cy="20" r="1.25"/><circle cx="17.5" cy="20" r="1.25"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19z"/><path d="M9.2 8.8c0 3.2 2.8 6 6 6l1.3-1.3-1.9-1.1-1 .8a4.6 4.6 0 0 1-2.8-2.8l.8-1-1.1-1.9z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l1.5 4-2 1.5a10 10 0 0 0 6 6L16 13.5l4 1.5v4a1.5 1.5 0 0 1-1.5 1.5A15.5 15.5 0 0 1 3.5 5.5 1.5 1.5 0 0 1 5 4z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6.5 8.5 7 8.5-7"/></symbol>
+  <symbol id="i-knot" viewBox="0 0 24 24"><path d="M12 12c-1.8-2.6-3.6-3.9-5.4-3.9a3.9 3.9 0 0 0 0 7.8c1.8 0 3.6-1.3 5.4-3.9 1.8-2.6 3.6-3.9 5.4-3.9a3.9 3.9 0 0 1 0 7.8c-1.8 0-3.6-1.3-5.4-3.9z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+</svg>
+
+<header class="site-header" id="top">
+  <div class="container">
+    <div class="header-row">
+      <a class="brand" href="/" data-route="home" aria-label="Wine Knot — דף הבית">
+        <img class="brand-mark" src="/favicon.png" width="36" height="36" alt="">
+        <span class="brand-name">Wine Knot<small>חנות יין · חיפה</small></span>
+      </a>
+      <form class="header-search" role="search" id="headerSearch" autocomplete="off">
+        <label class="sr-only" for="searchDesktop">חיפוש יין לפי שם, יקב או תיאור</label>
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+        <input class="input" type="search" id="searchDesktop" name="q" placeholder="חיפוש: שם, יקב, זן…" maxlength="64" enterkeyhint="search">
+      </form>
+      <div class="header-actions">
+        <button class="btn btn-quiet cart-btn" id="cartBtn" type="button" aria-haspopup="dialog" aria-controls="cartDrawer" aria-expanded="false">
+          <svg class="icon" aria-hidden="true"><use href="#i-cart"/></svg>
+          <span class="label">עגלה</span>
+          <span class="badge num" id="cartBadge" data-count="0" aria-live="polite" aria-label="פריטים בעגלה">0</span>
+        </button>
+        <button class="btn btn-quiet btn-icon menu-btn" id="menuBtn" type="button" aria-haspopup="dialog" aria-controls="menuDrawer" aria-expanded="false" aria-label="תפריט">
+          <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+        </button>
+      </div>
+    </div>
   </div>
+  <nav class="shelves" aria-label="מדפי היין">
+    <div class="container">
+      <div class="shelves-scroll" id="shelves">
+        <span class="shelf skeleton" aria-hidden="true"></span>
+        <span class="shelf skeleton" aria-hidden="true"></span>
+        <span class="shelf skeleton" aria-hidden="true"></span>
+        <span class="shelf skeleton" aria-hidden="true"></span>
+        <span class="shelf skeleton" aria-hidden="true"></span>
+      </div>
+    </div>
+  </nav>
 </header>
 
 <main id="main">
-<section class="hero">
-  <h1>Wine Knot</h1>
-  <p>חנות היין שלך — מאות יינות איכותיים במחירים מעולים. חיפוש, סינון והזמנה בוואטסאפ.</p>
-  <div class="hero-accent" aria-hidden="true"></div>
-</section>
 
-<div class="promo">
-  🎁 מבצע: ב-12 בקבוקים — בקבוק מתנה חינם! | מתנה פרימיום ב-24 בקבוקים
-</div>
+  <!-- ============================ HOME ============================ -->
+  <div id="view-home">
+    <section class="container hero" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <h1 id="heroTitle">יינות שדורון טעם, דירג וכתב עליהם שורה.</h1>
+        <p class="lede">
+          Wine Knot היא חנות יין מחיפה שמביאה יין עד הבית כבר 23 שנה.
+          דורון אהרון, מומחה ליין כ־30 שנה, בחר כל בקבוק ברשימה —
+          <span id="heroCount">יינות</span> מיקבים ישראליים ומחו״ל, לכל אחד ציון והמלצה קצרה משלו.
+        </p>
+        <p class="hero-facts"><span>משלוח עד הבית באזורי החלוקה</span><span>הזמנה בוואטסאפ</span><span>בקבוק מתנה על כל ארגז של 12</span></p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#catalog">לכל היינות</a>
+          <a class="btn btn-secondary" href="#picks">ההמלצות של דורון</a>
+        </div>
+      </div>
+      <figure class="hero-photo">
+        <img src="/images/bottles-hero.jpeg" width="1024" height="670" alt="מדפי עץ מלאים בבקבוקי יין בחנות, עם תוויות נייר כתובות ביד" fetchpriority="high" decoding="async">
+      </figure>
+    </section>
 
-<div class="controls">
-  <div class="search-box">
-    <label class="sr-only" for="search">חיפוש יינות לפי שם, יקב או מדינה</label>
-    <input type="search" id="search" placeholder="חיפוש לפי שם, יקב, מדינה..." autocomplete="off" maxlength="64">
-  </div>
-  <div class="mobile-category-filter" id="mobileCategoryFilter">
-    <label for="mobileCategorySelect">קטגוריה</label>
-    <select id="mobileCategorySelect">
-      <option value="">הכל</option>
-    </select>
-  </div>
-  <div class="filter-group">
-    <label class="sr-only" for="sort">מיון יינות</label>
-    <select id="sort">
-      <option value="price_asc" selected>מחיר (נמוך לגבוה)</option>
-      <option value="rating_desc">דירוג (גבוה לנמוך)</option>
-      <option value="price_desc">מחיר (גבוה לנמוך)</option>
-      <option value="name_asc">שם (א-ת)</option>
-    </select>
-    <label class="sr-only" for="minPrice">מחיר מינימלי בשקלים</label>
-    <input type="number" class="filter-input" id="minPrice" placeholder="מחיר מינימלי ₪" min="0" max="100000" step="1" autocomplete="off" style="width:130px">
-    <label class="sr-only" for="maxPrice">מחיר מקסימלי בשקלים</label>
-    <input type="number" class="filter-input" id="maxPrice" placeholder="מחיר מקסימלי ₪" min="0" max="100000" step="1" autocomplete="off" style="width:130px">
-  </div>
-  <div class="results-count" id="resultsCount" role="status" aria-live="polite"></div>
-</div>
+    <section class="container" aria-labelledby="startTitle">
+      <h2 class="sr-only" id="startTitle">מאיפה מתחילים</h2>
+      <div class="start" id="start">
+        <div class="start-col">
+          <h3>לפי סוג</h3>
+          <div class="start-list" id="startTypes"></div>
+        </div>
+        <div class="start-col">
+          <h3>לפי תקציב לבקבוק</h3>
+          <div class="start-list" id="startBudget"></div>
+        </div>
+        <div class="start-col">
+          <h3>לפי יקב</h3>
+          <div class="start-list" id="startWineries"></div>
+        </div>
+      </div>
+    </section>
 
-<section class="recommended hidden" id="recommendedSection">
-  <div class="recommended-header">
-    <div>
-      <h2>מומלצים</h2>
-      <p>הבחירות שלנו — יינות שאנחנו אוהבים במיוחד</p>
-    </div>
-  </div>
-  <div class="recommended-grid" id="recommendedGrid"></div>
-</section>
+    <section class="section container" id="picks" aria-labelledby="picksTitle" hidden>
+      <div class="section-head">
+        <h2 id="picksTitle">ההמלצות של דורון</h2>
+        <p>כמה בקבוקים שדורון שמח להמליץ עליהם במיוחד.</p>
+      </div>
+      <div class="picks" id="picksGrid"></div>
+    </section>
 
-<div class="categories is-loading" id="categories" role="group" aria-label="סינון לפי קטגוריה">
-  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
-  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
-  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
-  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
-  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
-  <div class="cat-card skeleton" aria-hidden="true">&nbsp;</div>
-</div>
+    <section class="section container" id="catalog" aria-labelledby="catalogTitle">
+      <div class="catalog-head">
+        <h2 id="catalogTitle">כל היינות <span class="count" id="catalogCount"></span></h2>
+        <p class="results-line" id="resultsLine" role="status" aria-live="polite"></p>
+      </div>
 
-<h2 class="sr-only" id="winesHeading">היינות</h2>
-<div id="winesContainer" aria-labelledby="winesHeading">
-  <div class="wines-grid" id="winesGridSkeleton" aria-hidden="true">
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-    <div class="wine-card skeleton"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>
-  </div>
-</div>
+      <form class="toolbar" id="filters" autocomplete="off">
+        <div class="field field-search">
+          <label for="search">חיפוש</label>
+          <input class="input" type="search" id="search" name="search" placeholder="שם, יקב, זן…" maxlength="64" enterkeyhint="search">
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+        </div>
+        <details class="toolbar-more" id="filterDetails">
+          <summary class="btn btn-quiet btn-sm">סינון <span class="count num" id="filterCount"></span></summary>
+        <div class="toolbar-filters">
+          <div class="field">
+            <label for="fCategory">סוג</label>
+            <select class="select" id="fCategory" name="category"><option value="">כל הסוגים</option></select>
+          </div>
+          <div class="field">
+            <label for="fWinery">יקב</label>
+            <select class="select" id="fWinery" name="winery"><option value="">כל היקבים</option></select>
+          </div>
+          <div class="field">
+            <label for="fPrice">מחיר לבקבוק</label>
+            <select class="select" id="fPrice" name="price"><option value="">כל מחיר</option></select>
+          </div>
+          <div class="field">
+            <label for="fScore">ציון Wine Knot</label>
+            <select class="select" id="fScore" name="min_rating">
+              <option value="">כל ציון</option>
+              <option value="95">95 ומעלה</option>
+              <option value="93">93 ומעלה</option>
+              <option value="90">90 ומעלה</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fVintage">בציר</label>
+            <select class="select" id="fVintage" name="vintage"><option value="">כל בציר</option></select>
+          </div>
+        </div>
+        </details>
+        <div class="toolbar-row">
+          <div class="active-filters" id="activeFilters" aria-label="סינונים פעילים"></div>
+          <div class="toolbar-row" style="gap: var(--s-4)">
+            <div class="sort-field">
+              <label for="sort">מיון</label>
+              <select class="select" id="sort" name="sort">
+                <option value="price_asc" selected>מחיר: מהנמוך לגבוה</option>
+                <option value="price_desc">מחיר: מהגבוה לנמוך</option>
+                <option value="rating_desc">ציון: מהגבוה לנמוך</option>
+                <option value="name_asc">שם: א–ת</option>
+              </select>
+            </div>
+            <div class="view-toggle" role="group" aria-label="תצוגה">
+              <button type="button" id="viewGrid" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg>רשת</button>
+              <button type="button" id="viewList" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg>רשימה</button>
+            </div>
+          </div>
+        </div>
+      </form>
 
-<section class="about" id="about">
-  <h2>אודותינו</h2>
-  <div class="about-text">
-    <p>
-      חברת <strong>Wine Knot ltd</strong> מביאה ללקוחות יין עד הבית (לאזורי חלוקה).
-      מבחר של כ־160 יינות שנבחרו בקפידה וכמענה לדרישות ואהבת הלקוחות במשך 23 שנות החברה,
-      בהנהלת <strong>דורון אהרון</strong> — מומחה ליין כבר כ־30 שנה.
-    </p>
-    <p>
-      ניתן לשלם במגוון אפשרויות: פייבוקס, ביט, העברה בנקאית, צ'ק או מזומן.
-    </p>
-    <p>
-      <span class="about-highlight">🎁 בקבוק מתנה על כל קנייה של ארגז 12 בקבוקים</span>
-    </p>
-  </div>
-</section>
+      <div id="winesContainer" aria-labelledby="catalogTitle">
+        <div class="grid" aria-hidden="true">
+          <div class="card skeleton"></div><div class="card skeleton"></div><div class="card skeleton"></div><div class="card skeleton"></div>
+          <div class="card skeleton"></div><div class="card skeleton"></div><div class="card skeleton"></div><div class="card skeleton"></div>
+        </div>
+      </div>
+      <div class="more-wrap" id="moreWrap" hidden>
+        <button class="btn btn-secondary" id="moreBtn" type="button"></button>
+      </div>
+    </section>
 
-<section class="contact" id="contact">
-  <h2>צרו קשר</h2>
-  <p>נשמח לעזור בבחירת היין המושלם</p>
-  <div class="contact-links">
-    <a href="tel:050-8496666" id="phoneLink">📞 050-8496666</a>
-    <a href="https://wa.me/972508496666" id="waLink" target="_blank" rel="noopener noreferrer">💬 וואטסאפ</a>
-    <a href="mailto:doronchick@gmail.com" id="emailLink">✉️ doronchick@gmail.com</a>
+    <section class="deal" id="deal" aria-labelledby="dealTitle">
+      <div class="container">
+        <h2 id="dealTitle"><span class="rule ltr"><b>12</b> + 1</span></h2>
+        <p>על כל ארגז של 12 בקבוקים מקבלים בקבוק מתנה, וב־24 בקבוקים — מתנה פרימיום. המתנה מחושבת לבד בעגלה ומצוינת בהודעת ההזמנה.</p>
+      </div>
+    </section>
+
+    <section class="section container" id="how" aria-labelledby="howTitle">
+      <div class="how-grid">
+        <div>
+          <h2 id="howTitle">איך מזמינים</h2>
+          <ol class="steps mt-6" role="list">
+            <li>
+              <div>
+                <h3>בוחרים</h3>
+                <p>מוסיפים לעגלה בקבוק אחד, שישייה או ארגז. אפשר לחפש יין ספציפי או להתחיל מההמלצות של דורון.</p>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h3>שולחים בוואטסאפ</h3>
+                <p>העגלה הופכת להודעה מסודרת עם שמות היינות, הכמויות והסכום, ונשלחת ישירות לדורון. אין צורך בהרשמה.</p>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h3>דורון חוזר אליכם</h3>
+                <p>מאשרים יחד את מועד המשלוח ואת התשלום: פייבוקס, ביט, העברה בנקאית, צ׳ק או מזומן.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+        <div id="about" aria-labelledby="aboutTitle">
+          <h2 id="aboutTitle">דורון אהרון</h2>
+          <div class="prose mt-4">
+            <p>
+              חברת <strong>Wine Knot ltd</strong> מביאה ללקוחות יין עד הבית (לאזורי חלוקה).
+              מבחר של כ־160 יינות שנבחרו בקפידה וכמענה לדרישות ואהבת הלקוחות במשך 23 שנות החברה,
+              בהנהלת <strong>דורון אהרון</strong> — מומחה ליין כבר כ־30 שנה.
+            </p>
+            <p>הציון שליד כל יין והשורה שמתחת לשם הם של דורון: מה הוא חושב על הבקבוק, ולמי הוא מתאים.</p>
+          </div>
+          <figure class="about-photo mt-6">
+            <img src="/images/bottles-hero.jpeg" width="1024" height="670" alt="בקבוקי יין על מדפי עץ, עם תוויות נייר כתובות ביד" loading="lazy" decoding="async">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="contact" aria-labelledby="contactTitle">
+      <h2 id="contactTitle">צרו קשר</h2>
+      <p class="lede mt-2">נשמח לעזור בבחירת היין המושלם — לארוחה, למתנה או סתם כי.</p>
+      <ul class="contact-list" role="list">
+        <li><a href="https://wa.me/972508496666" id="waLink" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>וואטסאפ <span class="ltr">050-8496666</span></a></li>
+        <li><a href="tel:050-8496666" id="phoneLink"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>טלפון <span class="ltr" id="phoneText">050-8496666</span></a></li>
+        <li><a href="mailto:doronchick@gmail.com" id="emailLink"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span class="ltr" id="emailText">doronchick@gmail.com</span></a></li>
+      </ul>
+    </section>
   </div>
-</section>
+
+  <!-- ============================ PRODUCT ============================ -->
+  <div id="view-product" class="container" hidden></div>
+
 </main>
 
-<footer class="footer">
-  <p>© 2026 Wine Knot. אזהרה: צריכה מופרזת של אלכוהול מסכנת חיים ומזיקה לבריאות.</p>
-  <p class="footer-legal">
-    <a href="/accessibility.html">הצהרת נגישות</a>
-    <a href="/privacy.html">מדיניות פרטיות ועוגיות</a>
-    <button type="button" data-open-cookies>הגדרת עוגיות</button>
-  </p>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="brand-name">Wine Knot</span>
+        <p>חנות יין מחיפה. יינות ישראליים ומחו״ל שנבחרו אחד־אחד, משלוח עד הבית באזורי החלוקה, והזמנה פשוטה בוואטסאפ.</p>
+      </div>
+      <div>
+        <h3>המדפים</h3>
+        <ul id="footerShelves" role="list"></ul>
+      </div>
+      <div>
+        <h3>החנות</h3>
+        <ul role="list">
+          <li><a href="/#picks">ההמלצות של דורון</a></li>
+          <li><a href="/#catalog">כל היינות</a></li>
+          <li><a href="/#how">איך מזמינים</a></li>
+          <li><a href="/#about">דורון אהרון</a></li>
+          <li><a href="/#contact">צרו קשר</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>מידע</h3>
+        <ul role="list">
+          <li><a href="/accessibility.html">הצהרת נגישות</a></li>
+          <li><a href="/privacy.html">מדיניות פרטיות ועוגיות</a></li>
+          <li><button type="button" data-open-cookies>הגדרת עוגיות</button></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>© 2026 Wine Knot ltd</span>
+      <span class="warning">אזהרה: צריכה מופרזת של אלכוהול מסכנת חיים ומזיקה לבריאות. המכירה לבני 18 ומעלה בלבד.</span>
+    </div>
+  </div>
 </footer>
 
-<div class="modal-overlay" id="modal">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
-    <button class="modal-close" id="modalClose" type="button" aria-label="סגור">✕</button>
-    <div class="modal-img" id="modalImg">🍷</div>
-    <div class="modal-body" id="modalBody"></div>
-  </div>
+<!-- Cart drawer -->
+<div class="scrim" id="cartOverlay">
+  <aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" tabindex="-1">
+    <div class="drawer-head">
+      <h2 id="cartTitle">העגלה</h2>
+      <button class="btn btn-quiet btn-icon" id="cartClose" type="button" aria-label="סגירת העגלה"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="drawer-body" id="cartItems"></div>
+    <div class="drawer-foot" id="cartFooter">
+      <div class="summary" id="cartSummary"></div>
+      <div class="field">
+        <label for="orderNote">הערה להזמנה (לא חובה)</label>
+        <textarea class="textarea" id="orderNote" rows="2" maxlength="300" placeholder="כתובת למשלוח, שעות נוחות, בקשה מיוחדת…"></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" id="cartWhatsAppBtn" type="button" disabled>
+        <svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+        שליחת ההזמנה בוואטסאפ
+      </button>
+      <p class="cart-fine">ההודעה נפתחת בוואטסאפ עם פירוט ההזמנה. דורון חוזר אליכם לאישור המשלוח והתשלום (פייבוקס, ביט, העברה, צ׳ק או מזומן).</p>
+    </div>
+  </aside>
 </div>
 
-<div class="cart-overlay" id="cartOverlay">
-  <div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" tabindex="-1">
-    <div class="cart-header">
-      <h2 id="cartTitle">🛒 העגלה שלי</h2>
-      <button class="cart-close" id="cartClose" type="button" aria-label="סגור עגלה">✕</button>
+<!-- Mobile menu drawer -->
+<div class="scrim" id="menuOverlay">
+  <aside class="drawer" id="menuDrawer" role="dialog" aria-modal="true" aria-labelledby="menuTitle" tabindex="-1">
+    <div class="drawer-head">
+      <h2 id="menuTitle">תפריט</h2>
+      <button class="btn btn-quiet btn-icon" id="menuClose" type="button" aria-label="סגירת התפריט"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
     </div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-footer" id="cartFooter">
-      <div class="cart-total">
-        <span>סה"כ</span>
-        <span id="cartTotalAmount">₪0</span>
+    <div class="drawer-body">
+      <form class="field" role="search" id="menuSearch" autocomplete="off">
+        <label for="searchMobile">חיפוש</label>
+        <input class="input" type="search" id="searchMobile" placeholder="שם, יקב, זן…" maxlength="64" enterkeyhint="search">
+      </form>
+      <div class="menu-section">
+        <h3>המדפים</h3>
+        <nav class="menu-list" id="menuShelves" aria-label="מדפי היין"></nav>
       </div>
-      <button class="btn-whatsapp" id="cartWhatsAppBtn" type="button" disabled>💬 שליחת הזמנה בוואטסאפ</button>
+      <div class="menu-section">
+        <h3>החנות</h3>
+        <nav class="menu-list" aria-label="עמודים">
+          <a href="/#picks" data-close-menu>ההמלצות של דורון</a>
+          <a href="/#how" data-close-menu>איך מזמינים</a>
+          <a href="/#about" data-close-menu>דורון אהרון</a>
+          <a href="/#contact" data-close-menu>צרו קשר</a>
+        </nav>
+      </div>
+      <div class="menu-contact">
+        <a href="https://wa.me/972508496666" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>וואטסאפ <span class="ltr">050-8496666</span></a>
+        <a href="tel:050-8496666"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span class="ltr">050-8496666</span></a>
+      </div>
     </div>
-  </div>
+  </aside>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <div class="age-gate" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
-  <div class="age-gate-card">
-    <div id="ageGatePrompt">
-      <div class="age-gate-header">
-        <div class="age-gate-icon" aria-hidden="true">🍷</div>
-        <h2 id="ageGateTitle">אימות גיל</h2>
-        <p>האתר מכיל תוכן הקשור לאלכוהול. הכניסה מותרת לבני 18 ומעלה בלבד.</p>
-      </div>
-      <div class="age-gate-body">
-        <p class="age-gate-question">האם אתם מעל גיל 18?</p>
-        <div class="age-gate-actions">
-          <button class="btn-age-yes" id="ageGateYes" type="button">כן, אני מעל גיל 18</button>
-          <button class="btn-age-no" id="ageGateNo" type="button">לא, אני מתחת לגיל 18</button>
-        </div>
-      </div>
+  <div class="age-card">
+    <div class="brand" aria-hidden="true">
+      <img class="brand-mark" src="/favicon.png" width="36" height="36" alt="">
+      <span class="brand-name">Wine Knot</span>
     </div>
-    <div class="age-gate-rejected" id="ageGateRejected">
-      <div class="rejected-icon" aria-hidden="true">🚫</div>
-      <p><strong>מצטערים</strong></p>
-      <p>עליך להיות בן 18 ומעלה כדי להיכנס לאתר Wine Knot.</p>
+    <div class="age-rejected" id="ageGateRejected">
+      <h2>הכניסה לבני 18 ומעלה בלבד</h2>
+      <p>מצטערים — האתר מוכר משקאות אלכוהוליים, ולפי החוק אפשר להיכנס אליו רק מגיל 18.</p>
+    </div>
+    <div class="age-prompt" id="ageGatePrompt">
+      <h2 id="ageGateTitle">האם אתם מעל גיל 18?</h2>
+      <p>האתר מוכר יין ומשקאות אלכוהוליים. הכניסה מותרת לבני 18 ומעלה בלבד.</p>
+    </div>
+    <div class="age-actions">
+      <button class="btn btn-primary" id="ageGateYes" type="button">כן, אני מעל גיל 18</button>
+      <button class="btn btn-secondary" id="ageGateNo" type="button">לא, אני מתחת לגיל 18</button>
     </div>
   </div>
 </div>
 
-<script>
-const API = '/api';
-const CONTACT = { phone: '050-8496666', whatsapp: '972508496666', email: 'doronchick@gmail.com' };
-const CART_KEY = 'wineknot_cart';
-const AGE_KEY = 'wineknot_age_verified';
-const HOME_WINES_PAGE_SIZE = 12;
-const INITIAL_FETCH_LIMIT = 12;
-const SEARCH_MAX_LEN = 64;
-const PRICE_MAX_LEN = 10;
-const PRICE_MIN = 0;
-const PRICE_MAX = 100000;
-
-let categories = [];
-let activeCategory = '';
-let debounceTimer;
-let winesCache = {};
-let recommendedWines = [];
-let homeWinesFullList = [];
-let homeWinesShown = 0;
-let homeWinesTotal = 0;
-let cart = loadCart();
-
-const $ = id => document.getElementById(id);
-
-function esc(s) {
-  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function safeImageUrl(url) {
-  const u = String(url || '').trim();
-  if (u.startsWith('/images/wines/') || u.startsWith('https://') || u.startsWith('http://')) {
-    return esc(u);
-  }
-  return '';
-}
-
-function clampSearchInput(value) {
-  return String(value || '').slice(0, SEARCH_MAX_LEN);
-}
-
-function searchQuery(value) {
-  return clampSearchInput(value).trim();
-}
-
-function clampTextLength(el, maxLen) {
-  if (el.value.length > maxLen) el.value = el.value.slice(0, maxLen);
-}
-
-function clampNumberInput(el, { maxLen, min, max }) {
-  const raw = String(el.value);
-  if (raw.length > maxLen) {
-    el.value = raw.slice(0, maxLen);
-  }
-  if (el.value === '') return;
-  const n = parseFloat(el.value);
-  if (Number.isNaN(n)) {
-    el.value = '';
-    return;
-  }
-  if (n > max) el.value = String(max);
-  else if (n < min) el.value = String(min);
-}
-
-function sanitizePrice(value) {
-  const raw = String(value || '').trim();
-  if (!raw || raw.length > PRICE_MAX_LEN) return '';
-  const n = parseFloat(raw);
-  if (Number.isNaN(n) || n < PRICE_MIN || n > PRICE_MAX) return '';
-  return String(n);
-}
-
-function normalizePriceRange() {
-  const minEl = $('minPrice');
-  const maxEl = $('maxPrice');
-  const min = parseFloat(sanitizePrice(minEl.value));
-  const max = parseFloat(sanitizePrice(maxEl.value));
-  if (!Number.isNaN(min) && !Number.isNaN(max) && min > max) {
-    minEl.value = String(max);
-    maxEl.value = String(min);
-  }
-}
-
-function bindSearchLimit(el) {
-  const enforce = () => clampTextLength(el, SEARCH_MAX_LEN);
-  el.addEventListener('beforeinput', (e) => {
-    if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteContentForward') return;
-    const start = el.selectionStart ?? el.value.length;
-    const end = el.selectionEnd ?? el.value.length;
-    const inserted = e.data ?? '';
-    const nextLen = el.value.length - (end - start) + inserted.length;
-    if (nextLen > SEARCH_MAX_LEN) e.preventDefault();
-  });
-  el.addEventListener('input', enforce);
-  el.addEventListener('compositionend', enforce);
-  el.addEventListener('paste', (e) => {
-    e.preventDefault();
-    const paste = (e.clipboardData || window.clipboardData).getData('text');
-    const start = el.selectionStart ?? el.value.length;
-    const end = el.selectionEnd ?? el.value.length;
-    el.value = (el.value.slice(0, start) + paste + el.value.slice(end)).slice(0, SEARCH_MAX_LEN);
-    el.setSelectionRange(el.value.length, el.value.length);
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-  });
-}
-
-function applySearchLimits() {
-  const searchEl = $('search');
-  const minPriceEl = $('minPrice');
-  const maxPriceEl = $('maxPrice');
-  const search = clampSearchInput(searchEl.value);
-  if (searchEl.value !== search) searchEl.value = search;
-  const minPrice = sanitizePrice(minPriceEl.value);
-  if (minPriceEl.value && minPriceEl.value !== minPrice) minPriceEl.value = minPrice;
-  const maxPrice = sanitizePrice(maxPriceEl.value);
-  if (maxPriceEl.value && maxPriceEl.value !== maxPrice) maxPriceEl.value = maxPrice;
-  normalizePriceRange();
-}
-
-function loadCart() {
-  try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; }
-  catch { return {}; }
-}
-
-function saveCart() {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  updateCartBadge();
-  renderCart();
-}
-
-function addToCart(wine, qty = 1) {
-  const id = String(wine.id);
-  if (cart[id]) cart[id].quantity += qty;
-  else {
-    cart[id] = {
-      id: wine.id,
-      name: wine.name,
-      sale_price: Number(wine.sale_price),
-      winery: wine.winery || '',
-      vintage: wine.vintage || '',
-      quantity: qty,
-    };
-  }
-  saveCart();
-  const free = freeBottles(cart[id].quantity);
-  const msg = free
-    ? `נוסף לעגלה ✓ (+${free} בקבוק מתנה)`
-    : (qty === 1 ? 'נוסף לעגלה ✓' : `נוספו ${qty} בקבוקים לעגלה ✓`);
-  showToast(msg);
-}
-
-function removeFromCart(id) {
-  delete cart[String(id)];
-  saveCart();
-}
-
-function setCartQuantity(id, qty) {
-  id = String(id);
-  if (!cart[id]) return;
-  if (qty <= 0) removeFromCart(id);
-  else { cart[id].quantity = qty; saveCart(); }
-}
-
-function cartItemCount() {
-  return Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
-}
-
-function cartTotalAmount() {
-  return Object.values(cart).reduce((sum, item) => sum + item.sale_price * item.quantity, 0);
-}
-
-function formatPrice(amount) {
-  return '₪' + Number(amount).toLocaleString('he-IL', { maximumFractionDigits: 0 });
-}
-
-function roundPrice(amount) {
-  return Math.round(Number(amount));
-}
-
-function formatBottleQty(qty) {
-  return qty === 1 ? 'בקבוק אחד' : `${qty} בקבוקים`;
-}
-
-function freeBottles(qty) {
-  return Math.floor(qty / 12);
-}
-
-function formatCartQty(item) {
-  const free = freeBottles(item.quantity);
-  if (!free) return formatBottleQty(item.quantity);
-  const total = item.quantity + free;
-  return `${item.quantity} בקבוקים (+${free} מתנה = ${total} סה"כ)`;
-}
-
-function cartWineLabel(item) {
-  const name = item.name.trim();
-  const vintage = (item.vintage || '').trim();
-  if (!vintage || new RegExp(`\\b${vintage.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(name)) {
-    return name;
-  }
-  return `${name} · ${vintage}`;
-}
-
-function buildCartWhatsAppMessage() {
-  const items = Object.values(cart);
-  if (!items.length) return '';
-
-  const lines = [
-    'שלום Wine Knot,',
-    '',
-    'להלן ההזמנה שלי:',
-    '',
-  ];
-
-  let totalFree = 0;
-  let totalQty = 0;
-  items.forEach(item => {
-    const label = cartWineLabel(item);
-    const winery = (item.winery || '').trim();
-    const lineTotal = item.sale_price * item.quantity;
-    const free = freeBottles(item.quantity);
-    const freeValue = roundPrice(item.sale_price);
-    totalFree += free;
-    totalQty += item.quantity;
-    lines.push(label);
-    if (winery) lines.push(`מיקב: ${winery}`);
-    lines.push(`   ${formatCartQty(item)} · ${formatPrice(lineTotal)}`);
-    if (free) {
-      const giftLabel = free === 1 ? 'בקבוק מתנה' : `${free} בקבוקי מתנה`;
-      const eachLabel = free > 1 ? ' כל אחד' : '';
-      lines.push(`   🎁 ${giftLabel} בשווי ${formatPrice(freeValue)}${eachLabel}`);
-    }
-    lines.push('');
-  });
-
-  lines.push('──────────────');
-  lines.push(`סה״כ לתשלום: ${formatPrice(cartTotalAmount())}`);
-  if (totalFree) {
-    const avgGiftValue = totalQty ? roundPrice(cartTotalAmount() / totalQty) : 0;
-    lines.push(`🎁 סה"כ ${totalFree} בקבוקי מתנה (שווי ממוצע ${formatPrice(avgGiftValue)} לבקבוק)`);
-  }
-  lines.push('');
-  lines.push('תודה!');
-
-  return lines.join('\n');
-}
-
-function updateCartBadge() {
-  const count = cartItemCount();
-  const badge = $('cartBadge');
-  badge.textContent = count;
-  badge.dataset.count = count;
-}
-
-function renderCart() {
-  const items = Object.values(cart);
-  const container = $('cartItems');
-  const waBtn = $('cartWhatsAppBtn');
-
-  if (!items.length) {
-    container.innerHTML = '<div class="cart-empty">העגלה ריקה<br><small>הוסיפו יינות מהחנות</small></div>';
-    $('cartTotalAmount').textContent = '₪0';
-    waBtn.disabled = true;
-    return;
-  }
-
-  const totalFree = items.reduce((sum, item) => sum + freeBottles(item.quantity), 0);
-  container.innerHTML = items.map(item => {
-    const free = freeBottles(item.quantity);
-    return `
-    <div class="cart-item" data-id="${esc(item.id)}">
-      <div class="cart-item-info">
-        <div class="cart-item-name">${esc(item.name)}</div>
-        <div class="cart-item-meta">${esc(item.winery)}${item.vintage ? ' · ' + esc(item.vintage) : ''}</div>
-        <div class="cart-qty">
-          <button type="button" data-action="dec" aria-label="הפחת כמות">−</button>
-          <span>${item.quantity}</span>
-          <button type="button" data-action="inc" aria-label="הוסף כמות">+</button>
-        </div>
-        ${free ? `<div class="cart-free-note">🎁 +${free} בקבוק מתנה</div>` : ''}
-      </div>
-      <div>
-        <div class="cart-item-price">₪${(item.sale_price * item.quantity).toFixed(0)}</div>
-        <button type="button" class="cart-item-remove" data-action="remove" aria-label="הסר">✕</button>
-      </div>
-    </div>`;
-  }).join('') + (totalFree ? `<div class="cart-free-note" style="padding:.5rem 0">🎁 סה"כ ${totalFree} בקבוקי מתנה בהזמנה זו</div>` : '');
-
-  container.querySelectorAll('.cart-item').forEach(row => {
-    const id = row.dataset.id;
-    row.querySelector('[data-action="dec"]').addEventListener('click', () => {
-      setCartQuantity(id, cart[id].quantity - 1);
-    });
-    row.querySelector('[data-action="inc"]').addEventListener('click', () => {
-      setCartQuantity(id, cart[id].quantity + 1);
-    });
-    row.querySelector('[data-action="remove"]').addEventListener('click', () => {
-      removeFromCart(id);
-    });
-  });
-
-  $('cartTotalAmount').textContent = `₪${cartTotalAmount().toFixed(0)}`;
-  waBtn.disabled = false;
-}
-
-let lastFocus = null;
-let releaseFocusTrap = null;
-
-function getFocusable(container) {
-  return [...container.querySelectorAll(
-    'a[href], button:not([disabled]), textarea, input:not([disabled]), select, [tabindex]:not([tabindex="-1"])'
-  )].filter(el => !el.hasAttribute('hidden') && el.offsetParent !== null);
-}
-
-function trapFocus(container) {
-  if (releaseFocusTrap) releaseFocusTrap();
-  function onKey(e) {
-    if (e.key !== 'Tab') return;
-    const els = getFocusable(container);
-    if (!els.length) return;
-    const first = els[0];
-    const last = els[els.length - 1];
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  }
-  container.addEventListener('keydown', onKey);
-  releaseFocusTrap = () => {
-    container.removeEventListener('keydown', onKey);
-    releaseFocusTrap = null;
-  };
-}
-
-function restoreFocus() {
-  if (releaseFocusTrap) releaseFocusTrap();
-  if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-  lastFocus = null;
-}
-
-function openCart() {
-  lastFocus = document.activeElement;
-  renderCart();
-  $('cartOverlay').classList.add('open');
-  $('cartBtn').setAttribute('aria-expanded', 'true');
-  document.body.style.overflow = 'hidden';
-  trapFocus($('cartDrawer'));
-  $('cartClose').focus();
-}
-
-function closeCart() {
-  $('cartOverlay').classList.remove('open');
-  $('cartBtn').setAttribute('aria-expanded', 'false');
-  document.body.style.overflow = '';
-  restoreFocus();
-}
-
-let toastTimer;
-function showToast(text) {
-  const el = $('toast');
-  el.textContent = text;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
-}
-
-function setupCart() {
-  $('cartBtn').addEventListener('click', openCart);
-  $('cartClose').addEventListener('click', closeCart);
-  $('cartOverlay').addEventListener('click', e => {
-    if (e.target === $('cartOverlay')) closeCart();
-  });
-  $('cartWhatsAppBtn').addEventListener('click', () => {
-    const msg = encodeURIComponent(buildCartWhatsAppMessage());
-    window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank', 'noopener,noreferrer');
-  });
-  updateCartBadge();
-  renderCart();
-}
-
-async function fetchJSON(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('API error');
-  return res.json();
-}
-
-async function fetchWines(url) {
-  const data = await fetchJSON(url);
-  if (Array.isArray(data)) return { wines: data, total: data.length };
-  return { wines: data.wines || [], total: data.total ?? (data.wines || []).length };
-}
-
-function winesSkeletonHtml(count = 12) {
-  const card = '<div class="wine-card skeleton" aria-hidden="true"><div class="wine-img"></div><div class="wine-body"><div class="wine-name">&nbsp;</div></div></div>';
-  return `<div class="wines-grid">${card.repeat(count)}</div>`;
-}
-
-function discountPct(shelf, sale) {
-  if (!shelf || shelf <= sale) return 0;
-  return Math.round((1 - sale / shelf) * 100);
-}
-
-function wineImageHtml(w, { eager = false } = {}) {
-  const src = safeImageUrl(w.image_url);
-  if (src) {
-    const loading = eager ? 'eager' : 'lazy';
-    const priority = eager ? ' fetchpriority="high"' : '';
-    return `<img src="${src}" alt="${esc(w.name)}" width="200" height="200" loading="${loading}" decoding="async"${priority} onerror="this.outerHTML='<span class=no-img>תמונה בקרוב</span>'">`;
-  }
-  return '<span class="no-img">תמונה בקרוב</span>';
-}
-
-function wineCardHtml(w, { showRecommendedBadge = false, eagerImage = false } = {}) {
-  const disc = discountPct(w.shelf_price, w.sale_price);
-  return `
-    <article class="wine-card" data-id="${esc(w.id)}">
-      ${showRecommendedBadge ? '<div class="recommended-badge">מומלץ</div>' : ''}
-      ${disc ? `<div class="discount-badge">-${disc}%</div>` : ''}
-      ${w.rating ? `<div class="rating-badge">${esc(w.rating)}</div>` : ''}
-      <div class="wine-img">${wineImageHtml(w, { eager: eagerImage })}</div>
-      <div class="wine-body">
-        <h3 class="wine-name"><button class="wine-open" type="button" data-open-id="${esc(w.id)}">${esc(w.name)}</button></h3>
-        <div class="wine-winery">${esc(w.winery || '')}${w.vintage ? ' · ' + esc(w.vintage) : ''}</div>
-        <div class="wine-prices">
-          <div>
-            <span class="price-label">${disc ? 'מחיר מבצע' : 'מחיר'}</span>
-            <span class="sale-price">₪${Number(w.sale_price).toFixed(0)}</span>
-            ${disc ? `<span class="shelf-price">₪${Number(w.shelf_price).toFixed(0)}</span>` : ''}
-          </div>
-        </div>
-        <div class="wine-qty-btns">
-          <button class="btn-qty" type="button" data-add-id="${w.id}" data-qty="1">1 בקבוק</button>
-          <button class="btn-qty" type="button" data-add-id="${w.id}" data-qty="6">6 בקבוקים</button>
-          <button class="btn-qty btn-qty-deal" type="button" data-add-id="${w.id}" data-qty="12">
-            <span class="deal-main">12 + 1 מתנה 🎁</span>
-            <span class="deal-sub">קנו 12 וקבלו בקבוק אחד חינם</span>
-          </button>
-        </div>
-      </div>
-    </article>`;
-}
-
-function bindWineCards(container) {
-  container.querySelectorAll('.wine-card').forEach(card => {
-    card.addEventListener('click', e => {
-      if (e.target.closest('.btn-qty, .btn-add-cart, .wine-open')) return;
-      openModal(card.dataset.id);
-    });
-  });
-  container.querySelectorAll('.wine-open').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      openModal(btn.dataset.openId);
-    });
-  });
-  container.querySelectorAll('.btn-qty, .btn-add-cart').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const wine = winesCache[btn.dataset.addId];
-      const qty = parseInt(btn.dataset.qty, 10) || 1;
-      if (wine) addToCart(wine, qty);
-    });
-  });
-}
-
-function isHomeView() {
-  return !activeCategory
-    && !$('search').value.trim()
-    && !$('minPrice').value
-    && !$('maxPrice').value;
-}
-
-function updateRecommendedVisibility() {
-  const section = $('recommendedSection');
-  if (!recommendedWines.length || !isHomeView()) {
-    section.classList.add('hidden');
-  } else {
-    section.classList.remove('hidden');
-  }
-}
-
-async function loadRecommended() {
-  const grid = $('recommendedGrid');
-  try {
-    recommendedWines = await fetchJSON(`${API}/wines/recommended`);
-    if (!recommendedWines.length) {
-      updateRecommendedVisibility();
-      return;
-    }
-    recommendedWines.forEach(w => { winesCache[w.id] = w; });
-    grid.innerHTML = recommendedWines.map((w, i) => wineCardHtml(w, { showRecommendedBadge: true, eagerImage: i < 4 })).join('');
-    bindWineCards(grid);
-    updateRecommendedVisibility();
-  } catch {
-    recommendedWines = [];
-    updateRecommendedVisibility();
-  }
-}
-
-function categoryHref(slug) {
-  return slug ? `/?category=${encodeURIComponent(slug)}` : '/';
-}
-
-function renderNav() {
-  const nav = $('nav');
-  nav.innerHTML = `<a href="/" data-cat="" class="${!activeCategory ? 'active' : ''}" ${!activeCategory ? 'aria-current="page"' : ''}>הכל</a>` +
-    categories.map(c => `<a href="${categoryHref(c.slug)}" data-cat="${esc(c.slug)}" class="${activeCategory === c.slug ? 'active' : ''}" ${activeCategory === c.slug ? 'aria-current="page"' : ''}>${esc(c.name_he)}</a>`).join('');
-  nav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      applyCategorySelection(a.dataset.cat);
-    });
-  });
-}
-
-function syncCategoryControls() {
-  const select = $('mobileCategorySelect');
-  if (select) select.value = activeCategory;
-}
-
-function applyCategorySelection(category, { scrollToCategories = false } = {}) {
-  activeCategory = category;
-  syncUrl();
-  renderNav();
-  renderCategoryCards();
-  syncCategoryControls();
-  loadWines();
-  if (scrollToCategories && window.innerWidth > 768) {
-    window.scrollTo({ top: $('categories').offsetTop - 80, behavior: 'smooth' });
-  }
-}
-
-function renderCategoryCards() {
-  const el = $('categories');
-  el.classList.remove('is-loading');
-  el.innerHTML = categories.map(c => `
-    <button type="button" class="cat-card ${activeCategory === c.slug ? 'active' : ''}" data-cat="${esc(c.slug)}" ${activeCategory === c.slug ? 'aria-current="true"' : ''}>
-      <div>${esc(c.name_he)}</div>
-      <div class="count">${esc(c.wine_count)} יינות</div>
-    </button>
-  `).join('');
-  el.querySelectorAll('.cat-card').forEach(card => {
-    card.addEventListener('click', () => {
-      applyCategorySelection(card.dataset.cat, { scrollToCategories: true });
-    });
-  });
-}
-
-function renderMobileCategorySelect() {
-  const select = $('mobileCategorySelect');
-  select.innerHTML =
-    `<option value="">הכל</option>` +
-    categories.map(c => `<option value="${esc(c.slug)}"${activeCategory === c.slug ? ' selected' : ''}>${esc(c.name_he)}</option>`).join('');
-}
-
-function buildQuery() {
-  applySearchLimits();
-  const params = new URLSearchParams();
-  if (activeCategory) params.set('category', activeCategory);
-  const search = searchQuery($('search').value);
-  if (search) params.set('search', search);
-  const minPrice = sanitizePrice($('minPrice').value);
-  if (minPrice) params.set('min_price', minPrice);
-  const maxPrice = sanitizePrice($('maxPrice').value);
-  if (maxPrice) params.set('max_price', maxPrice);
-  params.set('sort', $('sort').value);
-  return params.toString();
-}
-
-function syncUrl() {
-  const qs = buildQuery();
-  const url = qs ? `?${qs}` : '/';
-  history.replaceState(null, '', url);
-}
-
-function readUrlState() {
-  const params = new URLSearchParams(location.search);
-  activeCategory = params.get('category') || '';
-  const search = params.get('search');
-  if (search) $('search').value = searchQuery(search);
-  const minPrice = params.get('min_price');
-  if (minPrice) $('minPrice').value = sanitizePrice(minPrice);
-  const maxPrice = params.get('max_price');
-  if (maxPrice) $('maxPrice').value = sanitizePrice(maxPrice);
-  normalizePriceRange();
-  const sort = params.get('sort');
-  if (sort) $('sort').value = sort;
-}
-
-function isAllSection() {
-  return !activeCategory;
-}
-
-function showMoreButtonHtml(remaining) {
-  return `
-    <div class="show-more-wrap">
-      <button class="btn-show-more" id="showMoreBtn" type="button">הצג עוד (${remaining} נוספים)</button>
-    </div>`;
-}
-
-function renderAllSectionWines(container, wines) {
-  homeWinesShown = Math.min(HOME_WINES_PAGE_SIZE, wines.length);
-  const visible = wines.slice(0, homeWinesShown);
-  const remaining = homeWinesTotal - homeWinesShown;
-
-  container.innerHTML =
-    `<div class="wines-grid" id="winesGrid">${visible.map((w, i) => wineCardHtml(w, { eagerImage: i < 6 })).join('')}</div>` +
-    (remaining > 0 ? showMoreButtonHtml(remaining) : '');
-
-  bindWineCards(container);
-  const showMoreBtn = $('showMoreBtn');
-  if (showMoreBtn) showMoreBtn.addEventListener('click', showMoreHomeWines);
-}
-
-async function showMoreHomeWines() {
-  const grid = $('winesGrid');
-  const btn = $('showMoreBtn');
-  if (!grid || !btn) return;
-
-  btn.disabled = true;
-  try {
-    const prevShown = homeWinesShown;
-    let nextEnd = Math.min(homeWinesShown + HOME_WINES_PAGE_SIZE, homeWinesFullList.length);
-
-    if (nextEnd === homeWinesShown && homeWinesFullList.length < homeWinesTotal) {
-      const { wines } = await fetchWines(buildWinesUrl({
-        limit: HOME_WINES_PAGE_SIZE,
-        offset: homeWinesFullList.length,
-      }));
-      wines.forEach(w => { winesCache[w.id] = w; });
-      homeWinesFullList.push(...wines);
-      nextEnd = Math.min(homeWinesShown + HOME_WINES_PAGE_SIZE, homeWinesFullList.length);
-    }
-
-    homeWinesShown = nextEnd;
-    const newWines = homeWinesFullList.slice(prevShown, homeWinesShown);
-    grid.insertAdjacentHTML('beforeend', newWines.map(w => wineCardHtml(w)).join(''));
-    bindWineCards(grid);
-
-    const remaining = homeWinesTotal - homeWinesShown;
-    if (remaining <= 0) {
-      btn.closest('.show-more-wrap').remove();
-    } else {
-      btn.textContent = `הצג עוד (${remaining} נוספים)`;
-      btn.disabled = false;
-    }
-  } catch {
-    btn.disabled = false;
-  }
-}
-
-function buildWinesUrl({ limit, offset } = {}) {
-  const params = new URLSearchParams(buildQuery());
-  if (limit) params.set('limit', String(limit));
-  if (offset) params.set('offset', String(offset));
-  return `${API}/wines?${params.toString()}`;
-}
-
-async function loadWines() {
-  const container = $('winesContainer');
-  if (!container.querySelector('.wine-card:not(.skeleton)')) {
-    container.innerHTML = winesSkeletonHtml(12);
-  }
-  try {
-    if (isAllSection()) {
-      const { wines, total } = await fetchWines(buildWinesUrl({ limit: INITIAL_FETCH_LIMIT }));
-      wines.forEach(w => { winesCache[w.id] = w; });
-      homeWinesTotal = total;
-      homeWinesFullList = wines;
-      $('resultsCount').textContent = `נמצאו ${total} יינות`;
-      if (!wines.length) {
-        homeWinesShown = 0;
-        container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
-        return;
-      }
-      renderAllSectionWines(container, homeWinesFullList);
-    } else {
-      homeWinesFullList = [];
-      homeWinesShown = 0;
-      homeWinesTotal = 0;
-      const { wines, total } = await fetchWines(buildWinesUrl());
-      wines.forEach(w => { winesCache[w.id] = w; });
-      $('resultsCount').textContent = `נמצאו ${total} יינות`;
-      if (!wines.length) {
-        container.innerHTML = '<div class="loading">לא נמצאו יינות מתאימים</div>';
-        return;
-      }
-      container.innerHTML = `<div class="wines-grid">${wines.map((w, i) => wineCardHtml(w, { eagerImage: i < 4 })).join('')}</div>`;
-      bindWineCards(container);
-    }
-    updateRecommendedVisibility();
-    syncUrl();
-  } catch {
-    container.innerHTML = '<div class="loading">שגיאה בטעינת היינות. ודאו שהשרת פועל.</div>';
-  }
-}
-
-async function openModal(id) {
-  try {
-    const w = await fetchJSON(`${API}/wines/${id}`);
-    const disc = discountPct(w.shelf_price, w.sale_price);
-    $('modalImg').innerHTML = wineImageHtml(w);
-    $('modalBody').innerHTML = `
-      <h2 id="modalTitle">${esc(w.name)}</h2>
-      <div class="modal-meta">${esc(w.winery)} · ${esc(w.country)} · ${esc(w.vintage || '')} · ${esc(w.grape || '')}</div>
-      <div class="wine-prices" style="margin-bottom:.5rem">
-        <span class="sale-price">${esc(w.sale_price)} ₪</span>
-        ${disc ? `<span class="shelf-price">${esc(w.shelf_price)} ₪</span> <span style="color:#e74c3c;font-weight:600">-${disc}%</span>` : ''}
-      </div>
-      <div>⭐ דירוג: <strong>${esc(w.rating)}</strong> · ${esc(w.category_he)}</div>
-      ${w.notes ? `<div class="modal-notes">${esc(w.notes)}</div>` : ''}
-      <div class="deal-hint">🎁 ב-12 בקבוקים — בקבוק מתנה חינם!</div>
-      <div class="modal-qty-row">
-        <button class="btn-add-cart" type="button" data-qty="1">1 בקבוק</button>
-        <button class="btn-add-cart" type="button" data-qty="6">6 בקבוקים</button>
-        <button class="btn-add-cart btn-qty-deal" type="button" data-qty="12">
-          <span class="deal-main">12 + 1 מתנה 🎁</span>
-          <span class="deal-sub">קנו 12 וקבלו בקבוק אחד חינם</span>
-        </button>
-      </div>
-      <button class="btn-whatsapp" id="orderBtn" type="button">💬 הזמנה מהירה בוואטסאפ</button>
-    `;
-    $('modalBody').querySelectorAll('.btn-add-cart').forEach(btn => {
-      btn.addEventListener('click', () => {
-        addToCart(w, parseInt(btn.dataset.qty, 10) || 1);
-      });
-    });
-    $('orderBtn').addEventListener('click', () => {
-      const label = cartWineLabel({ name: w.name, vintage: w.vintage || '' });
-      const winery = (w.winery || '').trim();
-      const lines = [
-        'שלום Wine Knot,',
-        '',
-        'מעוניין/ת ב:',
-        label,
-      ];
-      if (winery) lines.push(`מיקב: ${winery}`);
-      lines.push(formatPrice(w.sale_price));
-      const msg = encodeURIComponent(lines.join('\n'));
-      window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank', 'noopener,noreferrer');
-    });
-    lastFocus = document.activeElement;
-    $('modal').classList.add('open');
-    trapFocus($('modal').querySelector('.modal'));
-    $('modalClose').focus();
-  } catch { /* ignore */ }
-}
-
-function closeModal() {
-  $('modal').classList.remove('open');
-  restoreFocus();
-}
-
-function setupFilters() {
-  bindSearchLimit($('search'));
-  $('mobileCategorySelect').addEventListener('change', () => {
-    applyCategorySelection($('mobileCategorySelect').value);
-  });
-  $('minPrice').addEventListener('input', () => {
-    clampNumberInput($('minPrice'), { maxLen: PRICE_MAX_LEN, min: PRICE_MIN, max: PRICE_MAX });
-  });
-  $('maxPrice').addEventListener('input', () => {
-    clampNumberInput($('maxPrice'), { maxLen: PRICE_MAX_LEN, min: PRICE_MIN, max: PRICE_MAX });
-  });
-  ['search', 'sort', 'minPrice', 'maxPrice'].forEach(id => {
-    $(id).addEventListener('input', () => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(loadWines, 300);
-    });
-    $(id).addEventListener('change', loadWines);
-  });
-}
-
-$('modalClose').addEventListener('click', closeModal);
-$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
-  if ($('modal').classList.contains('open')) closeModal();
-  else if ($('cartOverlay').classList.contains('open')) closeCart();
-});
-
-function setupAgeGate() {
-  if (localStorage.getItem(AGE_KEY) === '1') {
-    document.body.classList.remove('age-gate-active');
-    return true;
-  }
-
-  trapFocus($('ageGate'));
-  $('ageGateYes').focus();
-
-  $('ageGateYes').addEventListener('click', () => {
-    if (releaseFocusTrap) releaseFocusTrap();
-    localStorage.setItem(AGE_KEY, '1');
-    document.body.classList.remove('age-gate-active');
-    document.dispatchEvent(new Event('wineknot:age-verified'));
-    init();
-  });
-
-  $('ageGateNo').addEventListener('click', () => {
-    $('ageGatePrompt').style.display = 'none';
-    $('ageGateRejected').classList.add('show');
-  });
-
-  return false;
-}
-
-async function init() {
-  $('phoneLink').href = `tel:${CONTACT.phone}`;
-  $('phoneLink').textContent = `📞 ${CONTACT.phone}`;
-  $('waLink').href = `https://wa.me/${CONTACT.whatsapp}`;
-  $('waLink').rel = 'noopener noreferrer';
-  $('emailLink').href = `mailto:${CONTACT.email}`;
-  $('emailLink').textContent = `✉️ ${CONTACT.email}`;
-
-  try {
-    readUrlState();
-    categories = await fetchJSON(`${API}/categories`);
-    renderNav();
-    renderMobileCategorySelect();
-    renderCategoryCards();
-    syncCategoryControls();
-    setupFilters();
-    setupCart();
-    await Promise.all([loadRecommended(), loadWines()]);
-  } catch {
-    $('winesContainer').innerHTML = '<div class="loading">לא ניתן להתחבר לשרת. הריצו: docker compose up -d --build</div>';
-  }
-}
-
-if (setupAgeGate()) init();
-</script>
-<script src="/js/compliance.js"></script>
+<script src="/js/app.js?v=2" defer></script>
+<script src="/js/compliance.js?v=2" defer></script>
 </body>
 </html>

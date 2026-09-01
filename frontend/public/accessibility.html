@@ -2,46 +2,16 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>הצהרת נגישות | Wine Knot</title>
   <meta name="description" content="הצהרת הנגישות של חנות היין Wine Knot לפי תקנות שוויון זכויות לאנשים עם מוגבלות ותקן ישראלי 5568.">
+  <link rel="canonical" href="https://wineknot.co.il/accessibility.html">
+  <meta name="theme-color" content="#f2eee7">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
-  <link rel="stylesheet" href="/css/compliance.css">
-  <style>
-    :root {
-      --wine: #6b1d3a;
-      --wine-dark: #4a1228;
-      --gold: #c9a84c;
-      --cream: #faf7f2;
-      --text: #2c1810;
-      --muted: #5f514a;
-      --border: #e8ddd4;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; }
-    .header {
-      background: linear-gradient(135deg, var(--wine-dark), var(--wine));
-      color: #fff;
-    }
-    .header-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo { font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; }
-    .logo span { color: var(--gold); }
-    .footer {
-      background: #1a0a10;
-      color: rgba(255,255,255,.6);
-      text-align: center;
-      padding: 1.5rem;
-      font-size: .85rem;
-    }
-  </style>
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/css/site.css?v=2">
+  <link rel="stylesheet" href="/css/compliance.css?v=2">
   <script>
     (function () {
       try {
@@ -56,17 +26,21 @@
     })();
   </script>
 </head>
-<body class="legal-page">
-  <header class="header">
-    <div class="header-inner">
-      <a class="logo" href="/">Wine <span>Knot</span></a>
-      <a href="/" style="color:#fff;text-decoration:underline">חזרה לחנות</a>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="header-row">
+        <a class="brand" href="/" aria-label="Wine Knot — דף הבית">
+          <img class="brand-mark" src="/favicon.png" width="36" height="36" alt="">
+          <span class="brand-name">Wine Knot<small>חנות יין · חיפה</small></span>
+        </a>
+        <a class="btn btn-quiet" href="/">חזרה לחנות</a>
+      </div>
     </div>
   </header>
 
-  <main id="main" class="legal-wrap">
-    <a class="legal-back" href="/">← חזרה לחנות</a>
-    <article class="legal-card">
+  <main id="main" class="container legal">
+    <article>
       <p class="legal-meta">עודכן לאחרונה: 1 בספטמבר 2026</p>
       <h1>הצהרת נגישות</h1>
 
@@ -83,7 +57,8 @@
       <ul>
         <li>מבנה סמנטי, ניווט מקלדת וקישור «דלג לתוכן»</li>
         <li>תוויות לטפסים, טקסט חלופי לתמונות מוצר, ומצבי מיקוד גלויים</li>
-        <li>חלונות (פרטי יין, עגלה, אימות גיל) עם תפקידי ARIA וסגירה ב־Escape</li>
+        <li>חלונות (עגלה, תפריט, אימות גיל) עם תפקידי ARIA, לכידת מיקוד וסגירה ב־Escape</li>
+        <li>דפי יין עם כתובת קבועה, כותרות מסודרות ופירורי לחם</li>
         <li>תמיכה בהעדפת מערכת להפחתת תנועה (prefers-reduced-motion)</li>
         <li>כלי נגישות קבוע: גודל טקסט, ניגודיות, גווני אפור, הדגשת קישורים ועצירת אנימציות</li>
       </ul>
@@ -99,9 +74,9 @@
       <h2>רכז נגישות</h2>
       <p>
         רכז הנגישות באתר: <strong>דורון אהרון</strong>, Wine Knot ltd.<br>
-        טלפון: <a href="tel:050-8496666">050-8496666</a><br>
-        דוא״ל: <a href="mailto:doronchick@gmail.com">doronchick@gmail.com</a><br>
-        וואטסאפ: <a href="https://wa.me/972508496666" rel="noopener noreferrer" target="_blank">050-8496666</a>
+        טלפון: <a href="tel:050-8496666"><span class="ltr">050-8496666</span></a><br>
+        דוא״ל: <a href="mailto:doronchick@gmail.com"><span class="ltr">doronchick@gmail.com</span></a><br>
+        וואטסאפ: <a href="https://wa.me/972508496666" rel="noopener noreferrer" target="_blank"><span class="ltr">050-8496666</span></a>
       </p>
       <p>פניות בנושא נגישות יטופלו בהקדם האפשרי ובדרך כלל תוך עד 14 ימי עסקים.</p>
 
@@ -113,14 +88,19 @@
     </article>
   </main>
 
-  <footer class="footer">
-    <p>© 2026 Wine Knot. אזהרה: צריכה מופרזת של אלכוהול מסכנת חיים ומזיקה לבריאות.</p>
-    <p class="footer-legal">
-      <a href="/accessibility.html" aria-current="page">הצהרת נגישות</a>
-      <a href="/privacy.html">מדיניות פרטיות ועוגיות</a>
-      <button type="button" data-open-cookies>הגדרת עוגיות</button>
-    </p>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-legal">
+        <span>© 2026 Wine Knot ltd</span>
+        <span class="warning">אזהרה: צריכה מופרזת של אלכוהול מסכנת חיים ומזיקה לבריאות.</span>
+        <span>
+          <a href="/accessibility.html" aria-current="page">הצהרת נגישות</a> ·
+          <a href="/privacy.html">מדיניות פרטיות ועוגיות</a> ·
+          <button type="button" class="btn-text btn btn-sm" data-open-cookies>הגדרת עוגיות</button>
+        </span>
+      </div>
+    </div>
   </footer>
-  <script src="/js/compliance.js"></script>
+  <script src="/js/compliance.js?v=2" defer></script>
 </body>
 </html>
