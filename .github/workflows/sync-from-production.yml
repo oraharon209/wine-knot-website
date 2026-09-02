@@ -1,8 +1,8 @@
 name: Sync from production
 
-# Pull live admin edits (prices, stock, recommended, images) into the repo.
-# Does NOT deploy — run this before terraform destroy/apply or when admin data
-# should become the new seed.
+# Pull live admin edits (prices, stock, recommended, images) into the repo on main.
+# Then build and push the backend image to Docker Hub when credentials are present.
+# Does not change production by itself — production MySQL is the live catalog.
 on:
   schedule:
     # Every Sunday at 04:00 UTC
@@ -13,6 +13,14 @@ on:
         description: Git commit message
         required: false
         default: Sync live admin catalog from production
+      push_image:
+        description: Build and push backend image to Docker Hub
+        type: boolean
+        default: true
+      deploy_after_push:
+        description: Trigger production Deploy after a successful image push
+        type: boolean
+        default: false
 
 concurrency:
   group: sync-from-production
@@ -20,6 +28,8 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
+  packages: write
 
 jobs:
   sync:
@@ -29,12 +39,21 @@ jobs:
       AWS_REGION: ${{ vars.AWS_REGION || 'eu-north-1' }}
       EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
       S3_BUCKET: ${{ vars.S3_BUCKET }}
-      # Ephemeral CI MySQL — not production credentials
       MYSQL_ROOT_PASSWORD: rootpass
       SYNC_IMPORT_DB: wineknot_sync
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    outputs:
+      committed: ${{ steps.commit.outputs.committed }}
+      wines: ${{ steps.summary.outputs.wines }}
+      image_pushed: ${{ steps.docker.outputs.pushed }}
+      image: ${{ steps.docker.outputs.image }}
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -61,12 +80,14 @@ jobs:
           chmod +x scripts/dump_production_via_ssm.sh scripts/sync_from_production.sh
           ./scripts/sync_from_production.sh --via-ssm
 
-      - name: Commit and push
+      - name: Commit and push catalog
+        id: commit
         run: |
           set -euo pipefail
+          echo "committed=false" >> "$GITHUB_OUTPUT"
           if git diff --quiet wines_data.json backend/config/init.sql frontend/public/images/wines/ \
             && [ -z "$(git ls-files --others --exclude-standard frontend/public/images/wines/)" ]; then
-            echo "No catalog changes to commit"
+            echo "No catalog changes to commit (sync ran; live data already matches the repo)"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -77,4 +98,115 @@ jobs:
             MSG="Sync live admin catalog from production (scheduled)"
           fi
           git commit -m "$MSG"
-          git push
+          git push origin HEAD:main
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Catalog summary
+        id: summary
+        run: |
+          set -euo pipefail
+          WINES=$(jq '.wines | length' wines_data.json)
+          REC=$(jq '.recommended_wine_ids | length' wines_data.json)
+          echo "wines=$WINES" >> "$GITHUB_OUTPUT"
+          echo "recommended=$REC" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Sync from production"
+            echo ""
+            echo "- Catalog sync: **completed** (SSM dump + S3 images + init.sql rebuild)"
+            echo "- Wines in seed: **${WINES}** (recommended: ${REC})"
+            echo "- Git commit on main: **${{ steps.commit.outputs.committed }}**"
+            if [ "${{ steps.commit.outputs.committed }}" != "true" ]; then
+              echo "- Live catalog already matched the repo (no diff to push)."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build and push backend image
+        id: docker
+        run: |
+          set -euo pipefail
+          echo "pushed=false" >> "$GITHUB_OUTPUT"
+          USERNAME="${DOCKERHUB_USERNAME:-}"
+          if [ -z "$USERNAME" ]; then
+            USERNAME="${DOCKERHUB_USER:-}"
+          fi
+          # Known Hub namespace for this project when secret omitted
+          if [ -z "$USERNAME" ]; then
+            USERNAME="oraharon"
+          fi
+          IMAGE_REPO="${{ vars.DOCKER_IMAGE_BACKEND }}"
+          EVENT_NAME="${{ github.event_name }}"
+          INPUT_PUSH="${{ github.event.inputs.push_image }}"
+          OWNER="${{ github.repository_owner }}"
+          GHCR_IMAGE="ghcr.io/${OWNER}/wine-knot-backend"
+          SHA="$(git rev-parse --short HEAD)"
+          DATE_TAG="$(date -u +%Y%m%d)"
+
+          skip() {
+            local reason="$1"
+            echo "image_skip=$reason" >> "$GITHUB_OUTPUT"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Image publish" >> "$GITHUB_STEP_SUMMARY"
+            echo "$reason" >> "$GITHUB_STEP_SUMMARY"
+            echo "::notice::$reason"
+          }
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$INPUT_PUSH" = "false" ]; then
+            skip "Image push skipped (workflow input push_image=false)."
+            exit 0
+          fi
+
+          docker build -t "wine-knot-backend:ci" ./backend
+
+          # Always publish to GHCR with the workflow GITHUB_TOKEN (no Hub secret required).
+          echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:latest"
+          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:${SHA}"
+          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:${DATE_TAG}"
+          docker push "${GHCR_IMAGE}:latest"
+          docker push "${GHCR_IMAGE}:${SHA}"
+          docker push "${GHCR_IMAGE}:${DATE_TAG}"
+          GHCR_DIGEST="$(docker image inspect --format '{{index .RepoDigests 0}}' "${GHCR_IMAGE}:latest" 2>/dev/null || true)"
+          {
+            echo ""
+            echo "### GHCR"
+            echo "- Pushed **${GHCR_IMAGE}:latest**, \`:${SHA}\`, \`:${DATE_TAG}\`"
+            echo "- Digest: \`${GHCR_DIGEST:-n/a}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -z "${DOCKERHUB_TOKEN:-}" ]; then
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            echo "image=${GHCR_IMAGE}:latest" >> "$GITHUB_OUTPUT"
+            skip "Docker Hub **FAILED** — add Environment secret \`DOCKERHUB_TOKEN\` (username default \`${USERNAME}\`) on **production**. GHCR push above succeeded."
+            echo "::error::DOCKERHUB_TOKEN is missing on Environment production. Weekly/manual sync cannot push to Docker Hub."
+            exit 1
+          fi
+
+          if [ -z "$IMAGE_REPO" ]; then
+            IMAGE_REPO="${USERNAME}/wine-knot-backend"
+          fi
+          IMAGE_REPO="${IMAGE_REPO%%:*}"
+
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$USERNAME" --password-stdin
+          docker tag wine-knot-backend:ci "${IMAGE_REPO}:latest"
+          docker tag wine-knot-backend:ci "${IMAGE_REPO}:${SHA}"
+          docker tag wine-knot-backend:ci "${IMAGE_REPO}:${DATE_TAG}"
+          docker push "${IMAGE_REPO}:latest"
+          docker push "${IMAGE_REPO}:${SHA}"
+          docker push "${IMAGE_REPO}:${DATE_TAG}"
+          DIGEST="$(docker image inspect --format '{{index .RepoDigests 0}}' "${IMAGE_REPO}:latest" 2>/dev/null || true)"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+          echo "image=${IMAGE_REPO}:latest" >> "$GITHUB_OUTPUT"
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
+          {
+            echo ""
+            echo "### Docker Hub"
+            echo "- Pushed **${IMAGE_REPO}:latest**, \`:${SHA}\`, \`:${DATE_TAG}\`"
+            echo "- Digest: \`${DIGEST:-n/a}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Trigger production deploy
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_after_push == 'true' && steps.docker.outputs.pushed == 'true' }}
+        run: |
+          gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
