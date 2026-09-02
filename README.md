@@ -14,6 +14,33 @@ Open in your browser: **http://localhost:8080**
 
 Local dev uses HTTP only (no SSL certs). On the server, use `docker compose -f docker-compose.yml -f docker-compose.production.yml up -d` for HTTPS on 443.
 
+### Preview the redesign (no Docker)
+
+`docker compose` binds **8080** to the checkout you have mounted. To compare designs without Docker:
+
+```bash
+# NEW redesign (this branch) — use this URL
+PORT=8090 BANNER='NEW redesign' node scripts/preview-server.js
+```
+
+Open **http://localhost:8090** — that is the redesigned storefront on this branch.
+
+Optional side-by-side with `main` on 8080:
+
+```bash
+ROOT=/tmp/wk-main-public
+rm -rf "$ROOT" && mkdir -p "$ROOT"
+git archive origin/main:frontend/public | tar -x -C "$ROOT"
+PORT=8080 ROOT="$ROOT" BANNER='OLD site (main)' node scripts/preview-server.js
+```
+
+| Port | What you see |
+|------|----------------|
+| **8080** | Old storefront (`main` / production look), if you start the optional command above |
+| **8090** | **New redesign** (this branch) |
+
+The mock API reads `wines_data.json`. Stop with Ctrl+C.
+
 ### Admin panel
 
 **http://localhost:8080/admin.html** (local dev — no login gate)
