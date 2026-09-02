@@ -33,7 +33,7 @@ services:
       AWS_REGION: ${AWS_REGION:-}
       S3_PUBLIC_BASE_URL: ${S3_PUBLIC_BASE_URL:-}
       ADMIN_AUTH_DISABLED: "true"
-      CORS_ORIGINS: http://localhost:8080,https://wineknot.co.il
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080,http://localhost:8090,https://wineknot.co.il,https://new.wineknot.co.il}
     volumes:
       - ./frontend/public/images/wines:/app/uploads/images/wines
     depends_on:
@@ -47,8 +47,10 @@ services:
       - "${HTTP_PORT:-8080}:80"
     volumes:
       - ./frontend/public:/usr/share/nginx/html:ro
+      - ./frontend-staging/public:/usr/share/nginx/html-new:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d/common.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
     depends_on:
       - backend
 

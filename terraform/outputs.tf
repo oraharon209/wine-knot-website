@@ -23,9 +23,19 @@ output "website_url" {
   value       = "https://${var.cloudflare_zone}"
 }
 
+output "staging_url" {
+  description = "Redesign staging URL (new subdomain, same origin EIP)"
+  value       = "https://new.${var.cloudflare_zone}"
+}
+
 output "admin_panel_url" {
   description = "Admin panel URL (protected by Cloudflare Access email OTP)"
   value       = "https://${var.cloudflare_zone}/admin.html"
+}
+
+output "staging_admin_panel_url" {
+  description = "Staging admin URL (same Cloudflare Access policy as production)"
+  value       = "https://new.${var.cloudflare_zone}/admin.html"
 }
 
 output "admin_access_emails" {

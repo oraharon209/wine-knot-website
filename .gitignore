@@ -4,6 +4,7 @@ node_modules/
 mysql_data/
 *.log
 .DS_Store
+.staging-ref
 scripts/image_cache.json
 nginx/ssl/*.key
 nginx/ssl/*.crt

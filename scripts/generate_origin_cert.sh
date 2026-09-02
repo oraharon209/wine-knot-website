@@ -7,6 +7,7 @@ mkdir -p "$DIR"
 openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
   -keyout "$DIR/origin.key" \
   -out "$DIR/origin.crt" \
-  -subj "/CN=$DOMAIN"
+  -subj "/CN=$DOMAIN" \
+  -addext "subjectAltName=DNS:${DOMAIN},DNS:www.${DOMAIN},DNS:new.${DOMAIN}"
 chmod 600 "$DIR/origin.key"
-echo "Created $DIR/origin.crt and origin.key for $DOMAIN"
+echo "Created $DIR/origin.crt and origin.key for $DOMAIN (SAN: www + new)"

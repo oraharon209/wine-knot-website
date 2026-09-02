@@ -1,8 +1,11 @@
 locals {
   cloudflare_account_id = data.cloudflare_zone.main.account_id
   admin_hostname        = var.cloudflare_zone
+  staging_hostname      = "new.${var.cloudflare_zone}"
   admin_page_uri        = "${local.admin_hostname}/admin.html"
   admin_api_uri         = "${local.admin_hostname}/api/admin/*"
+  staging_admin_page_uri = "${local.staging_hostname}/admin.html"
+  staging_admin_api_uri  = "${local.staging_hostname}/api/admin/*"
 }
 
 # Single Access app so one email OTP session covers both the page and API calls.
@@ -23,6 +26,16 @@ resource "cloudflare_zero_trust_access_application" "admin" {
   destinations {
     type = "public"
     uri  = local.admin_api_uri
+  }
+
+  destinations {
+    type = "public"
+    uri  = local.staging_admin_page_uri
+  }
+
+  destinations {
+    type = "public"
+    uri  = local.staging_admin_api_uri
   }
 }
 

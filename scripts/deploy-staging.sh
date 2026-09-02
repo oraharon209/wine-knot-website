@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# Publish the redesign frontend to new.wineknot.co.il without leaving production on this branch.
+# Production git HEAD stays on main; nginx/compose dual-host files are overlaid from STAGING_REF.
+set -euo pipefail
+
+APP_DIR="/opt/wine-knot"
+STAGING_REF="${STAGING_REF:-origin/cursor/wine-knot-redesign-67b4}"
+ZONE_NAME="${CLOUDFLARE_ZONE:-wineknot.co.il}"
+COMPOSE=(docker compose -f docker-compose.yml -f docker-compose.production.yml)
+GIT_USER="${SUDO_USER:-ubuntu}"
+
+cd "$APP_DIR"
+
+run_git() {
+  sudo -u "$GIT_USER" git -C "$APP_DIR" "$@"
+}
+
+run_git fetch origin
+
+# Allow STAGING_REF as branch name or origin/branch
+if [[ "$STAGING_REF" != origin/* ]] && [[ "$STAGING_REF" != */* ]]; then
+  STAGING_REF="origin/${STAGING_REF}"
+fi
+
+if ! run_git rev-parse --verify "$STAGING_REF" >/dev/null 2>&1; then
+  echo "Unknown staging ref: $STAGING_REF" >&2
+  exit 1
+fi
+
+echo "$STAGING_REF" > "$APP_DIR/.staging-ref"
+chown "$GIT_USER:$GIT_USER" "$APP_DIR/.staging-ref"
+
+echo "Overlaying nginx/compose from $STAGING_REF (HEAD stays $(run_git rev-parse --abbrev-ref HEAD))"
+run_git checkout "$STAGING_REF" -- \
+  nginx \
+  docker-compose.yml \
+  docker-compose.production.yml \
+  scripts/generate_origin_cert.sh \
+  scripts/ensure_new_subdomain_dns.sh \
+  scripts/deploy-staging.sh \
+  scripts/deploy.sh
+
+mkdir -p frontend-staging/public
+rm -rf frontend-staging/public.partial
+mkdir -p frontend-staging/public.partial
+run_git archive "$STAGING_REF" frontend/public | tar -x -C frontend-staging/public.partial
+rm -rf frontend-staging/public
+mv frontend-staging/public.partial/frontend/public frontend-staging/public
+rm -rf frontend-staging/public.partial
+# Wine photos live on production / S3; copy so staging HTML can resolve local fallbacks.
+if [ -d frontend/public/images/wines ]; then
+  mkdir -p frontend-staging/public/images/wines
+  cp -a frontend/public/images/wines/. frontend-staging/public/images/wines/ 2>/dev/null || true
+fi
+chown -R "$GIT_USER:$GIT_USER" frontend-staging
+
+if [ -x "$APP_DIR/scripts/ensure_new_subdomain_dns.sh" ]; then
+  echo "Ensuring Cloudflare DNS for new.${ZONE_NAME}"
+  bash "$APP_DIR/scripts/ensure_new_subdomain_dns.sh" "$ZONE_NAME" || echo "DNS ensure failed (token/API); terraform apply can create the record"
+fi
+
+CERT="$APP_DIR/nginx/ssl/origin.crt"
+if [ ! -f "$CERT" ] || ! openssl x509 -in "$CERT" -noout -text 2>/dev/null | grep -q "new.${ZONE_NAME}"; then
+  echo "Regenerating origin certificate with SAN new.${ZONE_NAME}"
+  bash "$APP_DIR/scripts/generate_origin_cert.sh" "$ZONE_NAME"
+fi
+
+if [ -f /usr/local/bin/wine-knot-refresh-secrets ]; then
+  /usr/local/bin/wine-knot-refresh-secrets || true
+fi
+
+# Keep existing CORS and append staging origin if missing
+if [ -f .env ] && ! grep -q "https://new.${ZONE_NAME}" .env; then
+  sed -i "s|^CORS_ORIGINS=\\(.*\\)|CORS_ORIGINS=\\1,https://new.${ZONE_NAME}|" .env || true
+fi
+
+"${COMPOSE[@]}" up -d --build nginx backend
+docker image prune -f
+
+echo "Staging published from $STAGING_REF → https://new.${ZONE_NAME}"
+echo "Apex still serves $(run_git rev-parse --short HEAD) ($(run_git rev-parse --abbrev-ref HEAD))"
