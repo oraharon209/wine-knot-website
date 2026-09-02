@@ -74,9 +74,9 @@ jobs:
             exit 0
           fi
           if [ -z "${DOCKERHUB_TOKEN:-}" ]; then
-            echo "- Docker Hub: **not pushed** — add Environment secret \`DOCKERHUB_TOKEN\` (username default \`${USERNAME}\`)" >> "$GITHUB_STEP_SUMMARY"
-            echo "::notice::DOCKERHUB_TOKEN missing; GHCR push succeeded"
-            exit 0
+            echo "- Docker Hub: **FAILED** — add Environment secret \`DOCKERHUB_TOKEN\` (username default \`${USERNAME}\`) on GitHub Environment **production**" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::DOCKERHUB_TOKEN is missing on Environment production. GHCR was pushed; Docker Hub was not. Add a Hub access token with push to ${USERNAME}/wine-knot-backend."
+            exit 1
           fi
 
           echo "$DOCKERHUB_TOKEN" | docker login -u "$USERNAME" --password-stdin

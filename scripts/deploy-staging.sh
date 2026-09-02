@@ -40,19 +40,28 @@ run_git checkout "$STAGING_REF" -- \
   scripts/deploy-staging.sh \
   scripts/deploy.sh
 
+# Sync into the existing bind-mount directory. Never rm/replace frontend-staging/public
+# while nginx has it mounted — that leaves the container on a deleted inode (empty 403).
 mkdir -p frontend-staging/public
-rm -rf frontend-staging/public.partial
-mkdir -p frontend-staging/public.partial
-run_git archive "$STAGING_REF" frontend/public | tar -x -C frontend-staging/public.partial
-rm -rf frontend-staging/public
-mv frontend-staging/public.partial/frontend/public frontend-staging/public
-rm -rf frontend-staging/public.partial
+STAGE_TMP="$(mktemp -d /tmp/wk-staging.XXXXXX)"
+trap 'rm -rf "$STAGE_TMP"' EXIT
+run_git archive "$STAGING_REF" frontend/public | tar -x -C "$STAGE_TMP"
+if [ ! -f "$STAGE_TMP/frontend/public/index.html" ]; then
+  echo "git archive missing frontend/public/index.html from $STAGING_REF" >&2
+  exit 1
+fi
+rsync -a --delete --exclude 'images/wines/' "$STAGE_TMP/frontend/public/" frontend-staging/public/
 # Wine photos live on production / S3; copy so staging HTML can resolve local fallbacks.
 if [ -d frontend/public/images/wines ]; then
   mkdir -p frontend-staging/public/images/wines
-  cp -a frontend/public/images/wines/. frontend-staging/public/images/wines/ 2>/dev/null || true
+  rsync -a frontend/public/images/wines/ frontend-staging/public/images/wines/ 2>/dev/null || true
+fi
+if [ ! -f frontend-staging/public/index.html ]; then
+  echo "frontend-staging/public/index.html missing after rsync" >&2
+  exit 1
 fi
 chown -R "$GIT_USER:$GIT_USER" frontend-staging
+echo "Staging files: $(find frontend-staging/public -type f | wc -l) files (index.html ok)"
 
 if [ -x "$APP_DIR/scripts/ensure_new_subdomain_dns.sh" ]; then
   echo "Ensuring Cloudflare DNS for new.${ZONE_NAME}"
@@ -74,7 +83,8 @@ if [ -f .env ] && ! grep -q "https://new.${ZONE_NAME}" .env; then
   sed -i "s|^CORS_ORIGINS=\\(.*\\)|CORS_ORIGINS=\\1,https://new.${ZONE_NAME}|" .env || true
 fi
 
-"${COMPOSE[@]}" up -d --build nginx backend
+# Force-recreate nginx so bind mounts re-attach to the current directory inode.
+"${COMPOSE[@]}" up -d --build --force-recreate nginx backend
 docker image prune -f
 
 echo "Verifying origin vhosts (loopback, bypasses Cloudflare)"
