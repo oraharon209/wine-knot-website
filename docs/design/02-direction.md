@@ -42,8 +42,8 @@ Six intentional hues (paper, ink, wine, vine, brass, error) plus tints. Burgundy
 
 ## Typography
 
-- Display and product names, prices, scores: **Frank Ruhl Libre** (variable 300–900, Hebrew + Latin subsets, self-hosted, 63 KB).
-- Body, UI, metadata: **Assistant** (variable 200–800, Hebrew + Latin subsets, self-hosted, 29 KB).
+- Display and product names, prices, scores: **Heebo** (variable 400–800, Hebrew + Latin subsets, self-hosted) — cleaner modern sans after review feedback on Frank Ruhl Libre.
+- Body, UI, metadata, Doron's note lines: **Assistant** (variable 200–800, Hebrew + Latin subsets, self-hosted).
 - Scale (rem): 0.75 label · 0.8125 meta · 0.9375 ui · 1.0625 body · 1.25 lead · 1.5 h3 · 2 h2 · `clamp(2.25rem, 1.5rem + 3vw, 3.75rem)` h1.
 - Line heights: body 1.6, headings 1.15, prices 1. Tabular numerals on prices, scores and the list view. No italics, no letter-spacing on Hebrew; `.02–.08em` only on small Latin labels.
 
@@ -55,11 +55,11 @@ Six intentional hues (paper, ink, wine, vine, brass, error) plus tints. Burgundy
 │ סופר פרימיום · חו״ל · אדום פרימיום · אדום · מתוקים · רוזה · … │  shelf strip
 ├──────────────────────────────────────────────────────────────┤
 │ ┌────────────┐   הרשימה של דורון.                            │
-│ │            │   כ־160 יינות, לכל אחד ציון ושורה אחת.         │  hero: type start,
-│ │  shelves   │   23 שנה · משלוח עד הבית · הזמנה בוואטסאפ      │  photo end
-│ │  photo     │   [לכל היינות]  [ההמלצות של דורון]            │
+│ │  3 featured│   כ־160 יינות, לכל אחד ציון ושורה אחת.         │  hero: type start,
+│ │  bottles   │   23 שנה · משלוח עד הבית · הזמנה בוואטסאפ      │  featured picks end
+│ │  + scores  │   [לכל היינות]  [ההמלצות של דורון]            │  (no shop photo)
 │ └────────────┘                                               │
-│  לפי סוג ─────────  לפי תקציב ─────────  לפי יקב ──────────    │  start here (typographic)
+│  לפי תקציב ─────────  לפי ציון ─────────  לפי יקב ──────────    │  start here (typographic)
 ├──────────────────────────────────────────────────────────────┤
 │  ההמלצות של דורון          ◦ ◦ ◦ ◦ ◦ (score + line prominent) │
 ├──────────────────────────────────────────────────────────────┤
@@ -77,6 +77,6 @@ Grid: 12 columns conceptually, 1280 px container, 24 px gutters on phones and 40
 
 ## Motion (intensity 3/10)
 
-- One authored moment: the hero settles on load (headline, then the photograph, then the start-here row), 600 ms, exponential ease-out, from an already-visible default.
+- One authored moment: the hero settles on load (headline, then featured bottles, then the start-here row), 600 ms, exponential ease-out, from an already-visible default.
 - Hover/focus transitions 160 ms; drawers 260 ms `cubic-bezier(.2,.7,.2,1)`; cart badge scales once when the count changes; toast slides 8 px.
 - No scroll-triggered reveals, no parallax, no image zoom on hover. `prefers-reduced-motion` and the site's own "עצירת אנימציות" switch disable everything.

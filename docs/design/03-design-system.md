@@ -23,9 +23,9 @@ Legacy aliases (`--wine-dark`, `--gold`, `--cream`, `--text`, `--muted`, `--bord
 
 ## Typography
 
-- `--font-display`: Frank Ruhl Libre (variable 300–900). Headings, wine names, prices, scores, step numbers, footer wordmark.
-- `--font-text`: Assistant (variable 200–800). Body, UI, metadata, buttons, labels.
-- Both self-hosted from `/fonts/` as Hebrew + Latin woff2 subsets (≈92 KB total), `font-display: swap`, Hebrew subsets preloaded.
+- `--font-display`: Heebo (variable 400–800). Headings, wine names, prices, scores, step numbers, footer wordmark — a clean modern Hebrew sans (replaced Frank Ruhl Libre after review).
+- `--font-text`: Assistant (variable 200–800). Body, UI, metadata, buttons, labels, Doron's note lines.
+- Both self-hosted from `/fonts/` as Hebrew + Latin woff2 subsets, `font-display: swap`, Hebrew subsets preloaded.
 - Scale: `--fs-label` 12 · `--fs-meta` 13 · `--fs-ui` 15 · `--fs-body` 17 · `--fs-lead` 20 · `--fs-h3` 24 · `--fs-h2` 32 · `--fs-h1` `clamp(36px, 24px + 3vw, 60px)`. Product H1 `clamp(30px, 20px + 2vw, 44px)`.
 - Line height: `--lh-body` 1.6, `--lh-tight` 1.15. `text-wrap: balance` on headings.
 - Numerals: `.num` and all price/score/list cells use `tabular-nums lining-nums`.

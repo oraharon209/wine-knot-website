@@ -18,11 +18,10 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="dns-prefetch" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com">
   <link rel="preconnect" href="https://wine-knot-wine-images-880884391242.s3.eu-north-1.amazonaws.com" crossorigin>
-  <link rel="preload" href="/fonts/frank-ruhl-libre-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/heebo-hebrew.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/assistant-hebrew.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" as="image" href="/images/bottles-hero.jpeg" media="(min-width: 1024px)">
-  <link rel="stylesheet" href="/css/site.css?v=2">
-  <link rel="stylesheet" href="/css/compliance.css?v=2">
+  <link rel="stylesheet" href="/css/site.css?v=3">
+  <link rel="stylesheet" href="/css/compliance.css?v=3">
   <script>
     document.documentElement.classList.add('has-js');
     (function () {
@@ -128,9 +127,10 @@
           <a class="btn btn-secondary" href="#picks">ההמלצות של דורון</a>
         </div>
       </div>
-      <figure class="hero-photo">
-        <img src="/images/bottles-hero.jpeg" width="1024" height="670" alt="מדפי עץ מלאים בבקבוקי יין בחנות, עם תוויות נייר כתובות ביד" fetchpriority="high" decoding="async">
-      </figure>
+      <aside class="hero-aside" aria-label="טעימה מההמלצות" id="heroAside" hidden>
+        <p class="hero-featured-label">מהרשימה · מומלץ על ידי דורון</p>
+        <div class="hero-featured" id="heroFeatured"></div>
+      </aside>
     </section>
 
     <section class="container" aria-labelledby="startTitle">
@@ -410,7 +410,7 @@
   </div>
 </div>
 
-<script src="/js/app.js?v=2" defer></script>
-<script src="/js/compliance.js?v=2" defer></script>
+<script src="/js/app.js?v=3" defer></script>
+<script src="/js/compliance.js?v=3" defer></script>
 </body>
 </html>

@@ -638,6 +638,25 @@
     $('picksGrid').innerHTML = state.recommended.map(pickHtml).join('');
   }
 
+  function renderHeroFeatured() {
+    const aside = $('heroAside');
+    const host = $('heroFeatured');
+    if (!aside || !host) return;
+    const picks = state.recommended.slice(0, 3);
+    if (!picks.length) { aside.hidden = true; host.innerHTML = ''; return; }
+    aside.hidden = false;
+    host.innerHTML = picks.map((w, i) => `
+      <a class="hero-feat" href="/wine/${esc(w.id)}" data-wine="${esc(w.id)}">
+        <div class="hero-feat-media">${imgHtml(w, { eager: i === 0, alt: '' })}</div>
+        <div class="hero-feat-body">
+          <div class="hero-feat-meta">${metaParts(w).map((p) => esc(p)).join(' · ')}</div>
+          <h3 class="hero-feat-title">${esc(w.name)}</h3>
+          ${w.notes ? `<p class="hero-feat-note">${esc(w.notes)}</p>` : ''}
+        </div>
+        ${scoreHtml(w)}
+      </a>`).join('');
+  }
+
   function renderCatalog() {
     const container = $('winesContainer');
     const rows = filteredWines();
@@ -1082,6 +1101,7 @@
     $('heroCount').textContent = winesWord(state.wines.length);
     populateSelects();
     renderStart();
+    renderHeroFeatured();
     renderPicks();
     route({ restoreScroll: false });
     if (state.route.name === 'home' && location.hash) {

@@ -61,7 +61,7 @@ wine-knot/
 ├── frontend/public/        # Hebrew RTL storefront (static: index.html + css/site.css + js/app.js)
 │   ├── css/site.css        # Design tokens + components (see docs/design/03-design-system.md)
 │   ├── js/app.js           # Catalog, filters, /wine/:id route, cart, WhatsApp order
-│   ├── fonts/              # Self-hosted Frank Ruhl Libre + Assistant (Hebrew/Latin woff2)
+│   ├── fonts/              # Self-hosted Heebo + Assistant (Hebrew/Latin woff2)
 │   └── admin.html          # Admin panel (unchanged)
 ├── docs/design/            # Redesign audit, direction and design system
 ├── backend/                # Express REST API
