@@ -430,32 +430,30 @@ input[type=search]::-webkit-search-decoration, input[type=search]::-webkit-searc
 .hero-aside {
   position: relative;
   isolation: isolate;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
+  background:
+    linear-gradient(165deg, rgba(24, 18, 16, 0.62) 0%, rgba(24, 18, 16, 0.38) 55%, rgba(24, 18, 16, 0.18) 100%);
+  border: 1px solid rgba(251, 247, 243, 0.12);
+  border-radius: calc(var(--r-2) + 0.25rem);
   padding: var(--s-4) var(--s-3);
-  box-shadow: none;
+  box-shadow:
+    0 0 0 1px rgba(24, 18, 16, 0.15),
+    0 18px 48px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(251, 247, 243, 0.08);
   color: #f7f2ec;
-  /* Soft edge fade so the panel never reads as a hard rectangle */
-  -webkit-mask-image:
-    linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%),
-    linear-gradient(to left, transparent 0%, #000 8%, #000 92%, transparent 100%);
-  mask-image:
-    linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%),
-    linear-gradient(to left, transparent 0%, #000 8%, #000 92%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
+  backdrop-filter: blur(14px) saturate(1.08);
+  -webkit-backdrop-filter: blur(14px) saturate(1.08);
+  /* Soft rectangular fade — keeps content readable while killing hard card edges */
+  -webkit-mask-image: radial-gradient(120% 110% at 50% 45%, #000 52%, rgba(0, 0, 0, 0.85) 72%, transparent 92%);
+  mask-image: radial-gradient(120% 110% at 50% 45%, #000 52%, rgba(0, 0, 0, 0.85) 72%, transparent 92%);
 }
 .hero-aside::before {
   content: '';
   position: absolute;
-  inset: -12% -10%;
+  inset: -18% -14%;
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 78% 72% at 50% 48%, rgba(24, 18, 16, 0.78) 0%, rgba(24, 18, 16, 0.42) 52%, transparent 76%);
-  backdrop-filter: blur(12px) saturate(1.05);
-  -webkit-backdrop-filter: blur(12px) saturate(1.05);
+    radial-gradient(ellipse 70% 65% at 50% 48%, rgba(24, 18, 16, 0.55) 0%, rgba(24, 18, 16, 0.22) 58%, transparent 78%);
 }
 .hero-featured {
   margin: 0; padding: 0;
