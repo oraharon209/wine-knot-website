@@ -344,56 +344,194 @@ input[type=search]::-webkit-search-decoration, input[type=search]::-webkit-searc
 
 /* --------------------------------------------------------------------------
    6. Hero + start here
+   Full-bleed cellar photo (original site background) under a paper wash,
+   with the editorial copy + featured bottles on top.
    -------------------------------------------------------------------------- */
-.hero { padding-top: var(--s-6); display: grid; gap: var(--s-6); align-items: start; }
-.hero-copy h1 { max-width: 22ch; }
-.hero-copy .lede { margin-top: var(--s-4); }
-.hero-facts { margin-top: var(--s-4); color: var(--ink-3); font-size: var(--fs-ui); line-height: 1.7; }
-.hero-facts span + span::before { content: '·'; margin-inline: var(--s-3); color: var(--line-strong); }
-.hero-actions { margin-top: var(--s-5); display: flex; flex-wrap: wrap; gap: var(--s-3); }
+.hero-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-bottom: var(--s-2);
+  background: var(--wine-deep);
+}
+.hero-band-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-band-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  transform: scale(1.04);
+  filter: saturate(0.92) contrast(1.05);
+}
+/* Darken the cellar for readable light copy, then wash into page paper.
+   Copy sits on the physical right (RTL first column); keep that side denser. */
+.hero-band-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(24, 18, 16, 0.86) 0%, rgba(24, 18, 16, 0.78) 48%, rgba(238, 235, 229, 0.96) 90%, var(--paper) 100%),
+    radial-gradient(ellipse 90% 70% at 78% 38%, rgba(24, 18, 16, 0.55) 0%, transparent 70%);
+}
 
-/* Featured bottles instead of shop photo — sells the list, not the shelf */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--s-7) var(--s-8);
+  display: grid;
+  gap: var(--s-6);
+  align-items: start;
+}
+.hero-copy { color: #f7f2ec; max-width: 40rem; }
+.hero-copy h1 {
+  max-width: 22ch;
+  color: #fbf7f3;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.55);
+}
+.hero-copy .lede {
+  margin-top: var(--s-4);
+  color: #fbf7f3;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.65), 0 0 2px rgba(0, 0, 0, 0.4);
+}
+.hero-facts {
+  margin-top: var(--s-4);
+  color: rgba(251, 247, 243, 0.94);
+  font-size: var(--fs-ui);
+  line-height: 1.7;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.45);
+}
+.hero-facts span + span::before {
+  content: '·';
+  margin-inline: var(--s-3);
+  color: rgba(251, 247, 243, 0.55);
+}
+.hero-actions { margin-top: var(--s-5); display: flex; flex-wrap: wrap; gap: var(--s-3); }
+.hero-actions .btn-secondary {
+  background: rgba(24, 18, 16, 0.55);
+  color: #fbf7f3;
+  border-color: rgba(251, 247, 243, 0.88);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+}
+.hero-actions .btn-secondary:hover:not(:disabled) {
+  background: #fbf7f3;
+  color: var(--wine-deep);
+  border-color: #fbf7f3;
+}
+.hero-actions .btn-primary {
+  box-shadow: 0 1px 14px rgba(0, 0, 0, 0.4);
+}
+
+/* Featured bottles — dark glass that dissolves into the cellar (no floating white card) */
 .hero-aside {
-  border-top: 1px solid var(--ink); padding-top: var(--s-4);
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: var(--s-4) var(--s-3);
+  box-shadow: none;
+  color: #f7f2ec;
+  /* Soft edge fade so the panel never reads as a hard rectangle */
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%),
+    linear-gradient(to left, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%),
+    linear-gradient(to left, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.hero-aside::before {
+  content: '';
+  position: absolute;
+  inset: -12% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 78% 72% at 50% 48%, rgba(24, 18, 16, 0.78) 0%, rgba(24, 18, 16, 0.42) 52%, transparent 76%);
+  backdrop-filter: blur(12px) saturate(1.05);
+  -webkit-backdrop-filter: blur(12px) saturate(1.05);
 }
 .hero-featured {
   margin: 0; padding: 0;
   display: flex; flex-direction: column; gap: var(--s-2);
 }
 .hero-featured-label {
-  font-size: var(--fs-label); font-weight: 700; color: var(--ink-3);
+  font-size: var(--fs-label); font-weight: 700;
+  color: rgba(251, 247, 243, 0.72);
   letter-spacing: 0.02em; margin: 0 0 var(--s-3);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
 }
 .hero-feat {
   display: grid; grid-template-columns: 4.5rem 1fr auto; gap: var(--s-3); align-items: center;
   text-decoration: none; color: inherit; padding: var(--s-2); border-radius: var(--r-2);
   transition: background-color var(--t-fast) var(--ease-out);
 }
-.hero-feat:hover { background: var(--surface); }
+.hero-feat:hover { background: rgba(251, 247, 243, 0.1); }
 .hero-feat-media {
-  aspect-ratio: 3 / 4; background: var(--surface); border-radius: var(--r-2); overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background: rgba(248, 246, 242, 0.92);
+  border-radius: var(--r-2);
+  overflow: hidden;
   display: grid; place-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
 }
 .hero-feat-media img {
   width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply;
 }
 .hero-feat-body { min-width: 0; }
-.hero-feat-meta { font-size: var(--fs-label); color: var(--ink-3); margin-bottom: 0.125rem; }
+.hero-feat-meta {
+  font-size: var(--fs-label);
+  color: rgba(251, 247, 243, 0.7);
+  margin-bottom: 0.125rem;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+}
 .hero-feat-title {
   font-family: var(--font-display); font-weight: 600; font-size: var(--fs-ui);
   line-height: 1.25; margin: 0;
+  color: #fbf7f3;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .hero-feat-note {
-  font-family: var(--font-text); font-size: var(--fs-meta); color: var(--ink-2);
-  margin: 0.25rem 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font-family: var(--font-text); font-size: var(--fs-meta);
+  color: rgba(251, 247, 243, 0.82);
+  margin: 0.25rem 0 0;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .hero-feat-note::before { content: '— '; color: var(--brass); }
 .hero-feat .score { justify-self: end; }
+.hero-aside .score-n {
+  color: #fbf7f3;
+  border-bottom-color: var(--brass);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+}
+.hero-aside .score-l { color: rgba(251, 247, 243, 0.62); }
 
 @media (min-width: 1024px) {
-  .hero { grid-template-columns: 1.1fr 1fr; gap: var(--s-8); padding-top: var(--s-7); align-items: center; }
-  .hero-aside { border-top: 0; border-inline-start: 1px solid var(--line); padding-top: 0; padding-inline-start: var(--s-6); }
+  .hero {
+    grid-template-columns: 1.15fr 1fr;
+    gap: var(--s-8);
+    padding-block: var(--s-9) var(--s-10);
+    align-items: center;
+    min-height: 32rem;
+  }
+  .hero-band-bg img { object-position: 45% 35%; }
+  .hero-band-bg::after {
+    background:
+      /* denser on the copy side (physical right), softer over the list */
+      linear-gradient(to left, rgba(24, 18, 16, 0.9) 0%, rgba(24, 18, 16, 0.72) 38%, rgba(24, 18, 16, 0.58) 72%, rgba(24, 18, 16, 0.62) 100%),
+      linear-gradient(180deg, rgba(24, 18, 16, 0.2) 0%, transparent 28%, transparent 68%, var(--paper) 100%);
+  }
+  .hero-aside {
+    padding: var(--s-5) var(--s-4);
+  }
 }
 
 .start { margin-top: var(--s-7); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5) var(--s-4); }
