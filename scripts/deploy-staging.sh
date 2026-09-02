@@ -37,6 +37,7 @@ run_git checkout "$STAGING_REF" -- \
   docker-compose.production.yml \
   scripts/generate_origin_cert.sh \
   scripts/ensure_new_subdomain_dns.sh \
+  scripts/ensure_staging_admin_access.sh \
   scripts/deploy-staging.sh \
   scripts/deploy.sh
 
@@ -66,6 +67,12 @@ echo "Staging files: $(find frontend-staging/public -type f | wc -l) files (inde
 if [ -x "$APP_DIR/scripts/ensure_new_subdomain_dns.sh" ]; then
   echo "Ensuring Cloudflare DNS for new.${ZONE_NAME}"
   bash "$APP_DIR/scripts/ensure_new_subdomain_dns.sh" "$ZONE_NAME" || echo "DNS ensure failed (token/API); terraform apply can create the record"
+fi
+
+if [ -x "$APP_DIR/scripts/ensure_staging_admin_access.sh" ]; then
+  echo "Ensuring Cloudflare Access covers https://new.${ZONE_NAME}/admin.html and /api/admin/*"
+  bash "$APP_DIR/scripts/ensure_staging_admin_access.sh" "$ZONE_NAME" \
+    || echo "Access ensure failed (token needs Access: Apps and Policies Edit, or run terraform apply for access.tf)"
 fi
 
 CERT="$APP_DIR/nginx/ssl/origin.crt"

@@ -48,8 +48,8 @@ jobs:
           STAGING_REF=origin/__STAGING_BRANCH__
           cd "$APP_DIR"
           sudo -u ubuntu git fetch origin
-          sudo -u ubuntu git checkout "$STAGING_REF" -- scripts/deploy-staging.sh scripts/ensure_new_subdomain_dns.sh scripts/generate_origin_cert.sh
-          chmod +x scripts/deploy-staging.sh scripts/ensure_new_subdomain_dns.sh scripts/generate_origin_cert.sh
+          sudo -u ubuntu git checkout "$STAGING_REF" -- scripts/deploy-staging.sh scripts/ensure_new_subdomain_dns.sh scripts/ensure_staging_admin_access.sh scripts/generate_origin_cert.sh
+          chmod +x scripts/deploy-staging.sh scripts/ensure_new_subdomain_dns.sh scripts/ensure_staging_admin_access.sh scripts/generate_origin_cert.sh
           STAGING_REF="$STAGING_REF" bash scripts/deploy-staging.sh'
           SCRIPT
           )
