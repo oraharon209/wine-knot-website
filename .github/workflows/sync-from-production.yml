@@ -29,6 +29,7 @@ concurrency:
 permissions:
   contents: write
   actions: write
+  packages: write
 
 jobs:
   sync:
@@ -128,15 +129,23 @@ jobs:
           if [ -z "$USERNAME" ]; then
             USERNAME="${DOCKERHUB_USER:-}"
           fi
+          # Known Hub namespace for this project when secret omitted
+          if [ -z "$USERNAME" ]; then
+            USERNAME="oraharon"
+          fi
           IMAGE_REPO="${{ vars.DOCKER_IMAGE_BACKEND }}"
           EVENT_NAME="${{ github.event_name }}"
           INPUT_PUSH="${{ github.event.inputs.push_image }}"
+          OWNER="${{ github.repository_owner }}"
+          GHCR_IMAGE="ghcr.io/${OWNER}/wine-knot-backend"
+          SHA="$(git rev-parse --short HEAD)"
+          DATE_TAG="$(date -u +%Y%m%d)"
 
           skip() {
             local reason="$1"
             echo "image_skip=$reason" >> "$GITHUB_OUTPUT"
             echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "### Docker Hub" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Image publish" >> "$GITHUB_STEP_SUMMARY"
             echo "$reason" >> "$GITHUB_STEP_SUMMARY"
             echo "::notice::$reason"
           }
@@ -145,19 +154,42 @@ jobs:
             skip "Image push skipped (workflow input push_image=false)."
             exit 0
           fi
-          if [ -z "$USERNAME" ] || [ -z "${DOCKERHUB_TOKEN:-}" ]; then
-            skip "Image **not** pushed — add repo secrets \`DOCKERHUB_USERNAME\` (or \`DOCKERHUB_USER\`) and \`DOCKERHUB_TOKEN\`."
+
+          docker build -t "wine-knot-backend:ci" ./backend
+
+          # Always publish to GHCR with the workflow GITHUB_TOKEN (no Hub secret required).
+          echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:latest"
+          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:${SHA}"
+          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:${DATE_TAG}"
+          docker push "${GHCR_IMAGE}:latest"
+          docker push "${GHCR_IMAGE}:${SHA}"
+          docker push "${GHCR_IMAGE}:${DATE_TAG}"
+          GHCR_DIGEST="$(docker image inspect --format '{{index .RepoDigests 0}}' "${GHCR_IMAGE}:latest" 2>/dev/null || true)"
+          {
+            echo ""
+            echo "### GHCR"
+            echo "- Pushed **${GHCR_IMAGE}:latest**, \`:${SHA}\`, \`:${DATE_TAG}\`"
+            echo "- Digest: \`${GHCR_DIGEST:-n/a}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -z "${DOCKERHUB_TOKEN:-}" ]; then
+            skip "Docker Hub **not** pushed — add Environment secret \`DOCKERHUB_TOKEN\` (and optional \`DOCKERHUB_USERNAME\`, default \`${USERNAME}\`) on **production**. GHCR push above succeeded."
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+            echo "image=${GHCR_IMAGE}:latest" >> "$GITHUB_OUTPUT"
+            echo "digest=${GHCR_DIGEST}" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+
           if [ -z "$IMAGE_REPO" ]; then
             IMAGE_REPO="${USERNAME}/wine-knot-backend"
           fi
           IMAGE_REPO="${IMAGE_REPO%%:*}"
 
           echo "$DOCKERHUB_TOKEN" | docker login -u "$USERNAME" --password-stdin
-          SHA="$(git rev-parse --short HEAD)"
-          DATE_TAG="$(date -u +%Y%m%d)"
-          docker build -t "${IMAGE_REPO}:latest" -t "${IMAGE_REPO}:${SHA}" -t "${IMAGE_REPO}:${DATE_TAG}" ./backend
+          docker tag wine-knot-backend:ci "${IMAGE_REPO}:latest"
+          docker tag wine-knot-backend:ci "${IMAGE_REPO}:${SHA}"
+          docker tag wine-knot-backend:ci "${IMAGE_REPO}:${DATE_TAG}"
           docker push "${IMAGE_REPO}:latest"
           docker push "${IMAGE_REPO}:${SHA}"
           docker push "${IMAGE_REPO}:${DATE_TAG}"

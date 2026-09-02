@@ -77,5 +77,22 @@ fi
 "${COMPOSE[@]}" up -d --build nginx backend
 docker image prune -f
 
+echo "Verifying origin vhosts (loopback, bypasses Cloudflare)"
+sleep 2
+APEX_CODE="$(curl -sk -o /dev/null -w '%{http_code}' -H "Host: ${ZONE_NAME}" https://127.0.0.1/ || true)"
+NEW_CODE="$(curl -sk -o /dev/null -w '%{http_code}' -H "Host: new.${ZONE_NAME}" https://127.0.0.1/ || true)"
+NEW_TITLE="$(curl -sk -H "Host: new.${ZONE_NAME}" https://127.0.0.1/ | tr '\n' ' ' | sed -n 's/.*<title>\([^<]*\)<.*/\1/p' | head -c 120 || true)"
+echo "Origin HTTPS apex Host=${ZONE_NAME} → HTTP ${APEX_CODE}"
+echo "Origin HTTPS new  Host=new.${ZONE_NAME} → HTTP ${NEW_CODE} title=${NEW_TITLE}"
+if [ "$NEW_CODE" != "200" ]; then
+  echo "Staging origin check failed for new.${ZONE_NAME}" >&2
+  "${COMPOSE[@]}" ps || true
+  docker logs --tail 80 "$("${COMPOSE[@]}" ps -q nginx)" || true
+  exit 1
+fi
+if ! echo "$NEW_TITLE" | grep -q 'דורון\|Wine Knot'; then
+  echo "Warning: unexpected staging title: ${NEW_TITLE}" >&2
+fi
+
 echo "Staging published from $STAGING_REF → https://new.${ZONE_NAME}"
 echo "Apex still serves $(run_git rev-parse --short HEAD) ($(run_git rev-parse --abbrev-ref HEAD))"

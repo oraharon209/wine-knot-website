@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Create or update Cloudflare A record new.<zone> → this instance's public IP (proxied).
+# Create/update Cloudflare A record new.<zone> → this instance's public IP (proxied),
+# and keep SSL mode "full" so the self-signed origin cert works (not Full Strict).
 # Runs on the EC2 origin (IAM can read /wine-knot/cloudflare_api_token).
 set -euo pipefail
 
@@ -93,4 +94,15 @@ if not result.get("success"):
     raise SystemExit(f"DNS {action} failed: {result}")
 rec = result["result"]
 print(f"Cloudflare A {action}: {rec.get('name')} → {rec.get('content')} proxied={rec.get('proxied')}")
+
+# Self-signed origin cert requires SSL mode "full" (not "strict").
+for setting, value in (("ssl", "full"), ("always_use_https", "on")):
+    try:
+        out = cf("PATCH", f"/zones/{zone_id}/settings/{setting}", {"value": value})
+        if out.get("success"):
+            print(f"Cloudflare setting {setting}={value}")
+        else:
+            print(f"Cloudflare setting {setting} skipped: {out}")
+    except SystemExit as e:
+        print(f"Cloudflare setting {setting} skipped: {e}")
 PY
