@@ -8,7 +8,7 @@ const adminRouter = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:8080,https://wineknot.co.il')
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:8080,http://localhost:8090,https://wineknot.co.il,https://new.wineknot.co.il')
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);

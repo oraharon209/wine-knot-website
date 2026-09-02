@@ -14,11 +14,40 @@ Open in your browser: **http://localhost:8080**
 
 Local dev uses HTTP only (no SSL certs). On the server, use `docker compose -f docker-compose.yml -f docker-compose.production.yml up -d` for HTTPS on 443.
 
+### Preview the redesign (no Docker)
+
+`docker compose` binds **8080** to the checkout you have mounted. To compare designs without Docker:
+
+```bash
+# NEW redesign (this branch) — use this URL
+PORT=8090 BANNER='NEW redesign' node scripts/preview-server.js
+```
+
+Open **http://localhost:8090** — that is the redesigned storefront on this branch.
+
+Public staging (after **Deploy staging**): **https://new.wineknot.co.il** — production apex **https://wineknot.co.il** stays on `main`.
+
+Optional side-by-side with `main` on 8080:
+
+```bash
+ROOT=/tmp/wk-main-public
+rm -rf "$ROOT" && mkdir -p "$ROOT"
+git archive origin/main:frontend/public | tar -x -C "$ROOT"
+PORT=8080 ROOT="$ROOT" BANNER='OLD site (main)' node scripts/preview-server.js
+```
+
+| Port | What you see |
+|------|----------------|
+| **8080** | Old storefront (`main` / production look), if you start the optional command above |
+| **8090** | **New redesign** (this branch) |
+
+The mock API reads `wines_data.json`. Stop with Ctrl+C.
+
 ### Admin panel
 
 **http://localhost:8080/admin.html** (local dev — no login gate)
 
-Production (`wineknot.co.il/admin.html`): Cloudflare Access email OTP for allowlisted addresses only (see `terraform/access.tf`).
+Production (`wineknot.co.il/admin.html` and `new.wineknot.co.il/admin.html`): Cloudflare Access email OTP for allowlisted addresses only (see `terraform/access.tf`).
 
 - Update prices
 - Upload images
@@ -31,7 +60,12 @@ Production (`wineknot.co.il/admin.html`): Cloudflare Access email OTP for allowl
 wine-knot/
 ├── docker-compose.yml      # MySQL + Backend + Nginx
 ├── wines_data.json         # Wine catalog (seed data)
-├── frontend/public/        # Hebrew RTL storefront
+├── frontend/public/        # Hebrew RTL storefront (static: index.html + css/site.css + js/app.js)
+│   ├── css/site.css        # Design tokens + components (see docs/design/03-design-system.md)
+│   ├── js/app.js           # Catalog, filters, /wine/:id route, cart, WhatsApp order
+│   ├── fonts/              # Self-hosted Heebo + Assistant (Hebrew/Latin woff2)
+│   └── admin.html          # Admin panel (unchanged)
+├── docs/design/            # Redesign audit, direction and design system
 ├── backend/                # Express REST API
 ├── nginx/                  # Reverse proxy config
 ├── terraform/              # AWS deployment (optional)
@@ -145,6 +179,15 @@ docker image prune -f
 
 ### Push backend to Docker Hub
 
+Weekly **Sync from production** builds `backend/` and pushes to Docker Hub when these GitHub Actions secrets exist:
+
+- `DOCKERHUB_USERNAME` (or `DOCKERHUB_USER`)
+- `DOCKERHUB_TOKEN`
+
+Optional variable `DOCKER_IMAGE_BACKEND` (default `{username}/wine-knot-backend`). Tags: `:latest`, `:{git sha}`, `:{YYYYMMDD}`. Each run writes a job summary (wine count, whether a catalog commit happened, whether an image was pushed).
+
+Manual:
+
 ```bash
 docker login
 export DOCKERHUB_USER=yourusername
@@ -158,7 +201,7 @@ On the server, set in `.env`:
 DOCKER_IMAGE_BACKEND=yourusername/wine-knot-backend:latest
 ```
 
-Then `docker compose pull backend && docker compose up -d` (no local build needed).
+Then `scripts/deploy.sh` will `docker compose pull backend` and start that image (falls back to `--build` if pull fails).
 
 Do **not** commit `.env`, `mysql_data`, or `.venv`.
 
@@ -167,6 +210,7 @@ Do **not** commit `.env`, `mysql_data`, or `.venv`.
 | Branch | Purpose |
 |--------|---------|
 | `main` | Production — what's live on wineknot.co.il. Pushing here auto-deploys. |
+| `cursor/wine-knot-redesign-67b4` | Redesign; **Deploy staging** copies `frontend/public` to https://new.wineknot.co.il |
 | `feature/...` | Short-lived branches for new work. Merge into `main` when ready. |
 
 ```bash
@@ -203,3 +247,7 @@ Pushes to `main` trigger `.github/workflows/deploy.yml`, which uses **AWS SSM Ru
    ```
 
 Manual deploy: **Actions → Deploy → Run workflow** (optional branch input).
+
+Staging (redesign on `new.wineknot.co.il`, apex unchanged): **Actions → Deploy staging (new.wineknot.co.il)**. Pushes to `cursor/wine-knot-redesign-67b4` also trigger it. The server script creates/updates the Cloudflare `new` A record when `/wine-knot/cloudflare_api_token` is readable.
+
+Weekly catalog snapshot: **Actions → Sync from production** (Sunday 04:00 UTC). It always dumps live data; it only commits when `wines_data.json` / `init.sql` / wine images differ. Docker Hub push runs after that when Hub secrets are set.

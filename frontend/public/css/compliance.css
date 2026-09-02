@@ -1,33 +1,22 @@
-/* Wine Knot — accessibility widget, cookie consent, legal pages (IS 5568 / Privacy Law) */
+/* Wine Knot — accessibility widget, cookie consent, legal pages (IS 5568 / Privacy Law).
+   Uses the storefront tokens from site.css; fallbacks keep it working on pages that load it alone. */
 
 .wk-skip {
   position: absolute;
-  right: 1rem;
+  inset-inline-start: 1rem;
   top: -100px;
   z-index: 1000;
-  background: var(--wine, #6b1d3a);
-  color: #fff;
+  background: var(--ink, #211c1a);
+  color: var(--paper, #eeebe5);
   padding: .75rem 1.25rem;
-  border-radius: 8px;
+  border-radius: var(--r-2, 4px);
   font-weight: 700;
   text-decoration: none;
 }
 .wk-skip:focus {
   top: 1rem;
-  outline: 3px solid var(--gold, #c9a84c);
+  outline: 2px solid var(--paper, #eeebe5);
   outline-offset: 2px;
-}
-
-:focus-visible {
-  outline: 3px solid var(--gold, #c9a84c);
-  outline-offset: 3px;
-}
-.header :focus-visible,
-.contact :focus-visible,
-.footer :focus-visible,
-.wk-a11y-btn:focus-visible,
-.wk-cookie :focus-visible {
-  outline-color: #fff;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -50,107 +39,94 @@ html.a11y-no-motion *::after {
   transition: none !important;
 }
 
-html.a11y-grayscale {
-  filter: grayscale(1);
-}
+html.a11y-grayscale { filter: grayscale(1); }
 
 html.a11y-highlight-links a {
   text-decoration: underline !important;
   text-underline-offset: 3px;
 }
-html.a11y-highlight-links a:not(.logo) {
+html.a11y-highlight-links a:not(.brand) {
   background: #fff3bf;
   color: #000 !important;
   box-shadow: 0 0 0 2px #000;
 }
 
+/* High contrast: collapse the palette to black on white, keep hierarchy through weight and rules. */
 html.a11y-contrast {
+  --paper: #fff;
+  --surface: #fff;
+  --surface-2: #f2f2f2;
+  --ink: #000;
+  --ink-2: #000;
+  --ink-3: #111;
+  --line: #000;
+  --line-strong: #000;
   --wine: #000;
-  --wine-dark: #000;
-  --gold: #ff0;
-  --cream: #fff;
-  --text: #000;
-  --muted: #111;
-  --border: #000;
+  --wine-deep: #000;
+  --wine-tint: #eee;
+  --vine: #000;
+  --vine-tint: #eee;
+  --brass: #000;
+  --on-wine: #fff;
+  --error: #000;
+  --error-tint: #eee;
 }
-html.a11y-contrast body {
-  background: #fff;
-  color: #000;
-}
-html.a11y-contrast .header,
-html.a11y-contrast .contact,
-html.a11y-contrast .footer,
-html.a11y-contrast .hero,
-html.a11y-contrast .age-gate-header,
-html.a11y-contrast .legal-hero {
-  background: #000 !important;
-  color: #fff !important;
-  background-image: none !important;
-}
-html.a11y-contrast .promo {
-  background: #ff0 !important;
-  color: #000 !important;
-}
-html.a11y-contrast .wine-card,
-html.a11y-contrast .cat-card,
-html.a11y-contrast .modal,
-html.a11y-contrast .cart-drawer,
-html.a11y-contrast .legal-card,
-html.a11y-contrast .wk-a11y-panel,
-html.a11y-contrast .wk-cookie-panel {
-  background: #fff !important;
-  color: #000 !important;
-  border: 2px solid #000 !important;
-}
-html.a11y-contrast a,
-html.a11y-contrast button,
-html.a11y-contrast .wine-name {
-  color: inherit;
-}
+html.a11y-contrast body { background: #fff; color: #000; }
+html.a11y-contrast .btn-primary { background: #000 !important; color: #fff !important; border-color: #000 !important; }
+html.a11y-contrast .btn-secondary { border-color: #000 !important; }
+html.a11y-contrast .card-media img,
+html.a11y-contrast .pick-media img,
+html.a11y-contrast .product-media img { mix-blend-mode: normal; }
+html.a11y-contrast .toast { background: #000; color: #fff; }
+html.a11y-contrast .wk-a11y-btn { background: #000; color: #ff0; }
 
-/* Accessibility FAB + panel */
+/* Accessibility button + panel */
 .wk-a11y-btn {
   position: fixed;
   z-index: 160;
-  bottom: 1.15rem;
-  left: 1.15rem;
-  width: 3.4rem;
-  height: 3.4rem;
-  border: none;
+  bottom: 1.25rem;
+  inset-inline-end: 1.25rem;
+  width: 3.25rem;
+  height: 3.25rem;
+  border: 0;
   border-radius: 50%;
-  background: #005fcc;
-  color: #fff;
+  background: var(--ink, #211c1a);
+  color: var(--paper, #eeebe5);
   cursor: pointer;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, .28);
+  box-shadow: var(--shadow-float, 0 6px 24px -6px rgba(33, 28, 26, .28));
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  transition: bottom var(--t-med, 260ms) var(--ease-out, ease);
 }
-.wk-a11y-btn:hover { background: #0047a3; }
-.wk-a11y-btn svg { width: 1.7rem; height: 1.7rem; fill: currentColor; }
-body.has-cookie-banner .wk-a11y-btn { bottom: 7.5rem; }
+.wk-a11y-btn:hover { background: var(--wine, #5b1a33); }
+.wk-a11y-btn:focus-visible { outline: 2px solid var(--ink, #211c1a); outline-offset: 3px; }
+.wk-a11y-btn svg { width: 1.6rem; height: 1.6rem; fill: currentColor; }
+body.has-cookie-banner .wk-a11y-btn { bottom: 8.5rem; }
 
 .wk-a11y-panel {
   display: none;
   position: fixed;
   z-index: 170;
   bottom: 5rem;
-  left: 1.15rem;
+  inset-inline-end: 1.25rem;
   width: min(340px, calc(100vw - 2rem));
   max-height: min(70vh, 520px);
   overflow-y: auto;
-  background: #fff;
-  color: var(--text, #2c1810);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, .22);
+  background: var(--surface, #f8f6f2);
+  color: var(--ink, #211c1a);
+  border-radius: var(--r-2, 4px);
+  box-shadow: var(--shadow-drawer, 0 12px 40px -8px rgba(33, 28, 26, .35));
   padding: 1rem 1.1rem 1.15rem;
 }
 .wk-a11y-panel.open { display: block; }
 .wk-a11y-panel h2 {
-  font-size: 1.1rem;
+  font-family: var(--font-display, serif);
+  font-size: 1.25rem;
+  font-weight: 500;
   margin: 0 0 .85rem;
-  color: var(--wine, #6b1d3a);
+  color: var(--ink, #211c1a);
 }
 .wk-a11y-actions {
   display: grid;
@@ -159,31 +135,32 @@ body.has-cookie-banner .wk-a11y-btn { bottom: 7.5rem; }
 }
 .wk-a11y-actions button {
   font-family: inherit;
-  font-size: .85rem;
+  font-size: .875rem;
   font-weight: 600;
-  padding: .65rem .5rem;
-  border-radius: 8px;
-  border: 1px solid var(--border, #e8ddd4);
-  background: var(--cream, #faf7f2);
-  color: var(--text, #2c1810);
+  min-height: 2.75rem;
+  padding: .5rem .5rem;
+  border-radius: var(--r-2, 4px);
+  border: 1px solid var(--line-strong, #b9ad9d);
+  background: var(--paper, #eeebe5);
+  color: var(--ink, #211c1a);
   cursor: pointer;
 }
+.wk-a11y-actions button:hover { border-color: var(--ink, #211c1a); }
 .wk-a11y-actions button[aria-pressed="true"] {
-  background: var(--wine, #6b1d3a);
-  color: #fff;
-  border-color: var(--wine, #6b1d3a);
+  background: var(--ink, #211c1a);
+  color: var(--paper, #eeebe5);
+  border-color: var(--ink, #211c1a);
 }
 .wk-a11y-panel .wk-a11y-reset,
-.wk-a11y-panel .wk-a11y-statement {
-  grid-column: 1 / -1;
-}
+.wk-a11y-panel .wk-a11y-statement { grid-column: 1 / -1; }
 .wk-a11y-panel a {
   display: block;
   text-align: center;
   margin-top: .75rem;
-  color: var(--wine, #6b1d3a);
+  color: var(--ink, #211c1a);
   font-weight: 600;
   text-decoration: underline;
+  text-underline-offset: .18em;
 }
 
 /* Cookie banner */
@@ -191,206 +168,80 @@ body.has-cookie-banner .wk-a11y-btn { bottom: 7.5rem; }
   display: none;
   position: fixed;
   z-index: 450;
-  right: 0;
-  left: 0;
+  inset-inline: 0;
   bottom: 0;
-  background: #1a0a10;
-  color: #fff;
-  padding: 1rem 1.25rem 1.15rem;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, .25);
+  background: var(--surface, #f8f6f2);
+  color: var(--ink, #211c1a);
+  border-top: 1px solid var(--ink, #211c1a);
+  padding: 1rem var(--gutter, 1.5rem) calc(1.15rem + env(safe-area-inset-bottom));
 }
 .wk-cookie.open { display: block; }
 .wk-cookie-inner {
-  max-width: 1100px;
+  max-width: var(--container, 1280px);
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1rem 2rem;
   align-items: center;
   justify-content: space-between;
 }
-.wk-cookie-text {
-  flex: 1 1 280px;
-  font-size: .92rem;
-  line-height: 1.55;
-}
-.wk-cookie-text a {
-  color: var(--gold, #c9a84c);
-  text-decoration: underline;
-}
-.wk-cookie-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-}
-.wk-cookie-actions button {
+.wk-cookie-text { flex: 1 1 320px; font-size: .9375rem; line-height: 1.55; color: var(--ink-2, #5a4d45); }
+.wk-cookie-text strong { display: block; color: var(--ink, #211c1a); font-family: var(--font-display, serif); font-size: 1.125rem; font-weight: 500; margin-bottom: .25rem; }
+.wk-cookie-text p { margin: 0; }
+.wk-cookie-text a { color: var(--ink, #211c1a); text-decoration: underline; text-underline-offset: .18em; }
+.wk-cookie-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.wk-cookie-actions button,
+.wk-cookie-panel-actions button {
   font-family: inherit;
-  font-size: .9rem;
-  font-weight: 700;
-  padding: .7rem 1.1rem;
-  border-radius: 10px;
+  font-size: .9375rem;
+  font-weight: 600;
+  min-height: 2.75rem;
+  padding: .5rem 1.1rem;
+  border-radius: var(--r-2, 4px);
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
 }
-.wk-btn-accept {
-  background: var(--gold, #c9a84c);
-  color: #1a0a10;
-}
-.wk-btn-reject {
-  background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, .45) !important;
-}
-.wk-btn-settings {
-  background: rgba(255, 255, 255, .12);
-  color: #fff;
-}
+.wk-btn-accept { background: var(--wine, #5b1a33); color: var(--on-wine, #fbf7f3); border-color: var(--wine, #5b1a33) !important; }
+.wk-btn-accept:hover { background: var(--wine-deep, #3f1023); }
+.wk-btn-reject { background: transparent; color: var(--ink, #211c1a); border-color: var(--ink, #211c1a) !important; }
+.wk-btn-reject:hover { background: var(--ink, #211c1a); color: var(--paper, #eeebe5); }
+.wk-btn-settings { background: transparent; color: var(--ink, #211c1a); text-decoration: underline; text-underline-offset: .18em; }
 
 .wk-cookie-overlay {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 460;
-  background: rgba(0, 0, 0, .55);
+  background: rgba(33, 28, 26, .55);
   align-items: center;
   justify-content: center;
   padding: 1rem;
 }
 .wk-cookie-overlay.open { display: flex; }
 .wk-cookie-panel {
-  background: #fff;
-  color: var(--text, #2c1810);
-  border-radius: 12px;
+  background: var(--paper, #eeebe5);
+  color: var(--ink, #211c1a);
+  border-radius: var(--r-2, 4px);
   max-width: 480px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  padding: 1.35rem 1.4rem 1.5rem;
+  padding: 1.5rem 1.5rem 1.5rem;
+  box-shadow: var(--shadow-drawer, 0 12px 40px -8px rgba(33, 28, 26, .35));
 }
-.wk-cookie-panel h2 {
-  font-size: 1.2rem;
-  color: var(--wine, #6b1d3a);
-  margin-bottom: .5rem;
-}
-.wk-cookie-panel p { font-size: .92rem; margin-bottom: 1rem; color: var(--muted, #5f514a); }
-.wk-cookie-opt {
-  border: 1px solid var(--border, #e8ddd4);
-  border-radius: 10px;
-  padding: .85rem 1rem;
-  margin-bottom: .6rem;
-}
-.wk-cookie-opt label {
-  display: flex;
-  align-items: flex-start;
-  gap: .65rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-.wk-cookie-opt p {
-  margin: .35rem 1.7rem 0;
-  font-size: .82rem;
-  font-weight: 400;
-}
-.wk-cookie-opt input { margin-top: .2rem; accent-color: var(--wine, #6b1d3a); }
-.wk-cookie-panel-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin-top: 1rem;
-}
-.wk-cookie-panel-actions button {
-  font-family: inherit;
-  font-weight: 700;
-  padding: .7rem 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  border: none;
-  flex: 1 1 140px;
-}
-.wk-cookie-panel-actions .wk-btn-accept { color: #1a0a10; }
-.wk-cookie-panel-actions .wk-btn-reject {
-  background: var(--cream, #faf7f2);
-  color: var(--text, #2c1810);
-  border: 1px solid var(--border, #e8ddd4) !important;
-}
-
-.footer-legal {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem 1.25rem;
-  justify-content: center;
-  margin-top: .75rem;
-}
-.footer-legal a,
-.footer-legal button {
-  color: rgba(255, 255, 255, .85);
-  background: none;
-  border: none;
-  font: inherit;
-  font-size: .85rem;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  padding: 0;
-}
-
-/* Legal pages */
-.legal-page {
-  background: var(--cream, #faf7f2);
-  color: var(--text, #2c1810);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  line-height: 1.7;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.legal-page body { margin: 0; }
-.legal-hero {
-  background: linear-gradient(135deg, #4a1228, #6b1d3a);
-  color: #fff;
-  padding: 2rem 1.5rem 2.25rem;
-  text-align: center;
-}
-.legal-hero h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin: .35rem 0 .4rem; }
-.legal-hero p { opacity: .9; font-size: .95rem; }
-.legal-wrap {
-  flex: 1;
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 3.5rem;
-  width: 100%;
-}
-.legal-card {
-  background: #fff;
-  border: 1px solid var(--border, #e8ddd4);
-  border-radius: 12px;
-  padding: 1.75rem 1.6rem 2rem;
-}
-.legal-card h2 {
-  color: var(--wine, #6b1d3a);
-  font-size: 1.2rem;
-  margin: 1.6rem 0 .55rem;
-}
-.legal-card h2:first-child { margin-top: 0; }
-.legal-card p, .legal-card li { color: var(--text, #2c1810); font-size: 1rem; }
-.legal-card ul { padding-inline-start: 1.3rem; margin: .4rem 0 1rem; }
-.legal-card li { margin-bottom: .35rem; }
-.legal-meta {
-  font-size: .9rem;
-  color: var(--muted, #5f514a);
-  margin-bottom: 1.25rem;
-}
-.legal-back {
-  display: inline-block;
-  margin-bottom: 1rem;
-  color: var(--wine, #6b1d3a);
-  font-weight: 600;
-  text-decoration: underline;
-}
+.wk-cookie-panel h2 { font-family: var(--font-display, serif); font-size: 1.5rem; font-weight: 500; margin: 0 0 .5rem; }
+.wk-cookie-panel p { font-size: .9375rem; margin: 0 0 1rem; color: var(--ink-2, #5a4d45); }
+.wk-cookie-opt { border-top: 1px solid var(--line, #d8cfc2); padding: .85rem 0; }
+.wk-cookie-opt:last-of-type { border-bottom: 1px solid var(--line, #d8cfc2); }
+.wk-cookie-opt label { display: flex; align-items: flex-start; gap: .65rem; font-weight: 600; cursor: pointer; }
+.wk-cookie-opt p { margin: .35rem 1.7rem 0; font-size: .875rem; font-weight: 400; }
+.wk-cookie-opt input { margin-top: .25rem; width: 1.125rem; height: 1.125rem; accent-color: var(--wine, #5b1a33); }
+.wk-cookie-panel-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.25rem; }
+.wk-cookie-panel-actions button { flex: 1 1 140px; }
 
 @media (max-width: 600px) {
-  .wk-a11y-btn { left: .75rem; bottom: 1rem; }
-  body.has-cookie-banner .wk-a11y-btn { bottom: 11rem; }
+  .wk-a11y-btn { inset-inline-end: 1rem; bottom: 1rem; }
+  body.has-cookie-banner .wk-a11y-btn { bottom: 13rem; }
   .wk-cookie-actions { width: 100%; }
   .wk-cookie-actions button { flex: 1 1 100%; }
 }

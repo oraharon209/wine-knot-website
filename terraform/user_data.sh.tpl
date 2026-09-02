@@ -90,7 +90,7 @@ HTTP_PORT=${http_port}
 HTTPS_PORT=443
 ADMIN_PASSWORD=$ADMIN_PASS
 ADMIN_API_KEY=$ADMIN_PASS
-CORS_ORIGINS=https://${cloudflare_zone}
+CORS_ORIGINS=https://${cloudflare_zone},https://new.${cloudflare_zone}
 IMAGE_STORAGE=s3
 S3_BUCKET=${s3_bucket}
 AWS_REGION=$REGION
@@ -113,7 +113,8 @@ if [ ! -f "$APP_DIR/nginx/ssl/origin.crt" ]; then
   openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
     -keyout "$APP_DIR/nginx/ssl/origin.key" \
     -out "$APP_DIR/nginx/ssl/origin.crt" \
-    -subj "/CN=${cloudflare_zone}"
+    -subj "/CN=${cloudflare_zone}" \
+    -addext "subjectAltName=DNS:${cloudflare_zone},DNS:www.${cloudflare_zone},DNS:new.${cloudflare_zone}"
   chmod 600 "$APP_DIR/nginx/ssl/origin.key"
 fi
 
@@ -141,7 +142,7 @@ HTTP_PORT=${http_port}
 HTTPS_PORT=443
 ADMIN_PASSWORD=\$ADMIN_PASS
 ADMIN_API_KEY=\$ADMIN_PASS
-CORS_ORIGINS=https://${cloudflare_zone}
+CORS_ORIGINS=https://${cloudflare_zone},https://new.${cloudflare_zone}
 IMAGE_STORAGE=s3
 S3_BUCKET=${s3_bucket}
 AWS_REGION=$REGION

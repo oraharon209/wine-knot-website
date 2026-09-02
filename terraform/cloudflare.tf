@@ -38,6 +38,16 @@ resource "cloudflare_record" "apex" {
   ttl     = 1
 }
 
+# Staging redesign (apex stays on production frontend).
+resource "cloudflare_record" "new" {
+  zone_id = data.cloudflare_zone.main.id
+  name    = "new"
+  content = aws_eip.web.public_ip
+  type    = "A"
+  proxied = var.cloudflare_proxied
+  ttl     = 1
+}
+
 # cloudflare_zone_settings_override fails on destroy (read-only prefetch_preload).
 # TLS/HSTS is applied via scripts/configure_cloudflare_ssl.sh after apply.
 removed {
