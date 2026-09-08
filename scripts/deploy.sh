@@ -32,9 +32,13 @@ if [ -f .env ] && ! grep -q 'https://new.wineknot.co.il' .env; then
   sed -i 's|^CORS_ORIGINS=\(.*\)|CORS_ORIGINS=\1,https://new.wineknot.co.il|' .env || true
 fi
 
+# A caller (the deploy workflow) can pin an exact tag; .env must not shadow it.
+IMAGE_OVERRIDE="${DOCKER_IMAGE_BACKEND:-}"
+
 set -a
 # shellcheck disable=SC1091
 [ -f .env ] && . ./.env
+[ -n "$IMAGE_OVERRIDE" ] && DOCKER_IMAGE_BACKEND="$IMAGE_OVERRIDE"
 set +a
 
 PULL_OK=0

@@ -171,16 +171,30 @@ Old dangling `<none>` images from rebuilds are safe to remove:
 docker image prune -f
 ```
 
-### Push backend to Docker Hub
+### Docker Hub (CI)
 
-Weekly **Sync from production** builds `backend/` and pushes to Docker Hub when these GitHub Actions secrets exist:
+**Publish backend image** builds `backend/` and pushes it. It runs on its own for pushes to `main` or `new` that touch `backend/`, and every production deploy calls it before touching the server. The weekly **Sync from production** publishes too.
 
-- `DOCKERHUB_USERNAME` (or `DOCKERHUB_USER`)
-- `DOCKERHUB_TOKEN`
+Credentials come from GitHub Environment **production**:
 
-Optional variable `DOCKER_IMAGE_BACKEND` (default `{username}/wine-knot-backend`). Tags: `:latest`, `:{git sha}`, `:{YYYYMMDD}`. Each run writes a job summary (wine count, whether a catalog commit happened, whether an image was pushed).
+- variable `DOCKERHUB_USERNAME` (secrets `DOCKERHUB_USERNAME` / `DOCKERHUB_USER` also work)
+- secret `DOCKERHUB_TOKEN` — without it the job fails instead of quietly skipping the push
 
-Manual:
+Optional variable `DOCKER_IMAGE_BACKEND` (default `{username}/wine-knot-backend`). Every push publishes:
+
+- `{DOCKERHUB_USERNAME}/wine-knot-backend:latest`
+- `{DOCKERHUB_USERNAME}/wine-knot-backend:<short-sha>` and `:<full-sha>`
+- `{DOCKERHUB_USERNAME}/wine-knot-backend:<YYYYMMDD>`
+
+plus the same tags on `ghcr.io/{owner}/wine-knot-backend`.
+
+The deploy passes the exact `<full-sha>` tag to the server as `DOCKER_IMAGE_BACKEND`, so `scripts/deploy.sh` runs `docker compose pull backend` and starts that image; it falls back to building on the server if the pull fails. Set it in `.env` to pin a tag manually:
+
+```
+DOCKER_IMAGE_BACKEND=yourusername/wine-knot-backend:latest
+```
+
+Manual push:
 
 ```bash
 docker login
@@ -188,14 +202,6 @@ export DOCKERHUB_USER=yourusername
 docker tag wine-knot-backend:latest $DOCKERHUB_USER/wine-knot-backend:latest
 docker push $DOCKERHUB_USER/wine-knot-backend:latest
 ```
-
-On the server, set in `.env`:
-
-```
-DOCKER_IMAGE_BACKEND=yourusername/wine-knot-backend:latest
-```
-
-Then `scripts/deploy.sh` will `docker compose pull backend` and start that image (falls back to `--build` if pull fails).
 
 Do **not** commit `.env`, `mysql_data`, or `.venv`.
 
@@ -221,7 +227,9 @@ git push -u origin feature/my-change
 
 ## Auto-deploy (GitHub Actions)
 
-Pushes to `main` trigger `.github/workflows/deploy.yml`, which uses **AWS SSM Run Command** to pull the latest code on the EC2 instance and rebuild Docker containers. No SSH from GitHub is required.
+Pushes to `main` trigger `.github/workflows/deploy.yml`. The workflow first builds a new **backend** image, pushes it to Docker Hub (`{DOCKERHUB_USERNAME}/wine-knot-backend` tagged with `:latest` and the git SHA), then uses **AWS SSM Run Command** to pull that image on the EC2 instance and restart containers. No SSH from GitHub is required.
+
+GitHub secrets required for the image push: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
 
 ### One-time setup
 

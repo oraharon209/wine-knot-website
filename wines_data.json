@@ -491,7 +491,7 @@
       "notes": "גרסה  של אלכסנדר G.V DE BOURGOGNE",
       "image_url": "/images/wines/אלכסנדר - CHABLIS שבלי.jpg",
       "out_of_stock": false,
-      "image_version": 1780926840183
+      "image_version": 1788331584230
     },
     {
       "id": 28,
@@ -507,7 +507,7 @@
       "sale_price": 100.0,
       "notes": "שבלי אלכסנדר Maison Alexandre",
       "image_url": "/images/wines/אלכסנדר - CHABLIS שבלי.jpg",
-      "out_of_stock": false,
+      "out_of_stock": true,
       "image_version": 1787394177372
     },
     {
@@ -2118,8 +2118,8 @@
       "vintage": "2022",
       "grape": "",
       "rating": 95.0,
-      "shelf_price": 200.0,
-      "sale_price": 160.0,
+      "shelf_price": 240.0,
+      "sale_price": 200.0,
       "notes": "בלאק   מעולה   2022 חדש בלנד בורדולזי",
       "image_url": "/images/wines/טוליפ - בלאק טוליפ 2022.jpg",
       "out_of_stock": false,
@@ -3292,7 +3292,7 @@
       "grape": "",
       "rating": 94.0,
       "shelf_price": 190.0,
-      "sale_price": 145.0,
+      "sale_price": 160.0,
       "notes": "שבלי מצויין  PREMIER CRU  רמה גבוהה",
       "image_url": "/images/wines/Domain Fourrey - שבלי דומיין פוריי FOURREY פרמיה קרו.jpg",
       "out_of_stock": false,

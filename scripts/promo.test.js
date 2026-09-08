@@ -1,3 +1,5 @@
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { dealFromCart } = require('../frontend/public/js/promo.js');
@@ -156,4 +158,9 @@ test('two extras under the average are themselves the free bottles', () => {
   assert.equal(deal.gifts[0].quantity, 2);
   assert.equal(deal.gifts[0].sale_price, 80);
   assert.equal(deal.payable, deal.amount - 160);
+});
+
+test('the redesign in new/ runs the same promo module as the original storefront', () => {
+  const read = (p) => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
+  assert.equal(read('new/js/promo.js'), read('frontend/public/js/promo.js'));
 });

@@ -15,26 +15,49 @@ concurrency:
   group: deploy-production
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
+  promo-tests:
+    name: 12+1 promo tests
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_BRANCH: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.branch || 'main') || github.ref_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.DEPLOY_BRANCH }}
+
+      - name: Run 12+1 promo tests
+        run: node --test scripts/promo.test.js
+
   # The server pulls DOCKER_IMAGE_BACKEND and only builds locally if the pull
   # fails, so every production deploy has to refresh the registry first.
   publish-image:
+    name: Build and push Docker image
+    needs: promo-tests
     permissions:
       contents: read
       packages: write
     uses: ./.github/workflows/publish-backend-image.yml
+    with:
+      ref: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.branch || 'main') || github.ref_name }}
     secrets: inherit
 
   deploy:
-    needs: publish-image
-    # A registry failure must not strand the site on the old commit; the run
-    # still reports red so the missed push is visible.
-    if: always()
+    name: Deploy to production
+    needs: [promo-tests, publish-image]
+    # A registry failure must not strand the site on the old commit — the server
+    # falls back to building locally — but failing promo tests must stop here.
+    if: always() && needs.promo-tests.result == 'success'
     runs-on: ubuntu-latest
     environment: production
     env:
       AWS_REGION: ${{ vars.AWS_REGION || 'eu-north-1' }}
       DEPLOY_BRANCH: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.branch || 'main') || github.ref_name }}
+      BACKEND_IMAGE: ${{ needs.publish-image.outputs.image }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -57,6 +80,7 @@ jobs:
           bash -lc 'set -euo pipefail
           APP_DIR=/opt/wine-knot
           BRANCH=__DEPLOY_BRANCH__
+          export DOCKER_IMAGE_BACKEND=__BACKEND_IMAGE__
           cd "$APP_DIR"
           sudo -u ubuntu git fetch origin
           sudo -u ubuntu git reset --hard "origin/${BRANCH}"
@@ -64,6 +88,7 @@ jobs:
           SCRIPT
           )
           DEPLOY_SCRIPT="${DEPLOY_SCRIPT//__DEPLOY_BRANCH__/${DEPLOY_BRANCH}}"
+          DEPLOY_SCRIPT="${DEPLOY_SCRIPT//__BACKEND_IMAGE__/${BACKEND_IMAGE}}"
 
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "$INSTANCE_ID" \
