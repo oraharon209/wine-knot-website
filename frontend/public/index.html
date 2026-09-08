@@ -546,6 +546,54 @@
       font-weight: 600;
       margin-top: .2rem;
     }
+    .cart-gift-row {
+      display: flex;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .5rem 0;
+    }
+    .cart-gift-price { color: #1a6b3c; font-weight: 700; }
+    .gift-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      z-index: 250;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .gift-overlay.open { display: flex; }
+    .gift-popup {
+      background: #fff;
+      border-radius: var(--radius);
+      max-width: 420px;
+      width: 100%;
+      padding: 1.5rem;
+      position: relative;
+      text-align: center;
+    }
+    .gift-popup-close {
+      position: absolute;
+      top: .6rem;
+      left: .6rem;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .gift-popup-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--wine);
+      margin: .75rem 0 .25rem;
+    }
+    .gift-popup-value-label {
+      font-weight: 700;
+      color: #1a6b3c;
+      margin-bottom: .75rem;
+    }
 
     /* Cart button in header */
     .cart-btn {
@@ -900,7 +948,7 @@
 </section>
 
 <div class="promo">
-  🎁 מבצע: ב-12 בקבוקים — בקבוק מתנה חינם! | מתנה פרימיום ב-24 בקבוקים
+  🎁 מבצע 12+1: 12 בקבוקים — גם מעורבים — אפשר להוסיף בקבוק מתנה בשווי ממוצע ההזמנה
 </div>
 
 <div class="controls">
@@ -979,7 +1027,7 @@
       ניתן לשלם במגוון אפשרויות: פייבוקס, ביט, העברה בנקאית, צ'ק או מזומן.
     </p>
     <p>
-      <span class="about-highlight">🎁 בקבוק מתנה על כל קנייה של ארגז 12 בקבוקים</span>
+      <span class="about-highlight">🎁 מבצע 12+1: על כל 12 בקבוקים בעגלה — גם מיינות שונים — מגיע בקבוק מתנה בשווי ממוצע ההזמנה</span>
     </p>
   </div>
 </section>
@@ -1031,6 +1079,18 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<div class="gift-overlay" id="giftPopup" hidden>
+  <div class="gift-popup" role="alertdialog" aria-modal="true" aria-labelledby="giftPopupTitle" aria-describedby="giftPopupBody" tabindex="-1">
+    <button class="gift-popup-close" id="giftPopupClose" type="button" aria-label="סגור">✕</button>
+    <p>מבצע 12+1</p>
+    <h2 id="giftPopupTitle">מגיע לכם בקבוק מתנה</h2>
+    <p class="gift-popup-value" id="giftPopupValue"></p>
+    <p class="gift-popup-value-label" id="giftPopupValueLabel"></p>
+    <p id="giftPopupBody"></p>
+    <button class="btn-whatsapp" id="giftPopupOk" type="button">הבנתי</button>
+  </div>
+</div>
+
 <div class="age-gate" id="ageGate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
   <div class="age-gate-card">
     <div id="ageGatePrompt">
@@ -1055,6 +1115,7 @@
   </div>
 </div>
 
+<script src="/js/promo.js?v=12p6"></script>
 <script>
 const API = '/api';
 const CONTACT = { phone: '050-8496666', whatsapp: '972508496666', email: 'doronchick@gmail.com' };
@@ -1184,8 +1245,45 @@ function saveCart() {
   renderCart();
 }
 
+function currentDeal() {
+  return WineKnotPromo.dealFromCart(cart);
+}
+
+function cartWineLabel(item) {
+  const name = item.name.trim();
+  const vintage = (item.vintage || '').trim();
+  if (!vintage || new RegExp(`\\b${vintage.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(name)) {
+    return name;
+  }
+  return `${name} · ${vintage}`;
+}
+
+function giftLabel(gift) {
+  const name = cartWineLabel(gift);
+  return gift.quantity > 1 ? `${gift.quantity} × ${name}` : `1 × ${name}`;
+}
+
+function giftAddCopy(deal) {
+  if (!deal.stillToAdd) return '';
+  const each = deal.addEach || deal.giftEach;
+  if (deal.stillToAdd === 1) {
+    return `אפשר להוסיף בקבוק מתנה אחד בשווי ${formatPrice(each)}.`;
+  }
+  return `אפשר להוסיף ${deal.stillToAdd} בקבוקי מתנה בשווי ${formatPrice(each)} כל אחד.`;
+}
+
+function giftAppliedCopy(deal) {
+  if (!deal.gifts.length) return '';
+  return deal.gifts.map(gift => `${giftLabel(gift)} חינם`).join(' · ');
+}
+
+function giftDealCopy(deal) {
+  return [giftAppliedCopy(deal), giftAddCopy(deal)].filter(Boolean).join('. ');
+}
+
 function addToCart(wine, qty = 1) {
   const id = String(wine.id);
+  const freeBefore = currentDeal().freeCount;
   if (cart[id]) cart[id].quantity += qty;
   else {
     cart[id] = {
@@ -1198,11 +1296,9 @@ function addToCart(wine, qty = 1) {
     };
   }
   saveCart();
-  const free = freeBottles(cart[id].quantity);
-  const msg = free
-    ? `נוסף לעגלה ✓ (+${free} בקבוק מתנה)`
-    : (qty === 1 ? 'נוסף לעגלה ✓' : `נוספו ${qty} בקבוקים לעגלה ✓`);
-  showToast(msg);
+  notifyGiftIfEarned(freeBefore);
+  const qtyMsg = qty === 1 ? 'נוסף לעגלה ✓' : `נוספו ${qty} בקבוקים לעגלה ✓`;
+  if (currentDeal().freeCount <= freeBefore) showToast(qtyMsg);
 }
 
 function removeFromCart(id) {
@@ -1213,48 +1309,57 @@ function removeFromCart(id) {
 function setCartQuantity(id, qty) {
   id = String(id);
   if (!cart[id]) return;
+  const freeBefore = currentDeal().freeCount;
   if (qty <= 0) removeFromCart(id);
   else { cart[id].quantity = qty; saveCart(); }
+  notifyGiftIfEarned(freeBefore);
 }
 
 function cartItemCount() {
   return Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
 }
 
-function cartTotalAmount() {
-  return Object.values(cart).reduce((sum, item) => sum + item.sale_price * item.quantity, 0);
-}
-
 function formatPrice(amount) {
   return '₪' + Number(amount).toLocaleString('he-IL', { maximumFractionDigits: 0 });
-}
-
-function roundPrice(amount) {
-  return Math.round(Number(amount));
 }
 
 function formatBottleQty(qty) {
   return qty === 1 ? 'בקבוק אחד' : `${qty} בקבוקים`;
 }
 
-function freeBottles(qty) {
-  return Math.floor(qty / 12);
+function notifyGiftIfEarned(freeBefore) {
+  const deal = currentDeal();
+  if (deal.freeCount > freeBefore) showGiftPopup(deal);
 }
 
-function formatCartQty(item) {
-  const free = freeBottles(item.quantity);
-  if (!free) return formatBottleQty(item.quantity);
-  const total = item.quantity + free;
-  return `${item.quantity} בקבוקים (+${free} מתנה = ${total} סה"כ)`;
+function showGiftPopup(deal) {
+  const overlay = $('giftPopup');
+  $('giftPopupTitle').textContent = deal.freeCount === 1
+    ? 'מגיע לכם בקבוק מתנה'
+    : `מגיעים לכם ${deal.freeCount} בקבוקי מתנה`;
+  $('giftPopupValue').textContent = formatPrice(deal.giftEach);
+  $('giftPopupValueLabel').textContent = deal.freeCount === 1
+    ? 'שווי בקבוק המתנה'
+    : 'שווי כל בקבוק מתנה';
+  $('giftPopupBody').textContent = giftAddCopy(deal);
+  overlay.hidden = false;
+  overlay.classList.add('open');
+  trapFocus(overlay.querySelector('.gift-popup'));
+  $('giftPopupOk').focus();
 }
 
-function cartWineLabel(item) {
-  const name = item.name.trim();
-  const vintage = (item.vintage || '').trim();
-  if (!vintage || new RegExp(`\\b${vintage.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(name)) {
-    return name;
+function closeGiftPopup() {
+  const overlay = $('giftPopup');
+  if (!overlay.classList.contains('open')) return;
+  overlay.classList.remove('open');
+  overlay.hidden = true;
+  if ($('modal').classList.contains('open')) {
+    trapFocus($('modal').querySelector('.modal'));
+  } else if ($('cartOverlay').classList.contains('open')) {
+    trapFocus($('cartDrawer'));
+  } else {
+    restoreFocus();
   }
-  return `${name} · ${vintage}`;
 }
 
 function buildCartWhatsAppMessage() {
@@ -1268,32 +1373,21 @@ function buildCartWhatsAppMessage() {
     '',
   ];
 
-  let totalFree = 0;
-  let totalQty = 0;
   items.forEach(item => {
     const label = cartWineLabel(item);
     const winery = (item.winery || '').trim();
     const lineTotal = item.sale_price * item.quantity;
-    const free = freeBottles(item.quantity);
-    const freeValue = roundPrice(item.sale_price);
-    totalFree += free;
-    totalQty += item.quantity;
     lines.push(label);
     if (winery) lines.push(`מיקב: ${winery}`);
-    lines.push(`   ${formatCartQty(item)} · ${formatPrice(lineTotal)}`);
-    if (free) {
-      const giftLabel = free === 1 ? 'בקבוק מתנה' : `${free} בקבוקי מתנה`;
-      const eachLabel = free > 1 ? ' כל אחד' : '';
-      lines.push(`   🎁 ${giftLabel} בשווי ${formatPrice(freeValue)}${eachLabel}`);
-    }
+    lines.push(`   ${formatBottleQty(item.quantity)} · ${formatPrice(lineTotal)}`);
     lines.push('');
   });
 
+  const deal = currentDeal();
   lines.push('──────────────');
-  lines.push(`סה״כ לתשלום: ${formatPrice(cartTotalAmount())}`);
-  if (totalFree) {
-    const avgGiftValue = totalQty ? roundPrice(cartTotalAmount() / totalQty) : 0;
-    lines.push(`🎁 סה"כ ${totalFree} בקבוקי מתנה (שווי ממוצע ${formatPrice(avgGiftValue)} לבקבוק)`);
+  lines.push(`סה״כ לתשלום: ${formatPrice(deal.payable)}`);
+  if (deal.freeCount) {
+    lines.push(`🎁 מבצע 12+1: ${giftDealCopy(deal)}`);
   }
   lines.push('');
   lines.push('תודה!');
@@ -1320,10 +1414,8 @@ function renderCart() {
     return;
   }
 
-  const totalFree = items.reduce((sum, item) => sum + freeBottles(item.quantity), 0);
-  container.innerHTML = items.map(item => {
-    const free = freeBottles(item.quantity);
-    return `
+  const deal = currentDeal();
+  container.innerHTML = items.map(item => `
     <div class="cart-item" data-id="${esc(item.id)}">
       <div class="cart-item-info">
         <div class="cart-item-name">${esc(item.name)}</div>
@@ -1333,14 +1425,19 @@ function renderCart() {
           <span>${item.quantity}</span>
           <button type="button" data-action="inc" aria-label="הוסף כמות">+</button>
         </div>
-        ${free ? `<div class="cart-free-note">🎁 +${free} בקבוק מתנה</div>` : ''}
       </div>
       <div>
         <div class="cart-item-price">₪${(item.sale_price * item.quantity).toFixed(0)}</div>
         <button type="button" class="cart-item-remove" data-action="remove" aria-label="הסר">✕</button>
       </div>
-    </div>`;
-  }).join('') + (totalFree ? `<div class="cart-free-note" style="padding:.5rem 0">🎁 סה"כ ${totalFree} בקבוקי מתנה בהזמנה זו</div>` : '');
+    </div>`).join('') + (deal.freeCount ? `
+    <div class="cart-gift-row">
+      <div class="cart-item-info">
+        <div class="cart-item-name">🎁 מבצע 12+1</div>
+        <div class="cart-free-note">${esc(giftDealCopy(deal))}</div>
+      </div>
+      ${deal.discount ? `<div class="cart-gift-price">−${formatPrice(deal.discount)}</div>` : ''}
+    </div>` : '');
 
   container.querySelectorAll('.cart-item').forEach(row => {
     const id = row.dataset.id;
@@ -1355,7 +1452,7 @@ function renderCart() {
     });
   });
 
-  $('cartTotalAmount').textContent = `₪${cartTotalAmount().toFixed(0)}`;
+  $('cartTotalAmount').textContent = formatPrice(deal.payable);
   waBtn.disabled = false;
 }
 
@@ -1433,6 +1530,11 @@ function setupCart() {
     const msg = encodeURIComponent(buildCartWhatsAppMessage());
     window.open(`https://wa.me/${CONTACT.whatsapp}?text=${msg}`, '_blank', 'noopener,noreferrer');
   });
+  $('giftPopupClose').addEventListener('click', closeGiftPopup);
+  $('giftPopupOk').addEventListener('click', closeGiftPopup);
+  $('giftPopup').addEventListener('click', e => {
+    if (e.target === $('giftPopup')) closeGiftPopup();
+  });
   updateCartBadge();
   renderCart();
 }
@@ -1492,7 +1594,7 @@ function wineCardHtml(w, { showRecommendedBadge = false, eagerImage = false } = 
           <button class="btn-qty" type="button" data-add-id="${w.id}" data-qty="6">6 בקבוקים</button>
           <button class="btn-qty btn-qty-deal" type="button" data-add-id="${w.id}" data-qty="12">
             <span class="deal-main">12 + 1 מתנה 🎁</span>
-            <span class="deal-sub">קנו 12 וקבלו בקבוק אחד חינם</span>
+            <span class="deal-sub">בקבוק מתנה בשווי ממוצע ההזמנה</span>
           </button>
         </div>
       </div>
@@ -1768,13 +1870,13 @@ async function openModal(id) {
       </div>
       <div>⭐ דירוג: <strong>${esc(w.rating)}</strong> · ${esc(w.category_he)}</div>
       ${w.notes ? `<div class="modal-notes">${esc(w.notes)}</div>` : ''}
-      <div class="deal-hint">🎁 ב-12 בקבוקים — בקבוק מתנה חינם!</div>
+      <div class="deal-hint">🎁 12 בקבוקים בעגלה — גם מעורבים — בקבוק מתנה בשווי ממוצע ההזמנה</div>
       <div class="modal-qty-row">
         <button class="btn-add-cart" type="button" data-qty="1">1 בקבוק</button>
         <button class="btn-add-cart" type="button" data-qty="6">6 בקבוקים</button>
         <button class="btn-add-cart btn-qty-deal" type="button" data-qty="12">
           <span class="deal-main">12 + 1 מתנה 🎁</span>
-          <span class="deal-sub">קנו 12 וקבלו בקבוק אחד חינם</span>
+          <span class="deal-sub">בקבוק מתנה בשווי ממוצע ההזמנה</span>
         </button>
       </div>
       <button class="btn-whatsapp" id="orderBtn" type="button">💬 הזמנה מהירה בוואטסאפ</button>
@@ -1834,7 +1936,8 @@ $('modalClose').addEventListener('click', closeModal);
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  if ($('modal').classList.contains('open')) closeModal();
+  if ($('giftPopup').classList.contains('open')) closeGiftPopup();
+  else if ($('modal').classList.contains('open')) closeModal();
   else if ($('cartOverlay').classList.contains('open')) closeCart();
 });
 

@@ -12,7 +12,12 @@ if [ -f /usr/local/bin/wine-knot-refresh-secrets ]; then
   /usr/local/bin/wine-knot-refresh-secrets
 fi
 
-"${COMPOSE[@]}" up -d --build
+if [ -n "${DOCKER_IMAGE_BACKEND:-}" ]; then
+  "${COMPOSE[@]}" pull backend
+  "${COMPOSE[@]}" up -d --no-build
+else
+  "${COMPOSE[@]}" up -d --build
+fi
 docker image prune -f
 
 echo "Deploy complete: $(git rev-parse --short HEAD)"
