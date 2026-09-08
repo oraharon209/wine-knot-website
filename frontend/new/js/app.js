@@ -239,7 +239,7 @@
                 <span aria-live="polite">${item.quantity}</span>
                 <button type="button" data-action="inc" aria-label="עוד בקבוק אחד">${icon('plus')}</button>
               </div>
-              <button type="button" class="btn btn-quiet btn-sm crate-add" data-action="add12" aria-label="הוספת 12 בקבוקים"><span class="ltr">+12</span></button>
+              <button type="button" class="btn btn-primary btn-sm crate-add" data-action="add12" aria-label="הוספת 12 בקבוקים">12 בקבוקים</button>
             </div>
             <button type="button" class="cart-remove" data-action="remove">הסרה</button>
           </div>
@@ -588,10 +588,10 @@
 
   function crateButton(w, { compact = false } = {}) {
     const label = `הוספת 12 בקבוקים (${esc(w.name)})`;
-    const text = compact
-      ? `<span class="ltr">+12</span>`
-      : `<span class="ltr">+12</span> בקבוקים`;
-    return `<button class="btn btn-quiet${compact ? ' btn-sm' : ''} crate-add" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="${label}">${text}</button>`;
+    if (compact) {
+      return `<button class="btn btn-primary btn-sm crate-add" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="${label}">12 בקבוקים</button>`;
+    }
+    return `<button class="btn btn-primary crate-add" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="${label}">12 בקבוקים</button>`;
   }
   function addButtonsHtml(w, { compact = false } = {}) {
     if (w.out_of_stock) {
@@ -601,7 +601,7 @@
     }
     if (compact) {
       return `
-        <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}" aria-label="הוספה לעגלה: ${esc(w.name)}">${icon('plus')}<span class="sr-only">הוספה לעגלה</span></button>
+        <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}" data-qty="1" aria-label="הוספת בקבוק אחד: ${esc(w.name)}">+1</button>
         ${crateButton(w, { compact: true })}`;
     }
     return `
@@ -827,15 +827,15 @@
                 <button type="button" id="qtyInc" aria-label="עוד בקבוק אחד">${icon('plus')}</button>
               </div>
               <div class="presets" role="group" aria-label="כמויות מהירות">
-                <button class="chip" type="button" data-qty="1">1 בקבוק</button>
-                <button class="chip" type="button" data-qty="6">6 בקבוקים</button>
-                <button class="chip" type="button" data-qty="12"><span class="ltr">+12</span> בקבוקים</button>
+                <button class="chip" type="button" data-qty="1">1</button>
+                <button class="chip" type="button" data-qty="6">6</button>
+                <button class="chip" type="button" data-qty="12">12</button>
               </div>
             </div>
             <div class="product-cta">
-              <button class="btn btn-primary" type="button" id="productAdd" data-add="${esc(w.id)}" data-qty-from="qtyOut">הוספה לעגלה</button>
+              <button class="btn btn-secondary" type="button" id="productAdd" data-add="${esc(w.id)}" data-qty-from="qtyOut">הוספה לעגלה</button>
               ${crateButton(w)}
-              <button class="btn btn-secondary" type="button" id="productWa">${icon('whatsapp')}שאלה או הזמנה בוואטסאפ</button>
+              <button class="btn btn-quiet" type="button" id="productWa">${icon('whatsapp')}שאלה או הזמנה בוואטסאפ</button>
             </div>`}
             <p class="product-fine">על כל 12 בקבוקים בעגלה — גם מיינות שונים — <strong>בקבוק מתנה</strong> בשווי ממוצע ההזמנה. משלוח עד הבית באזורי החלוקה; התשלום מסוכם מול דורון בוואטסאפ.</p>
           </div>

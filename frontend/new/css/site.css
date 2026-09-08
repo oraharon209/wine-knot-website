@@ -725,8 +725,8 @@ input[type=search]::-webkit-search-decoration, input[type=search]::-webkit-searc
 @media (min-width: 1024px) {
   .product { grid-template-columns: 5fr 7fr; gap: var(--s-9); }
   .product-cta { grid-template-columns: 1fr 1fr; }
-  .product-cta .crate-add,
-  .product-cta .btn-secondary { grid-column: 1 / -1; }
+  .product-cta .crate-add { grid-column: 1 / -1; }
+  .product-cta .btn-quiet { grid-column: 1 / -1; }
 }
 
 .buybar { position: fixed; inset-inline: 0; bottom: 0; z-index: var(--z-buybar); background: var(--surface); border-top: 1px solid var(--ink); padding: var(--s-2) var(--gutter) calc(var(--s-2) + env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
