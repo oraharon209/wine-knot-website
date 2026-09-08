@@ -8,9 +8,10 @@ on:
       branch:
         description: Git ref whose frontend/public is copied to staging
         required: false
-        default: cursor/wine-knot-redesign-67b4
+        default: new
   push:
     branches:
+      - new
       - cursor/wine-knot-redesign-67b4
 
 concurrency:
@@ -23,7 +24,7 @@ jobs:
     environment: production
     env:
       AWS_REGION: ${{ vars.AWS_REGION || 'eu-north-1' }}
-      STAGING_BRANCH: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.branch || 'cursor/wine-knot-redesign-67b4') || github.ref_name }}
+      STAGING_BRANCH: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.branch || 'new') || github.ref_name }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6

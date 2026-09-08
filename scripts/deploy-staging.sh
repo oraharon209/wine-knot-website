@@ -4,7 +4,7 @@
 set -euo pipefail
 
 APP_DIR="/opt/wine-knot"
-STAGING_REF="${STAGING_REF:-origin/cursor/wine-knot-redesign-67b4}"
+STAGING_REF="${STAGING_REF:-origin/new}"
 ZONE_NAME="${CLOUDFLARE_ZONE:-wineknot.co.il}"
 COMPOSE=(docker compose -f docker-compose.yml -f docker-compose.production.yml)
 GIT_USER="${SUDO_USER:-ubuntu}"
