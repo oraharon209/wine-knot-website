@@ -46,6 +46,8 @@ jobs:
     outputs:
       tag: ${{ steps.build.outputs.tag }}
     env:
+      # Empty unless another workflow called this one with an explicit ref.
+      REF_INPUT: ${{ inputs.ref }}
       # The production deploy job reads the account name from a repo variable,
       # so check that first and keep the secret spellings as fallbacks.
       DOCKERHUB_USERNAME_VAR: ${{ vars.DOCKERHUB_USERNAME }}
@@ -75,20 +77,40 @@ jobs:
           # The production deploy used to tag with the full SHA; keep it so
           # anything pinned to that form still resolves.
           FULL_SHA="$(git rev-parse HEAD)"
-          DATE_TAG="$(date -u +%Y%m%d)"
+          BUILD_DATE="$(date -u +%Y%m%d)"
+
+          REF_NAME="${REF_INPUT:-$GITHUB_REF_NAME}"
+          # Branch names carry slashes and case; tags allow neither.
+          BRANCH_TAG="$(printf '%s' "$REF_NAME" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9._-' '-' | sed 's/^-*//; s/-*$//' | cut -c1-64)"
+
+          # Every build is pinnable by commit and dated; the moving names say
+          # where the image is running. Only main may move `latest`, because
+          # that is the tag the production server pulls.
+          TAGS=("$FULL_SHA" "$SHA" "${BUILD_DATE}-${SHA}")
+          [ -n "$BRANCH_TAG" ] && TAGS+=("$BRANCH_TAG")
+          case "$REF_NAME" in
+            main) TAGS+=("production" "latest") ;;
+            new) TAGS+=("staging") ;;
+          esac
 
           docker build -t wine-knot-backend:ci ./backend
 
+          push_all() {
+            local repo="$1" t
+            for t in "${TAGS[@]}"; do
+              docker tag wine-knot-backend:ci "${repo}:${t}"
+              docker push "${repo}:${t}"
+            done
+          }
+
+          TAG_LIST="$(printf '`%s` ' "${TAGS[@]}")"
+
           echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:latest"
-          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:${SHA}"
-          docker tag wine-knot-backend:ci "${GHCR_IMAGE}:${DATE_TAG}"
-          docker push "${GHCR_IMAGE}:latest"
-          docker push "${GHCR_IMAGE}:${SHA}"
-          docker push "${GHCR_IMAGE}:${DATE_TAG}"
+          push_all "$GHCR_IMAGE"
           {
             echo "## Publish backend image"
-            echo "- GHCR: **${GHCR_IMAGE}:latest** (\`${SHA}\`, \`${DATE_TAG}\`)"
+            echo "- Built from \`${REF_NAME}\` (\`${FULL_SHA}\`)"
+            echo "- GHCR: **${GHCR_IMAGE}** — ${TAG_LIST}"
           } >> "$GITHUB_STEP_SUMMARY"
 
           PUSH_HUB="${{ github.event.inputs.push_dockerhub }}"
@@ -106,13 +128,6 @@ jobs:
           fi
 
           echo "$DOCKERHUB_TOKEN" | docker login -u "$USERNAME" --password-stdin
-          docker tag wine-knot-backend:ci "${IMAGE_REPO}:latest"
-          docker tag wine-knot-backend:ci "${IMAGE_REPO}:${SHA}"
-          docker tag wine-knot-backend:ci "${IMAGE_REPO}:${FULL_SHA}"
-          docker tag wine-knot-backend:ci "${IMAGE_REPO}:${DATE_TAG}"
-          docker push "${IMAGE_REPO}:latest"
-          docker push "${IMAGE_REPO}:${SHA}"
-          docker push "${IMAGE_REPO}:${FULL_SHA}"
-          docker push "${IMAGE_REPO}:${DATE_TAG}"
+          push_all "$IMAGE_REPO"
           echo "tag=${FULL_SHA}" >> "$GITHUB_OUTPUT"
-          echo "- Docker Hub: **${IMAGE_REPO}:latest** (\`${SHA}\`, \`${FULL_SHA}\`, \`${DATE_TAG}\`)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Docker Hub: **${IMAGE_REPO}** — ${TAG_LIST}" >> "$GITHUB_STEP_SUMMARY"

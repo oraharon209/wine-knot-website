@@ -180,13 +180,17 @@ Credentials come from GitHub Environment **production**:
 - variable `DOCKERHUB_USERNAME` (secrets `DOCKERHUB_USERNAME` / `DOCKERHUB_USER` also work)
 - secret `DOCKERHUB_TOKEN` — without it the job fails instead of quietly skipping the push
 
-Optional variable `DOCKER_IMAGE_BACKEND` (default `{username}/wine-knot-backend`). Every push publishes:
+Optional variable `DOCKER_IMAGE_BACKEND` (default `{username}/wine-knot-backend`). The same tags go to Docker Hub and `ghcr.io/{owner}/wine-knot-backend`:
 
-- `{DOCKERHUB_USERNAME}/wine-knot-backend:latest`
-- `{DOCKERHUB_USERNAME}/wine-knot-backend:<short-sha>` and `:<full-sha>`
-- `{DOCKERHUB_USERNAME}/wine-knot-backend:<YYYYMMDD>`
-
-plus the same tags on `ghcr.io/{owner}/wine-knot-backend`.
+| Tag | Moves | Meaning |
+|-----|-------|---------|
+| `<full-sha>` | never | Exact commit. The deploy pins this one. |
+| `<short-sha>` | never | Same image, readable. |
+| `<YYYYMMDD>-<short-sha>` | never | When it was built, without same-day builds overwriting each other. |
+| `main`, `new`, `<branch>` | per build | Newest build of that branch. |
+| `production` | per build | Newest build of `main`. |
+| `staging` | per build | Newest build of `new` — what new.wineknot.co.il runs. |
+| `latest` | per build | **Only ever moved by `main`**, because the production server pulls it. |
 
 The deploy passes the exact `<full-sha>` tag to the server as `DOCKER_IMAGE_BACKEND`, so `scripts/deploy.sh` runs `docker compose pull backend` and starts that image; it falls back to building on the server if the pull fails. Set it in `.env` to pin a tag manually:
 
