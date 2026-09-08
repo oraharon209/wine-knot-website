@@ -57,7 +57,10 @@ jobs:
     env:
       AWS_REGION: ${{ vars.AWS_REGION || 'eu-north-1' }}
       DEPLOY_BRANCH: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.branch || 'main') || github.ref_name }}
-      BACKEND_IMAGE: ${{ needs.publish-image.outputs.image }}
+      BACKEND_IMAGE_TAG: ${{ needs.publish-image.outputs.tag }}
+      IMAGE_REPO_VAR: ${{ vars.DOCKER_IMAGE_BACKEND }}
+      DOCKERHUB_USERNAME_VAR: ${{ vars.DOCKERHUB_USERNAME }}
+      DOCKERHUB_USERNAME_SECRET: ${{ secrets.DOCKERHUB_USERNAME }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -74,6 +77,19 @@ jobs:
           if [ -z "$INSTANCE_ID" ]; then
             echo "EC2_INSTANCE_ID secret is not set"
             exit 1
+          fi
+
+          # Empty when the publish job failed; the server then builds locally.
+          BACKEND_IMAGE=""
+          if [ -n "${BACKEND_IMAGE_TAG:-}" ]; then
+            IMAGE_REPO="${IMAGE_REPO_VAR%%:*}"
+            if [ -z "$IMAGE_REPO" ]; then
+              USERNAME="${DOCKERHUB_USERNAME_VAR:-${DOCKERHUB_USERNAME_SECRET:-oraharon}}"
+              IMAGE_REPO="${USERNAME}/wine-knot-backend"
+            fi
+            BACKEND_IMAGE="${IMAGE_REPO}:${BACKEND_IMAGE_TAG}"
+          else
+            echo "::warning::No image tag from the publish job; the server will build the backend itself."
           fi
 
           DEPLOY_SCRIPT=$(cat <<'SCRIPT'

@@ -17,9 +17,11 @@ on:
         type: string
         default: ''
     outputs:
-      image:
-        description: Docker Hub image reference that was pushed, empty when it was not
-        value: ${{ jobs.publish.outputs.image }}
+      tag:
+        description: >-
+          Tag pushed to Docker Hub, empty when it was not. Only the tag, because
+          the account name is a secret and Actions drops outputs containing one.
+        value: ${{ jobs.publish.outputs.tag }}
   push:
     branches:
       - main
@@ -42,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     outputs:
-      image: ${{ steps.build.outputs.image }}
+      tag: ${{ steps.build.outputs.tag }}
     env:
       # The production deploy job reads the account name from a repo variable,
       # so check that first and keep the secret spellings as fallbacks.
@@ -60,7 +62,7 @@ jobs:
         id: build
         run: |
           set -euo pipefail
-          echo "image=" >> "$GITHUB_OUTPUT"
+          echo "tag=" >> "$GITHUB_OUTPUT"
           USERNAME="${DOCKERHUB_USERNAME_VAR:-${DOCKERHUB_USERNAME:-${DOCKERHUB_USER:-oraharon}}}"
           OWNER="${{ github.repository_owner }}"
           GHCR_IMAGE="ghcr.io/${OWNER}/wine-knot-backend"
@@ -112,5 +114,5 @@ jobs:
           docker push "${IMAGE_REPO}:${SHA}"
           docker push "${IMAGE_REPO}:${FULL_SHA}"
           docker push "${IMAGE_REPO}:${DATE_TAG}"
-          echo "image=${IMAGE_REPO}:${FULL_SHA}" >> "$GITHUB_OUTPUT"
+          echo "tag=${FULL_SHA}" >> "$GITHUB_OUTPUT"
           echo "- Docker Hub: **${IMAGE_REPO}:latest** (\`${SHA}\`, \`${FULL_SHA}\`, \`${DATE_TAG}\`)" >> "$GITHUB_STEP_SUMMARY"
