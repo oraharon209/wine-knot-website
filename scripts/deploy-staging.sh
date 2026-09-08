@@ -110,11 +110,39 @@ NEW_CODE="$(curl -sk -o /dev/null -w '%{http_code}' -H "Host: new.${ZONE_NAME}" 
 NEW_TITLE="$(curl -sk -H "Host: new.${ZONE_NAME}" https://127.0.0.1/ | tr '\n' ' ' | sed -n 's/.*<title>\([^<]*\)<.*/\1/p' | head -c 120 || true)"
 echo "Origin HTTPS apex Host=${ZONE_NAME} → HTTP ${APEX_CODE}"
 echo "Origin HTTPS new  Host=new.${ZONE_NAME} → HTTP ${NEW_CODE} title=${NEW_TITLE}"
-if [ "$NEW_CODE" != "200" ]; then
-  echo "Staging origin check failed for new.${ZONE_NAME}" >&2
+dump_nginx_state() {
   "${COMPOSE[@]}" ps || true
   docker logs --tail 80 "$("${COMPOSE[@]}" ps -q nginx)" || true
+}
+
+# The apex is the live shop: a staging publish must never leave it broken.
+if [ "$APEX_CODE" != "200" ]; then
+  echo "Production origin check failed for ${ZONE_NAME}" >&2
+  dump_nginx_state
   exit 1
+fi
+if [ "$NEW_CODE" != "200" ]; then
+  echo "Staging origin check failed for new.${ZONE_NAME}" >&2
+  dump_nginx_state
+  exit 1
+fi
+
+# Both vhosts read wine photos from frontend/public/images/wines, so a sample
+# upload must stay reachable on each host after the nginx overlay.
+PHOTO_DIR="$APP_DIR/frontend/public/images/wines"
+PHOTO_COUNT="$(find "$PHOTO_DIR" -type f 2>/dev/null | wc -l)"
+echo "Wine photos on disk: ${PHOTO_COUNT} in frontend/public/images/wines"
+SAMPLE_PHOTO="$(find "$PHOTO_DIR" -type f -printf '%f\n' 2>/dev/null | sort | head -1 || true)"
+if [ -n "$SAMPLE_PHOTO" ]; then
+  for HOST in "${ZONE_NAME}" "new.${ZONE_NAME}"; do
+    CODE="$(curl -sk -o /dev/null -w '%{http_code}' -H "Host: ${HOST}" "https://127.0.0.1/images/wines/${SAMPLE_PHOTO}" || true)"
+    echo "Photo ${SAMPLE_PHOTO} on ${HOST} → HTTP ${CODE}"
+    if [ "$CODE" != "200" ]; then
+      echo "Wine photo not served on ${HOST}" >&2
+      dump_nginx_state
+      exit 1
+    fi
+  done
 fi
 if ! echo "$NEW_TITLE" | grep -q 'דורון\|Wine Knot'; then
   echo "Warning: unexpected staging title: ${NEW_TITLE}" >&2
