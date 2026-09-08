@@ -133,9 +133,22 @@ PHOTO_DIR="$APP_DIR/frontend/public/images/wines"
 PHOTO_COUNT="$(find "$PHOTO_DIR" -type f 2>/dev/null | wc -l)"
 echo "Wine photos on disk: ${PHOTO_COUNT} in frontend/public/images/wines"
 SAMPLE_PHOTO="$(find "$PHOTO_DIR" -type f -printf '%f\n' 2>/dev/null | sort | head -1 || true)"
+# Photo names are Hebrew with spaces, so the request path has to be percent-encoded byte by byte.
+urlencode() {
+  local LC_ALL=C s="$1" out="" i c
+  for ((i = 0; i < ${#s}; i++)); do
+    c="${s:i:1}"
+    case "$c" in
+      [a-zA-Z0-9._~-]) out+="$c" ;;
+      *) out+="$(printf '%%%02X' "'$c")" ;;
+    esac
+  done
+  printf '%s' "$out"
+}
 if [ -n "$SAMPLE_PHOTO" ]; then
+  SAMPLE_PATH="$(urlencode "$SAMPLE_PHOTO")"
   for HOST in "${ZONE_NAME}" "new.${ZONE_NAME}"; do
-    CODE="$(curl -sk -o /dev/null -w '%{http_code}' -H "Host: ${HOST}" "https://127.0.0.1/images/wines/${SAMPLE_PHOTO}" || true)"
+    CODE="$(curl -sk -o /dev/null -w '%{http_code}' -H "Host: ${HOST}" "https://127.0.0.1/images/wines/${SAMPLE_PATH}" || true)"
     echo "Photo ${SAMPLE_PHOTO} on ${HOST} → HTTP ${CODE}"
     if [ "$CODE" != "200" ]; then
       echo "Wine photo not served on ${HOST}" >&2
