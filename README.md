@@ -21,7 +21,7 @@ Original and redesign are separate folders:
 | Folder | Site | Local preview |
 |--------|------|----------------|
 | `frontend/public/` | Original (`wineknot.co.il`) | `PORT=8080 ROOT=frontend/public node scripts/preview-server.js` |
-| `frontend/new/` | Redesign (`new.wineknot.co.il`) | `PORT=8089 node scripts/preview-server.js` |
+| `new/` | Redesign (`new.wineknot.co.il`) | `PORT=8089 node scripts/preview-server.js` |
 
 ```bash
 # Redesign — http://localhost:8089
@@ -51,14 +51,14 @@ Production (`wineknot.co.il/admin.html` and `new.wineknot.co.il/admin.html`): Cl
 wine-knot/
 ├── docker-compose.yml      # MySQL + Backend + Nginx
 ├── wines_data.json         # Wine catalog (seed data)
+├── new/                    # Redesign (new.wineknot.co.il) — preview :8089
+│   ├── css/site.css
+│   ├── js/app.js
+│   └── fonts/
 ├── frontend/public/        # Original storefront (wineknot.co.il)
 │   ├── index.html
 │   ├── js/promo.js
 │   └── images/wines/       # Shared bottle photos
-├── frontend/new/           # Redesign (new.wineknot.co.il) — preview :8089
-│   ├── css/site.css
-│   ├── js/app.js
-│   └── fonts/
 ├── docs/design/            # Redesign audit, direction and design system
 ├── backend/                # Express REST API
 ├── nginx/                  # Reverse proxy config
@@ -204,7 +204,7 @@ Do **not** commit `.env`, `mysql_data`, or `.venv`.
 | Branch | Purpose |
 |--------|---------|
 | `main` | Production — what's live on wineknot.co.il (`frontend/public`). |
-| `new` | Redesign in `frontend/new/`; **Deploy staging** publishes https://new.wineknot.co.il |
+| `new` | Redesign in `new/`; **Deploy staging** publishes https://new.wineknot.co.il |
 | `feature/...` | Short-lived branches for new work. Merge into `main` when ready. |
 
 ```bash

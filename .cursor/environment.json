@@ -1,0 +1,14 @@
+{
+  "name": "Wine Knot",
+  "ports": [
+    { "name": "New storefront", "port": 8089 },
+    { "name": "Original storefront", "port": 8080 }
+  ],
+  "terminals": [
+    {
+      "name": "new-8089",
+      "command": "PORT=8089 BANNER='NEW — folder /new' node scripts/preview-server.js",
+      "description": "Serves the redesign from the new/ folder on port 8089"
+    }
+  ]
+}

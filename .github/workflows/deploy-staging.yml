@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: Git ref whose frontend/new is copied to staging
+        description: Git ref whose new/ folder is copied to staging
         required: false
         default: new
   push:

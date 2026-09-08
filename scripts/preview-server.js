@@ -3,13 +3,13 @@
  * Local preview server: static storefront + mock public/admin API from wines_data.json.
  *
  * Usage:
- *   PORT=8089 ROOT=frontend/new BANNER='NEW' node scripts/preview-server.js
+ *   PORT=8089 ROOT=new BANNER='NEW' node scripts/preview-server.js
  *   PORT=8080 ROOT=frontend/public BANNER='OLD' node scripts/preview-server.js
  *
- * Env: PORT (default 8089), ROOT (default frontend/new), FALLBACK (default frontend/public), DATA, BANNER
+ * Env: PORT (default 8089), ROOT (default new/), FALLBACK (default frontend/public), DATA, BANNER
  *
  * Admin routes are in-memory only (not persisted) so /admin.html works without Docker/MySQL.
- * Missing files (wine photos) fall back to FALLBACK so frontend/new can share images/wines.
+ * Missing files (wine photos) fall back to FALLBACK so new/ can share images/wines.
  */
 'use strict';
 
@@ -18,7 +18,7 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO = path.resolve(__dirname, '..');
-const ROOT = path.resolve(process.env.ROOT || path.join(REPO, 'frontend/new'));
+const ROOT = path.resolve(process.env.ROOT || path.join(REPO, 'new'));
 const FALLBACK = path.resolve(process.env.FALLBACK || path.join(REPO, 'frontend/public'));
 const DATA_PATH = path.resolve(process.env.DATA || path.join(REPO, 'wines_data.json'));
 const PORT = Number(process.env.PORT || 8089);

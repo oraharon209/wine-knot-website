@@ -41,12 +41,15 @@ run_git checkout "$STAGING_REF" -- \
   scripts/deploy-staging.sh \
   scripts/deploy.sh
 
-# Sync into the existing bind-mount directory. Never rm/replace frontend/new
+# Sync into the existing bind-mount directory. Never rm/replace new/
 # while nginx has it mounted — that leaves the container on a deleted inode (empty 403).
-mkdir -p frontend/new
+mkdir -p new
 STAGE_TMP="$(mktemp -d /tmp/wk-staging.XXXXXX)"
 trap 'rm -rf "$STAGE_TMP"' EXIT
-if run_git cat-file -e "$STAGING_REF:frontend/new/index.html" 2>/dev/null; then
+if run_git cat-file -e "$STAGING_REF:new/index.html" 2>/dev/null; then
+  run_git archive "$STAGING_REF" new | tar -x -C "$STAGE_TMP"
+  STAGE_SRC="$STAGE_TMP/new/"
+elif run_git cat-file -e "$STAGING_REF:frontend/new/index.html" 2>/dev/null; then
   run_git archive "$STAGING_REF" frontend/new | tar -x -C "$STAGE_TMP"
   STAGE_SRC="$STAGE_TMP/frontend/new/"
 else
@@ -57,18 +60,18 @@ if [ ! -f "${STAGE_SRC}index.html" ]; then
   echo "git archive missing redesign index.html from $STAGING_REF" >&2
   exit 1
 fi
-rsync -a --delete --exclude 'images/wines/' "$STAGE_SRC" frontend/new/
+rsync -a --delete --exclude 'images/wines/' "$STAGE_SRC" new/
 # Wine photos live on production / S3; copy so staging HTML can resolve local fallbacks.
 if [ -d frontend/public/images/wines ]; then
-  mkdir -p frontend/new/images/wines
-  rsync -a frontend/public/images/wines/ frontend/new/images/wines/ 2>/dev/null || true
+  mkdir -p new/images/wines
+  rsync -a frontend/public/images/wines/ new/images/wines/ 2>/dev/null || true
 fi
-if [ ! -f frontend/new/index.html ]; then
-  echo "frontend/new/index.html missing after rsync" >&2
+if [ ! -f new/index.html ]; then
+  echo "new/index.html missing after rsync" >&2
   exit 1
 fi
-chown -R "$GIT_USER:$GIT_USER" frontend/new
-echo "Staging files: $(find frontend/new -type f | wc -l) files (index.html ok)"
+chown -R "$GIT_USER:$GIT_USER" new
+echo "Staging files: $(find new -type f | wc -l) files (index.html ok)"
 
 if [ -x "$APP_DIR/scripts/ensure_new_subdomain_dns.sh" ]; then
   echo "Ensuring Cloudflare DNS for new.${ZONE_NAME}"
