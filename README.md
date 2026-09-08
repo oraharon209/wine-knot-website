@@ -143,22 +143,14 @@ Old dangling `<none>` images from rebuilds are safe to remove:
 docker image prune -f
 ```
 
-### Push backend to Docker Hub
+### Docker Hub (CI)
 
-```bash
-docker login
-export DOCKERHUB_USER=yourusername
-docker tag wine-knot-backend:latest $DOCKERHUB_USER/wine-knot-backend:latest
-docker push $DOCKERHUB_USER/wine-knot-backend:latest
-```
+Every production deploy builds `backend/` in GitHub Actions and pushes:
 
-On the server, set in `.env`:
+- `{DOCKERHUB_USERNAME}/wine-knot-backend:latest`
+- `{DOCKERHUB_USERNAME}/wine-knot-backend:<git-sha>`
 
-```
-DOCKER_IMAGE_BACKEND=yourusername/wine-knot-backend:latest
-```
-
-Then `docker compose pull backend && docker compose up -d` (no local build needed).
+The server then `docker compose pull backend` and starts that image (no on-server backend build). Local `docker compose up --build` is unchanged.
 
 Do **not** commit `.env`, `mysql_data`, or `.venv`.
 
@@ -183,7 +175,9 @@ git push -u origin feature/my-change
 
 ## Auto-deploy (GitHub Actions)
 
-Pushes to `main` trigger `.github/workflows/deploy.yml`, which uses **AWS SSM Run Command** to pull the latest code on the EC2 instance and rebuild Docker containers. No SSH from GitHub is required.
+Pushes to `main` trigger `.github/workflows/deploy.yml`. The workflow first builds a new **backend** image, pushes it to Docker Hub (`{DOCKERHUB_USERNAME}/wine-knot-backend` tagged with `:latest` and the git SHA), then uses **AWS SSM Run Command** to pull that image on the EC2 instance and restart containers. No SSH from GitHub is required.
+
+GitHub secrets required for the image push: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
 
 ### One-time setup
 
