@@ -61,11 +61,9 @@ if [ ! -f "${STAGE_SRC}index.html" ]; then
   exit 1
 fi
 rsync -a --delete --exclude 'images/wines/' "$STAGE_SRC" new/
-# Wine photos live on production / S3; copy so staging HTML can resolve local fallbacks.
-if [ -d frontend/public/images/wines ]; then
-  mkdir -p new/images/wines
-  rsync -a frontend/public/images/wines/ new/images/wines/ 2>/dev/null || true
-fi
+# nginx serves /images/wines/ for both vhosts out of frontend/public, so the redesign
+# reads the live uploads directly instead of keeping a copy that can go stale.
+rm -rf new/images/wines
 if [ ! -f new/index.html ]; then
   echo "new/index.html missing after rsync" >&2
   exit 1
