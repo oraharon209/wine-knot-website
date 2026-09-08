@@ -239,7 +239,7 @@
                 <span aria-live="polite">${item.quantity}</span>
                 <button type="button" data-action="inc" aria-label="עוד בקבוק אחד">${icon('plus')}</button>
               </div>
-              <button type="button" class="btn btn-deal btn-sm" data-action="add12" aria-label="הוספת 12 בקבוקים">+12</button>
+              <button type="button" class="btn btn-quiet btn-sm crate-add" data-action="add12" aria-label="הוספת 12 בקבוקים"><span class="ltr">+12</span></button>
             </div>
             <button type="button" class="cart-remove" data-action="remove">הסרה</button>
           </div>
@@ -586,16 +586,12 @@
     $('activeFilters').innerHTML = chips.join('');
   }
 
-  function crateDealButton(w, { compact = false } = {}) {
-    const label = `הוספת 12 בקבוקים (${esc(w.name)}) — בקבוק מתנה על הארגז`;
-    if (compact) {
-      return `<button class="btn btn-deal btn-sm" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="${label}"><span class="ltr">+12</span></button>`;
-    }
-    return `
-      <button class="btn btn-deal" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="${label}">
-        <span class="deal-main"><span class="ltr">+12</span> בקבוקים · מתנה</span>
-        <span class="deal-sub">קנו 12 וקבלו בקבוק אחד חינם</span>
-      </button>`;
+  function crateButton(w, { compact = false } = {}) {
+    const label = `הוספת 12 בקבוקים (${esc(w.name)})`;
+    const text = compact
+      ? `<span class="ltr">+12</span>`
+      : `<span class="ltr">+12</span> בקבוקים`;
+    return `<button class="btn btn-quiet${compact ? ' btn-sm' : ''} crate-add" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="${label}">${text}</button>`;
   }
   function addButtonsHtml(w, { compact = false } = {}) {
     if (w.out_of_stock) {
@@ -606,13 +602,13 @@
     if (compact) {
       return `
         <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}" aria-label="הוספה לעגלה: ${esc(w.name)}">${icon('plus')}<span class="sr-only">הוספה לעגלה</span></button>
-        ${crateDealButton(w, { compact: true })}`;
+        ${crateButton(w, { compact: true })}`;
     }
     return `
       <div class="qty-btns">
         <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}" data-qty="1">1 בקבוק</button>
         <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}" data-qty="6">6 בקבוקים</button>
-        ${crateDealButton(w)}
+        ${crateButton(w)}
       </div>`;
   }
   /* ---------------------------------------------------------------- render: wines */
@@ -838,7 +834,7 @@
             </div>
             <div class="product-cta">
               <button class="btn btn-primary" type="button" id="productAdd" data-add="${esc(w.id)}" data-qty-from="qtyOut">הוספה לעגלה</button>
-              ${crateDealButton(w)}
+              ${crateButton(w)}
               <button class="btn btn-secondary" type="button" id="productWa">${icon('whatsapp')}שאלה או הזמנה בוואטסאפ</button>
             </div>`}
             <p class="product-fine">על כל 12 בקבוקים בעגלה — גם מיינות שונים — <strong>בקבוק מתנה</strong> בשווי ממוצע ההזמנה. משלוח עד הבית באזורי החלוקה; התשלום מסוכם מול דורון בוואטסאפ.</p>

@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 /**
- * Local preview server: static frontend/public + mock public/admin API from wines_data.json.
+ * Local preview server: static storefront + mock public/admin API from wines_data.json.
  *
  * Usage:
- *   PORT=8090 BANNER='NEW redesign' node scripts/preview-server.js
+ *   PORT=8089 ROOT=frontend/new BANNER='NEW' node scripts/preview-server.js
+ *   PORT=8080 ROOT=frontend/public BANNER='OLD' node scripts/preview-server.js
  *
- * Env: PORT (default 8090), ROOT, DATA, BANNER
+ * Env: PORT (default 8089), ROOT (default frontend/new), FALLBACK (default frontend/public), DATA, BANNER
  *
  * Admin routes are in-memory only (not persisted) so /admin.html works without Docker/MySQL.
+ * Missing files (wine photos) fall back to FALLBACK so frontend/new can share images/wines.
  */
 'use strict';
 
@@ -16,9 +18,10 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO = path.resolve(__dirname, '..');
-const ROOT = path.resolve(process.env.ROOT || path.join(REPO, 'frontend/public'));
+const ROOT = path.resolve(process.env.ROOT || path.join(REPO, 'frontend/new'));
+const FALLBACK = path.resolve(process.env.FALLBACK || path.join(REPO, 'frontend/public'));
 const DATA_PATH = path.resolve(process.env.DATA || path.join(REPO, 'wines_data.json'));
-const PORT = Number(process.env.PORT || 8090);
+const PORT = Number(process.env.PORT || 8089);
 const BANNER = process.env.BANNER || '';
 
 const DATA = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
@@ -323,11 +326,15 @@ http
       }
       if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
       if (!fs.existsSync(file)) {
-        if (path.extname(p)) {
+        const alt = path.join(FALLBACK, decodeURIComponent(p));
+        if (alt.startsWith(FALLBACK) && fs.existsSync(alt) && fs.statSync(alt).isFile()) {
+          file = alt;
+        } else if (path.extname(p)) {
           res.writeHead(404);
           return res.end('not found');
+        } else {
+          file = path.join(ROOT, 'index.html');
         }
-        file = path.join(ROOT, 'index.html');
       }
 
       const ext = path.extname(file).toLowerCase();
@@ -351,6 +358,7 @@ http
   .listen(PORT, '0.0.0.0', () => {
     console.log(`Wine Knot preview http://localhost:${PORT}`);
     console.log(`  ROOT=${ROOT}`);
+    console.log(`  FALLBACK=${FALLBACK}`);
     console.log(`  admin mock: /admin.html`);
     if (BANNER) console.log(`  BANNER=${BANNER}`);
   });

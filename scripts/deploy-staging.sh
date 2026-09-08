@@ -41,28 +41,34 @@ run_git checkout "$STAGING_REF" -- \
   scripts/deploy-staging.sh \
   scripts/deploy.sh
 
-# Sync into the existing bind-mount directory. Never rm/replace frontend-staging/public
+# Sync into the existing bind-mount directory. Never rm/replace frontend/new
 # while nginx has it mounted — that leaves the container on a deleted inode (empty 403).
-mkdir -p frontend-staging/public
+mkdir -p frontend/new
 STAGE_TMP="$(mktemp -d /tmp/wk-staging.XXXXXX)"
 trap 'rm -rf "$STAGE_TMP"' EXIT
-run_git archive "$STAGING_REF" frontend/public | tar -x -C "$STAGE_TMP"
-if [ ! -f "$STAGE_TMP/frontend/public/index.html" ]; then
-  echo "git archive missing frontend/public/index.html from $STAGING_REF" >&2
+if run_git cat-file -e "$STAGING_REF:frontend/new/index.html" 2>/dev/null; then
+  run_git archive "$STAGING_REF" frontend/new | tar -x -C "$STAGE_TMP"
+  STAGE_SRC="$STAGE_TMP/frontend/new/"
+else
+  run_git archive "$STAGING_REF" frontend/public | tar -x -C "$STAGE_TMP"
+  STAGE_SRC="$STAGE_TMP/frontend/public/"
+fi
+if [ ! -f "${STAGE_SRC}index.html" ]; then
+  echo "git archive missing redesign index.html from $STAGING_REF" >&2
   exit 1
 fi
-rsync -a --delete --exclude 'images/wines/' "$STAGE_TMP/frontend/public/" frontend-staging/public/
+rsync -a --delete --exclude 'images/wines/' "$STAGE_SRC" frontend/new/
 # Wine photos live on production / S3; copy so staging HTML can resolve local fallbacks.
 if [ -d frontend/public/images/wines ]; then
-  mkdir -p frontend-staging/public/images/wines
-  rsync -a frontend/public/images/wines/ frontend-staging/public/images/wines/ 2>/dev/null || true
+  mkdir -p frontend/new/images/wines
+  rsync -a frontend/public/images/wines/ frontend/new/images/wines/ 2>/dev/null || true
 fi
-if [ ! -f frontend-staging/public/index.html ]; then
-  echo "frontend-staging/public/index.html missing after rsync" >&2
+if [ ! -f frontend/new/index.html ]; then
+  echo "frontend/new/index.html missing after rsync" >&2
   exit 1
 fi
-chown -R "$GIT_USER:$GIT_USER" frontend-staging
-echo "Staging files: $(find frontend-staging/public -type f | wc -l) files (index.html ok)"
+chown -R "$GIT_USER:$GIT_USER" frontend/new
+echo "Staging files: $(find frontend/new -type f | wc -l) files (index.html ok)"
 
 if [ -x "$APP_DIR/scripts/ensure_new_subdomain_dns.sh" ]; then
   echo "Ensuring Cloudflare DNS for new.${ZONE_NAME}"

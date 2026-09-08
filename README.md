@@ -14,32 +14,23 @@ Open in your browser: **http://localhost:8080**
 
 Local dev uses HTTP only (no SSL certs). On the server, use `docker compose -f docker-compose.yml -f docker-compose.production.yml up -d` for HTTPS on 443.
 
-### Preview the redesign (no Docker)
+### Preview (no Docker)
 
-`docker compose` binds **8080** to the checkout you have mounted. To compare designs without Docker:
+Original and redesign are separate folders:
 
-```bash
-# NEW redesign (this branch) — use this URL
-PORT=8090 BANNER='NEW redesign' node scripts/preview-server.js
-```
-
-Open **http://localhost:8090** — that is the redesigned storefront on this branch.
-
-Public staging (after **Deploy staging**): **https://new.wineknot.co.il** — production apex **https://wineknot.co.il** stays on `main`.
-
-Optional side-by-side with `main` on 8080:
+| Folder | Site | Local preview |
+|--------|------|----------------|
+| `frontend/public/` | Original (`wineknot.co.il`) | `PORT=8080 ROOT=frontend/public node scripts/preview-server.js` |
+| `frontend/new/` | Redesign (`new.wineknot.co.il`) | `PORT=8089 node scripts/preview-server.js` |
 
 ```bash
-ROOT=/tmp/wk-main-public
-rm -rf "$ROOT" && mkdir -p "$ROOT"
-git archive origin/main:frontend/public | tar -x -C "$ROOT"
-PORT=8080 ROOT="$ROOT" BANNER='OLD site (main)' node scripts/preview-server.js
+# Redesign — http://localhost:8089
+PORT=8089 node scripts/preview-server.js
 ```
 
-| Port | What you see |
-|------|----------------|
-| **8080** | Old storefront (`main` / production look), if you start the optional command above |
-| **8090** | **New redesign** (this branch) |
+Wine images are shared from `frontend/public/images/wines` (the preview server falls back there).
+
+Public staging (after you approve a **Deploy staging**): **https://new.wineknot.co.il**. Apex stays on `main`.
 
 The mock API reads `wines_data.json`. Stop with Ctrl+C.
 
@@ -60,11 +51,14 @@ Production (`wineknot.co.il/admin.html` and `new.wineknot.co.il/admin.html`): Cl
 wine-knot/
 ├── docker-compose.yml      # MySQL + Backend + Nginx
 ├── wines_data.json         # Wine catalog (seed data)
-├── frontend/public/        # Hebrew RTL storefront (static: index.html + css/site.css + js/app.js)
-│   ├── css/site.css        # Design tokens + components (see docs/design/03-design-system.md)
-│   ├── js/app.js           # Catalog, filters, /wine/:id route, cart, WhatsApp order
-│   ├── fonts/              # Self-hosted Heebo + Assistant (Hebrew/Latin woff2)
-│   └── admin.html          # Admin panel (unchanged)
+├── frontend/public/        # Original storefront (wineknot.co.il)
+│   ├── index.html
+│   ├── js/promo.js
+│   └── images/wines/       # Shared bottle photos
+├── frontend/new/           # Redesign (new.wineknot.co.il) — preview :8089
+│   ├── css/site.css
+│   ├── js/app.js
+│   └── fonts/
 ├── docs/design/            # Redesign audit, direction and design system
 ├── backend/                # Express REST API
 ├── nginx/                  # Reverse proxy config
@@ -209,8 +203,8 @@ Do **not** commit `.env`, `mysql_data`, or `.venv`.
 
 | Branch | Purpose |
 |--------|---------|
-| `main` | Production — what's live on wineknot.co.il. Pushing here auto-deploys. |
-| `cursor/wine-knot-redesign-67b4` | Redesign; **Deploy staging** copies `frontend/public` to https://new.wineknot.co.il |
+| `main` | Production — what's live on wineknot.co.il (`frontend/public`). |
+| `new` | Redesign in `frontend/new/`; **Deploy staging** publishes https://new.wineknot.co.il |
 | `feature/...` | Short-lived branches for new work. Merge into `main` when ready. |
 
 ```bash

@@ -6,14 +6,13 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: Git ref whose frontend/public is copied to staging
+        description: Git ref whose frontend/new is copied to staging
         required: false
         default: new
   push:
     branches:
       - new
       - cursor/wine-knot-redesign-67b4
-      - cursor/add-12-bottles-btn-67b4
 
 concurrency:
   group: deploy-staging

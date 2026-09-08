@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניהול יינות | Wine Knot</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f4f4;
+      --card: #fff;
+      --border: #ddd;
+      --primary: #5c1a32;
+      --danger: #c0392b;
+      --ok: #27ae60;
+      --muted: #777;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Heebo, sans-serif; background: var(--bg); color: #222; font-size: 17px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+    h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 1rem; }
+    h2 { font-size: 1.15rem; margin-bottom: .75rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .row { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: .75rem; }
+    label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: .25rem; }
+    input, select, textarea {
+      width: 100%;
+      padding: .65rem .75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font: inherit;
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    .field { flex: 1; min-width: 140px; }
+    .field.sm { max-width: 120px; flex: 0 0 120px; }
+    button, .btn {
+      padding: .7rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+    }
+    button:hover { opacity: .9; }
+    button.secondary { background: #666; }
+    button.danger { background: var(--danger); }
+    button.ok { background: var(--ok); }
+    button.ghost { background: #eee; color: #333; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: .75rem; margin-bottom: 1rem;
+    }
+    .msg { padding: .75rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
+    .msg.show { display: block; }
+    .msg.ok { background: #d4edda; color: #155724; }
+    .msg.err { background: #f8d7da; color: #721c24; }
+    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    th, td { padding: .6rem .5rem; border-bottom: 1px solid var(--border); text-align: right; }
+    th { background: #fafafa; font-weight: 600; }
+    tr { cursor: pointer; }
+    tr:hover { background: #f9f9f9; }
+    tr.selected { background: #fdeef2; }
+    tr.oos { opacity: .55; }
+    tr.oos td:first-child::after { content: ' · אזל'; color: var(--danger); font-size: .8rem; }
+    .thumb { width: 44px; height: 56px; object-fit: contain; background: #fff; border: 1px solid #eee; }
+    .hidden { display: none !important; }
+    .img-preview {
+      width: 120px; height: 150px; object-fit: contain;
+      border: 1px solid var(--border); background: #fff; display: block; margin-bottom: .5rem;
+    }
+    .img-upload-msg {
+      display: none;
+      margin-top: .5rem;
+      padding: .55rem .75rem;
+      border-radius: 6px;
+      font-size: .9rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .img-upload-msg.show { display: block; }
+    .img-upload-msg.ok { background: #d4edda; color: #155724; }
+    .img-upload-msg.err { background: #f8d7da; color: #721c24; }
+    .check-row { display: flex; align-items: center; gap: .5rem; margin: .5rem 0; }
+    .check-row input { width: auto; }
+    .actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
+    a.link { color: var(--primary); }
+    .tabs { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tabs button { background: #ddd; color: #333; }
+    .tabs button.active { background: var(--primary); color: #fff; }
+    .rec-list { list-style: none; }
+    .rec-item {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .65rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .rec-item .rec-info { flex: 1; min-width: 0; }
+    .rec-item .rec-name { font-weight: 600; }
+    .rec-item .rec-meta { font-size: .85rem; color: var(--muted); }
+    .rec-order { color: var(--muted); font-size: .85rem; min-width: 1.5rem; }
+    .rec-empty { color: var(--muted); padding: 1rem 0; }
+    .rec-add-results {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+      margin-top: .5rem;
+      display: none;
+    }
+    .rec-add-results.show { display: block; }
+    .rec-add-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem .75rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    .rec-add-row:hover { background: #f5f5f5; }
+    .rec-add-row.disabled { opacity: .45; cursor: default; }
+    .rec-count { font-size: .9rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<div id="app" class="wrap">
+  <div class="topbar">
+    <h1>ניהול יינות</h1>
+    <div class="actions">
+      <a class="link" href="/" target="_blank">צפייה באתר</a>
+    </div>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <div class="tabs">
+    <button id="tabWines" class="active" onclick="showTab('wines')">יינות</button>
+    <button id="tabRecommended" onclick="showTab('recommended')">מומלצים</button>
+  </div>
+
+  <div id="winesPanel">
+  <div class="card">
+    <div class="row">
+      <div class="field" style="flex:2">
+        <label>חיפוש יין</label>
+        <input type="text" id="search" placeholder="שם או יקב..." maxlength="64" oninput="debounceSearch()">
+      </div>
+      <div class="field" style="align-self:flex-end">
+        <button class="ok" onclick="showNewForm()">+ יין חדש</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="newForm" class="card hidden">
+    <h2>הוספת יין חדש</h2>
+    <div id="newFields"></div>
+    <div class="actions">
+      <button class="ok" onclick="createWine()">שמור יין חדש</button>
+      <button class="ghost" onclick="hideNewForm()">ביטול</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th></th><th>שם</th><th>יקב</th><th>קטגוריה</th><th>מבצע</th><th>מדף</th></tr>
+      </thead>
+      <tbody id="wineTable"></tbody>
+    </table>
+  </div>
+
+  <div id="editPanel" class="card hidden">
+    <h2 id="editTitle">עריכת יין</h2>
+    <div class="row">
+      <div>
+        <img id="editImg" class="img-preview" alt="">
+        <label>החלפת תמונה</label>
+        <input type="file" id="imgFile" accept="image/*" onchange="previewImage()">
+        <button id="imgUploadBtn" style="margin-top:.5rem" onclick="uploadImage()">העלה תמונה</button>
+        <div id="imgUploadMsg" class="img-upload-msg" role="status" aria-live="polite"></div>
+      </div>
+      <div style="flex:1" id="editFields"></div>
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="editOos">
+      <label for="editOos" style="margin:0;font-size:1rem;color:#222">אזל מהמלאי (לא יוצג באתר)</label>
+    </div>
+    <div class="actions">
+      <button onclick="saveWine()">שמור שינויים</button>
+      <button class="danger" onclick="toggleStock()">סמן כאזל / חזר למלאי</button>
+      <button class="danger" onclick="deleteWine()">מחק יין</button>
+    </div>
+  </div>
+  </div>
+
+  <div id="recommendedPanel" class="hidden">
+    <div class="card">
+      <h2>מומלצים <span class="rec-count" id="recCount"></span></h2>
+      <p style="color:var(--muted);margin-bottom:1rem">בחרו עד 50 יינות שיוצגו בדף הבית תחת "מומלצים". ניתן לשנות סדר, להוסיף ולהסיר.</p>
+      <ul class="rec-list" id="recList"></ul>
+      <div class="row" style="margin-top:1rem">
+        <div class="field" style="flex:2">
+          <label>הוספת יין למומלצים</label>
+          <input type="text" id="recSearch" placeholder="חפשו לפי שם או יקב..." maxlength="64" oninput="debounceRecSearch()">
+          <div class="rec-add-results" id="recAddResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api/admin';
+const MAX_RECOMMENDED = 50;
+const SEARCH_MAX_LEN = 64;
+const NAME_MAX_LEN = 255;
+const WINERY_MAX_LEN = 255;
+const NOTES_MAX_LEN = 2000;
+const PRICE_MAX_LEN = 10;
+const PRICE_MAX = 100000;
+const RATING_MAX_LEN = 4;
+const RATING_MAX = 100;
+let categories = [];
+let wines = [];
+let recommended = [];
+let selectedId = null;
+let searchTimer;
+let recSearchTimer;
+let activeTab = 'wines';
+
+const $ = id => document.getElementById(id);
+
+function clampSearchInput(value) {
+  return String(value || '').slice(0, SEARCH_MAX_LEN);
+}
+
+function searchQuery(value) {
+  return clampSearchInput(value).trim();
+}
+
+function clampDecimalTyping(value, maxLen) {
+  let out = '';
+  let dot = false;
+  for (const ch of String(value || '')) {
+    if (ch >= '0' && ch <= '9') {
+      out += ch;
+    } else if (ch === '.' && !dot) {
+      out += ch;
+      dot = true;
+    }
+    if (out.length >= maxLen) break;
+  }
+  return out.slice(0, maxLen);
+}
+
+function sanitizePriceInput(value) {
+  const raw = clampDecimalTyping(value, PRICE_MAX_LEN).trim();
+  if (!raw) return '';
+  const n = parseFloat(raw);
+  if (Number.isNaN(n)) return raw;
+  return String(Math.min(PRICE_MAX, Math.max(0, n)));
+}
+
+function sanitizeRatingInput(value) {
+  const raw = clampDecimalTyping(value, RATING_MAX_LEN).trim();
+  if (!raw) return '';
+  const n = parseFloat(raw);
+  if (Number.isNaN(n)) return raw;
+  return String(Math.min(RATING_MAX, Math.max(0, n)));
+}
+
+function bindWineFieldInputs(prefix) {
+  const name = $(prefix + 'name');
+  const winery = $(prefix + 'winery');
+  const notes = $(prefix + 'notes');
+  const sale = $(prefix + 'sale_price');
+  const shelf = $(prefix + 'shelf_price');
+  const rating = $(prefix + 'rating');
+
+  name.addEventListener('input', () => {
+    if (name.value.length > NAME_MAX_LEN) name.value = name.value.slice(0, NAME_MAX_LEN);
+  });
+  winery.addEventListener('input', () => {
+    if (winery.value.length > WINERY_MAX_LEN) winery.value = winery.value.slice(0, WINERY_MAX_LEN);
+  });
+  notes.addEventListener('input', () => {
+    if (notes.value.length > NOTES_MAX_LEN) notes.value = notes.value.slice(0, NOTES_MAX_LEN);
+  });
+  [sale, shelf].forEach((el) => {
+    el.addEventListener('input', () => {
+      const clamped = clampDecimalTyping(el.value, PRICE_MAX_LEN);
+      const next = clamped !== el.value ? clamped : sanitizePriceInput(clamped) || clamped;
+      if (el.value !== next) el.value = next;
+    });
+  });
+  rating.addEventListener('input', () => {
+    const clamped = clampDecimalTyping(rating.value, RATING_MAX_LEN);
+    const next = clamped !== rating.value ? clamped : sanitizeRatingInput(clamped) || clamped;
+    if (rating.value !== next) rating.value = next;
+  });
+}
+
+function headers() {
+  return { 'Content-Type': 'application/json' };
+}
+
+function showMsg(text, ok = true) {
+  const el = $('msg');
+  el.textContent = text;
+  el.className = `msg show ${ok ? 'ok' : 'err'}`;
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function showImgUploadMsg(text, ok = true) {
+  const el = $('imgUploadMsg');
+  el.textContent = text;
+  el.className = `img-upload-msg show ${ok ? 'ok' : 'err'}`;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  clearTimeout(showImgUploadMsg._timer);
+  showImgUploadMsg._timer = setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function clearImgUploadMsg() {
+  $('imgUploadMsg').classList.remove('show');
+}
+
+async function api(url, opts = {}) {
+  const res = await fetch(url, { credentials: 'include', ...opts, headers: { ...headers(), ...opts.headers } });
+  const text = await res.text();
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch { /* HTML error page from server */ }
+  if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error('נדרשת הרשאת מנהל — היכנסו דרך Cloudflare Access עם כתובת מייל מאושרת, או רעננו את הדף');
+    }
+    if (res.status === 403 && text.includes('Cloudflare Access')) {
+      throw new Error('נדרשת הזדהות — הזינו את קוד האימות שנשלח למייל המאושר');
+    }
+    throw new Error(data.error || (res.status === 404 ? 'הפעולה לא זמינה בשרת' : 'שגיאה'));
+  }
+  return data;
+}
+
+function wineFieldsHtml(prefix, w = {}) {
+  const catOpts = categories.map(c =>
+    `<option value="${c.id}" ${w.category_id == c.id ? 'selected' : ''}>${c.name_he}</option>`
+  ).join('');
+  return `
+    <div class="row">
+      <div class="field" style="flex:2"><label>שם היין</label><input id="${prefix}name" maxlength="${NAME_MAX_LEN}" value="${esc(w.name||'')}"></div>
+      <div class="field"><label>יקב</label><input id="${prefix}winery" maxlength="${WINERY_MAX_LEN}" value="${esc(w.winery||'')}"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>קטגוריה</label><select id="${prefix}category_id">${catOpts}</select></div>
+      <div class="field sm"><label>מחיר מבצע ₪</label><input type="text" inputmode="decimal" maxlength="${PRICE_MAX_LEN}" id="${prefix}sale_price" value="${esc(w.sale_price ?? '')}"></div>
+      <div class="field sm"><label>מחיר מדף ₪</label><input type="text" inputmode="decimal" maxlength="${PRICE_MAX_LEN}" id="${prefix}shelf_price" value="${esc(w.shelf_price ?? '')}"></div>
+      <div class="field sm"><label>דירוג</label><input type="text" inputmode="decimal" maxlength="${RATING_MAX_LEN}" id="${prefix}rating" value="${esc(w.rating ?? '')}"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>הערות (VFM וכו')</label><textarea id="${prefix}notes" maxlength="${NOTES_MAX_LEN}">${esc(w.notes||'')}</textarea></div>
+    </div>`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+}
+
+function readForm(prefix) {
+  return {
+    name: $(prefix + 'name').value.trim(),
+    winery: $(prefix + 'winery').value.trim(),
+    category_id: parseInt($(prefix + 'category_id').value, 10),
+    sale_price: parseFloat($(prefix + 'sale_price').value),
+    shelf_price: parseFloat($(prefix + 'shelf_price').value) || parseFloat($(prefix + 'sale_price').value),
+    rating: $(prefix + 'rating').value ? parseFloat($(prefix + 'rating').value) : null,
+    notes: $(prefix + 'notes').value.trim(),
+    out_of_stock: $(prefix === 'edit' ? 'editOos' : 'newOos')?.checked || false,
+  };
+}
+
+async function loadWines(q = '') {
+  const search = searchQuery(q);
+  const url = search ? `${API}/wines?search=${encodeURIComponent(search)}` : `${API}/wines`;
+  wines = await api(url);
+  renderTable();
+}
+
+function renderTable() {
+  const tb = $('wineTable');
+  tb.innerHTML = wines.map(w => `
+    <tr class="${w.out_of_stock ? 'oos' : ''} ${selectedId === w.id ? 'selected' : ''}" onclick="selectWine(${w.id})">
+      <td><img class="thumb" src="${w.image_url||''}" onerror="this.style.visibility='hidden'"></td>
+      <td>${esc(w.name)}</td>
+      <td>${esc(w.winery)}</td>
+      <td>${esc(w.category_he)}</td>
+      <td><strong>${w.sale_price} ₪</strong></td>
+      <td>${w.shelf_price} ₪</td>
+    </tr>
+  `).join('');
+}
+
+function selectWine(id) {
+  selectedId = id;
+  const w = wines.find(x => x.id === id);
+  if (!w) return;
+  renderTable();
+  $('editPanel').classList.remove('hidden');
+  $('editTitle').textContent = `עריכה: ${w.name}`;
+  $('editFields').innerHTML = wineFieldsHtml('edit', w);
+  bindWineFieldInputs('edit');
+  $('editOos').checked = !!w.out_of_stock;
+  $('editImg').src = w.image_url || '';
+  $('imgFile').value = '';
+  clearImgUploadMsg();
+  $('editPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showNewForm() {
+  $('newForm').classList.remove('hidden');
+  $('newFields').innerHTML = wineFieldsHtml('new', {}) +
+    `<div class="check-row"><input type="checkbox" id="newOos"><label for="newOos">אזל מהמלאי</label></div>`;
+  bindWineFieldInputs('new');
+}
+
+function hideNewForm() { $('newForm').classList.add('hidden'); }
+
+async function createWine() {
+  try {
+    const body = readForm('new');
+    const w = await api(`${API}/wines`, { method: 'POST', body: JSON.stringify(body) });
+    showMsg(`נוסף: ${w.name}`);
+    hideNewForm();
+    await loadWines($('search').value);
+    selectWine(w.id);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function saveWine() {
+  if (!selectedId) return;
+  try {
+    const body = readForm('edit');
+    body.out_of_stock = $('editOos').checked;
+    const w = await api(`${API}/wines/${selectedId}`, { method: 'PUT', body: JSON.stringify(body) });
+    showMsg('נשמר בהצלחה');
+    await loadWines($('search').value);
+    selectWine(w.id);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function toggleStock() {
+  if (!selectedId) return;
+  const w = wines.find(x => x.id === selectedId);
+  const next = !w.out_of_stock;
+  try {
+    await api(`${API}/wines/${selectedId}/stock`, {
+      method: 'PATCH',
+      body: JSON.stringify({ out_of_stock: next }),
+    });
+    showMsg(next ? 'סומן כאזל מהמלאי' : 'חזר למלאי');
+    await loadWines($('search').value);
+    selectWine(selectedId);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function deleteWine() {
+  if (!selectedId) return;
+  const w = wines.find(x => x.id === selectedId);
+  if (!w) return;
+  if (!confirm(`למחוק את "${w.name}"? פעולה זו בלתי הפיכה.`)) return;
+  try {
+    await api(`${API}/wines/${selectedId}`, { method: 'DELETE' });
+    showMsg(`נמחק: ${w.name}`);
+    selectedId = null;
+    $('editPanel').classList.add('hidden');
+    await loadWines($('search').value);
+  } catch (e) { showMsg(e.message, false); }
+}
+
+function previewImage() {
+  const f = $('imgFile').files[0];
+  clearImgUploadMsg();
+  if (f) $('editImg').src = URL.createObjectURL(f);
+}
+
+async function uploadImage() {
+  const file = $('imgFile').files[0];
+  const btn = $('imgUploadBtn');
+  if (!selectedId || !file) {
+    const err = 'בחרו תמונה קודם';
+    showMsg(err, false);
+    showImgUploadMsg(err, false);
+    return;
+  }
+  const wine = wines.find(x => x.id === selectedId);
+  const fd = new FormData();
+  fd.append('image', file);
+  btn.disabled = true;
+  btn.textContent = 'מעלה...';
+  clearImgUploadMsg();
+  try {
+    const res = await fetch(`${API}/wines/${selectedId}/image`, {
+      method: 'POST',
+      credentials: 'include',
+      body: fd,
+    });
+    let data = {};
+    try { data = await res.json(); } catch (_) { /* non-JSON body */ }
+    if (!res.ok) {
+      const err = data.error || `שגיאת שרת (${res.status})`;
+      console.error('upload failed', { wineId: selectedId, status: res.status, file: file.name, size: file.size, error: err });
+      throw new Error(err);
+    }
+    const success = wine
+      ? `✓ התמונה הועלתה בהצלחה עבור "${wine.name}"`
+      : '✓ התמונה הועלתה בהצלחה';
+    showMsg(success);
+    showImgUploadMsg(success);
+    $('editImg').src = data.image_url;
+    $('imgFile').value = '';
+    await loadWines($('search').value);
+  } catch (e) {
+    console.error('upload error', { wineId: selectedId, file: file.name, size: file.size, message: e.message });
+    const err = e.message || 'שגיאה בהעלאה';
+    showMsg(err, false);
+    showImgUploadMsg(err, false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'העלה תמונה';
+  }
+}
+
+function debounceSearch() {
+  clearTimeout(searchTimer);
+  const q = searchQuery($('search').value);
+  searchTimer = setTimeout(() => loadWines(q), 300);
+}
+
+function showTab(tab) {
+  activeTab = tab;
+  $('tabWines').classList.toggle('active', tab === 'wines');
+  $('tabRecommended').classList.toggle('active', tab === 'recommended');
+  $('winesPanel').classList.toggle('hidden', tab !== 'wines');
+  $('recommendedPanel').classList.toggle('hidden', tab !== 'recommended');
+  if (tab === 'recommended') loadRecommended();
+}
+
+async function loadRecommended() {
+  recommended = await api(`${API}/recommended`);
+  renderRecommended();
+}
+
+function renderRecommended() {
+  $('recCount').textContent = `(${recommended.length}/${MAX_RECOMMENDED})`;
+  const list = $('recList');
+  if (!recommended.length) {
+    list.innerHTML = '<li class="rec-empty">אין יינות מומלצים עדיין — חפשו והוסיפו מהשדה למטה.</li>';
+    return;
+  }
+  list.innerHTML = recommended.map((w, i) => `
+    <li class="rec-item">
+      <span class="rec-order">${i + 1}.</span>
+      <img class="thumb" src="${w.image_url || ''}" onerror="this.style.visibility='hidden'" alt="">
+      <div class="rec-info">
+        <div class="rec-name">${esc(w.name)}</div>
+        <div class="rec-meta">${esc(w.winery)} · ${esc(w.category_he)} · ${w.sale_price} ₪</div>
+      </div>
+      <div class="actions" style="margin:0">
+        <button class="ghost" onclick="moveRecommended(${w.id}, -1)" ${i === 0 ? 'disabled' : ''} title="העלה">↑</button>
+        <button class="ghost" onclick="moveRecommended(${w.id}, 1)" ${i === recommended.length - 1 ? 'disabled' : ''} title="הורד">↓</button>
+        <button class="danger" onclick="removeRecommended(${w.id})">הסר</button>
+      </div>
+    </li>
+  `).join('');
+}
+
+async function saveRecommendedOrder(ids) {
+  recommended = await api(`${API}/recommended`, {
+    method: 'PUT',
+    body: JSON.stringify({ wine_ids: ids }),
+  });
+  renderRecommended();
+}
+
+async function moveRecommended(wineId, delta) {
+  const ids = recommended.map(w => w.id);
+  const idx = ids.indexOf(wineId);
+  if (idx < 0) return;
+  const next = idx + delta;
+  if (next < 0 || next >= ids.length) return;
+  [ids[idx], ids[next]] = [ids[next], ids[idx]];
+  try {
+    await saveRecommendedOrder(ids);
+    showMsg('הסדר עודכן');
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function removeRecommended(wineId) {
+  const w = recommended.find(x => x.id === wineId);
+  if (!w || !confirm(`להסיר את "${w.name}" מהמומלצים?`)) return;
+  try {
+    recommended = await api(`${API}/recommended/${wineId}`, { method: 'DELETE' });
+    renderRecommended();
+    showMsg('הוסר מהמומלצים');
+  } catch (e) { showMsg(e.message, false); }
+}
+
+async function addRecommended(wineId) {
+  if (recommended.length >= MAX_RECOMMENDED) {
+    showMsg(`ניתן לבחור עד ${MAX_RECOMMENDED} יינות`, false);
+    return;
+  }
+  try {
+    recommended = await api(`${API}/recommended`, {
+      method: 'POST',
+      body: JSON.stringify({ wine_id: wineId }),
+    });
+    renderRecommended();
+    $('recSearch').value = '';
+    $('recAddResults').classList.remove('show');
+    showMsg('נוסף למומלצים');
+  } catch (e) { showMsg(e.message, false); }
+}
+
+function debounceRecSearch() {
+  clearTimeout(recSearchTimer);
+  recSearchTimer = setTimeout(searchWinesToAdd, 300);
+}
+
+async function searchWinesToAdd() {
+  const q = searchQuery($('recSearch').value);
+  const box = $('recAddResults');
+  if (!q) {
+    box.classList.remove('show');
+    box.innerHTML = '';
+    return;
+  }
+  try {
+    const results = await api(`${API}/wines?search=${encodeURIComponent(q)}`);
+    const recIds = new Set(recommended.map(w => w.id));
+    if (!results.length) {
+      box.innerHTML = '<div class="rec-add-row disabled">לא נמצאו יינות</div>';
+    } else {
+      box.innerHTML = results.slice(0, 12).map(w => {
+        const inList = recIds.has(w.id);
+        return `
+          <div class="rec-add-row ${inList ? 'disabled' : ''}" onclick="${inList ? '' : `addRecommended(${w.id})`}">
+            <img class="thumb" src="${w.image_url || ''}" onerror="this.style.visibility='hidden'" alt="">
+            <div style="flex:1">
+              <div>${esc(w.name)}</div>
+              <div style="font-size:.85rem;color:var(--muted)">${esc(w.winery)} · ${w.sale_price} ₪</div>
+            </div>
+            ${inList ? '<span style="font-size:.85rem;color:var(--muted)">כבר ברשימה</span>' : '<span style="color:var(--ok)">+ הוסף</span>'}
+          </div>`;
+      }).join('');
+    }
+    box.classList.add('show');
+  } catch (e) {
+    showMsg(e.message, false);
+  }
+}
+
+async function initApp() {
+  try {
+    categories = await api(`${API}/categories`);
+    $('newFields').innerHTML = '';
+    await Promise.all([loadWines(), loadRecommended()]);
+  } catch (e) {
+    showMsg(e.message || 'שגיאה בטעינה', false);
+  }
+}
+
+initApp();
+</script>
+</body>
+</html>

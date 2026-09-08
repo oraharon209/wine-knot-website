@@ -1,6 +1,6 @@
 # Wine Knot — design system
 
-Implemented as CSS custom properties and component classes in `frontend/public/css/site.css`. `compliance.css` (accessibility widget, cookie consent) consumes the same tokens. There is no build step: tokens are plain CSS variables on `:root`.
+Implemented as CSS custom properties and component classes in `frontend/new/css/site.css`. `compliance.css` (accessibility widget, cookie consent) consumes the same tokens. There is no build step: tokens are plain CSS variables on `:root`.
 
 ## Colour
 
