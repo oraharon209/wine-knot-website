@@ -1267,9 +1267,9 @@ function giftAddCopy(deal) {
   if (!deal.stillToAdd) return '';
   const each = deal.addEach || deal.giftEach;
   if (deal.stillToAdd === 1) {
-    return `אפשר להוסיף בקבוק מתנה אחד בשווי ${formatPrice(each)}.`;
+    return `זכאי להוסיף בקבוק בשווי ${formatPrice(each)}.`;
   }
-  return `אפשר להוסיף ${deal.stillToAdd} בקבוקי מתנה בשווי ${formatPrice(each)} כל אחד.`;
+  return `זכאי להוסיף ${deal.stillToAdd} בקבוקים בשווי ${formatPrice(each)} כל אחד.`;
 }
 
 function giftAppliedCopy(deal) {
