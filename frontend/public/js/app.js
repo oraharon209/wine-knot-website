@@ -233,10 +233,13 @@
           </div>
           <div class="cart-line-total num">${fmtPrice(item.sale_price * item.quantity)}</div>
           <div class="cart-line-ctl">
-            <div class="qty qty-sm" role="group" aria-label="כמות עבור ${esc(item.name)}">
-              <button type="button" data-action="dec" aria-label="פחות בקבוק אחד">${icon('minus')}</button>
-              <span aria-live="polite">${item.quantity}</span>
-              <button type="button" data-action="inc" aria-label="עוד בקבוק אחד">${icon('plus')}</button>
+            <div class="cart-line-qty">
+              <div class="qty qty-sm" role="group" aria-label="כמות עבור ${esc(item.name)}">
+                <button type="button" data-action="dec" aria-label="פחות בקבוק אחד">${icon('minus')}</button>
+                <span aria-live="polite">${item.quantity}</span>
+                <button type="button" data-action="inc" aria-label="עוד בקבוק אחד">${icon('plus')}</button>
+              </div>
+              <button type="button" class="btn btn-deal btn-sm" data-action="add12" aria-label="הוספת 12 בקבוקים">+12</button>
             </div>
             <button type="button" class="cart-remove" data-action="remove">הסרה</button>
           </div>
@@ -583,6 +586,17 @@
     $('activeFilters').innerHTML = chips.join('');
   }
 
+  function crateDealButton(w, { compact = false } = {}) {
+    const label = `הוספת 12 בקבוקים (${esc(w.name)}) — בקבוק מתנה על הארגז`;
+    if (compact) {
+      return `<button class="btn btn-deal btn-sm" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="${label}"><span class="ltr">+12</span></button>`;
+    }
+    return `
+      <button class="btn btn-deal" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="${label}">
+        <span class="deal-main"><span class="ltr">+12</span> בקבוקים · מתנה</span>
+        <span class="deal-sub">קנו 12 וקבלו בקבוק אחד חינם</span>
+      </button>`;
+  }
   function addButtonsHtml(w, { compact = false } = {}) {
     if (w.out_of_stock) {
       return compact
@@ -592,11 +606,14 @@
     if (compact) {
       return `
         <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}" aria-label="הוספה לעגלה: ${esc(w.name)}">${icon('plus')}<span class="sr-only">הוספה לעגלה</span></button>
-        <button class="btn btn-quiet btn-sm" type="button" data-add="${esc(w.id)}" data-qty="12" aria-label="הוספת ארגז 12 +1: ${esc(w.name)}"><span class="ltr">12+1</span></button>`;
+        ${crateDealButton(w, { compact: true })}`;
     }
     return `
-      <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}">הוספה לעגלה</button>
-      <button class="btn btn-quiet btn-sm" type="button" data-add="${esc(w.id)}" data-qty="12">ארגז 12 <span class="ltr">+1</span></button>`;
+      <div class="qty-btns">
+        <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}" data-qty="1">1 בקבוק</button>
+        <button class="btn btn-secondary btn-sm" type="button" data-add="${esc(w.id)}" data-qty="6">6 בקבוקים</button>
+        ${crateDealButton(w)}
+      </div>`;
   }
   /* ---------------------------------------------------------------- render: wines */
   function imgHtml(w, { eager = false, alt = '' } = {}) {
@@ -814,13 +831,14 @@
                 <button type="button" id="qtyInc" aria-label="עוד בקבוק אחד">${icon('plus')}</button>
               </div>
               <div class="presets" role="group" aria-label="כמויות מהירות">
-                <button class="chip" type="button" data-qty="6">שישייה</button>
-                <button class="chip" type="button" data-qty="12">ארגז 12 <span class="ltr">+1</span></button>
+                <button class="chip" type="button" data-qty="1">1 בקבוק</button>
+                <button class="chip" type="button" data-qty="6">6 בקבוקים</button>
+                <button class="chip" type="button" data-qty="12"><span class="ltr">+12</span> בקבוקים</button>
               </div>
             </div>
             <div class="product-cta">
               <button class="btn btn-primary" type="button" id="productAdd" data-add="${esc(w.id)}" data-qty-from="qtyOut">הוספה לעגלה</button>
-              <button class="btn btn-quiet" type="button" data-add="${esc(w.id)}" data-qty="12">ארגז 12 <span class="ltr">+1</span></button>
+              ${crateDealButton(w)}
               <button class="btn btn-secondary" type="button" id="productWa">${icon('whatsapp')}שאלה או הזמנה בוואטסאפ</button>
             </div>`}
             <p class="product-fine">על כל 12 בקבוקים בעגלה — גם מיינות שונים — <strong>בקבוק מתנה</strong> בשווי ממוצע ההזמנה. משלוח עד הבית באזורי החלוקה; התשלום מסוכם מול דורון בוואטסאפ.</p>
@@ -1073,6 +1091,7 @@
       if (!item) return;
       if (b.dataset.action === 'dec') setCartQuantity(id, item.quantity - 1);
       if (b.dataset.action === 'inc') setCartQuantity(id, item.quantity + 1);
+      if (b.dataset.action === 'add12') setCartQuantity(id, item.quantity + 12);
       if (b.dataset.action === 'remove') setCartQuantity(id, 0);
     });
     $('cartWhatsAppBtn').addEventListener('click', () => {
