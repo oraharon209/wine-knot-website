@@ -16,7 +16,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # The server pulls DOCKER_IMAGE_BACKEND and only builds locally if the pull
+  # fails, so every production deploy has to refresh the registry first.
+  publish-image:
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/publish-backend-image.yml
+    secrets: inherit
+
   deploy:
+    needs: publish-image
+    # A registry failure must not strand the site on the old commit; the run
+    # still reports red so the missed push is visible.
+    if: always()
     runs-on: ubuntu-latest
     environment: production
     env:

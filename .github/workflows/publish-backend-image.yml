@@ -9,9 +9,11 @@ on:
         description: Also push to Docker Hub when DOCKERHUB_TOKEN is set
         type: boolean
         default: true
+  workflow_call:
   push:
     branches:
       - main
+      - new
       - cursor/wine-knot-redesign-67b4
     paths:
       - backend/**
@@ -30,6 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
+      # The production deploy job reads the account name from a repo variable,
+      # so check that first and keep the secret spellings as fallbacks.
+      DOCKERHUB_USERNAME_VAR: ${{ vars.DOCKERHUB_USERNAME }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -40,7 +45,7 @@ jobs:
       - name: Build and push
         run: |
           set -euo pipefail
-          USERNAME="${DOCKERHUB_USERNAME:-${DOCKERHUB_USER:-oraharon}}"
+          USERNAME="${DOCKERHUB_USERNAME_VAR:-${DOCKERHUB_USERNAME:-${DOCKERHUB_USER:-oraharon}}}"
           OWNER="${{ github.repository_owner }}"
           GHCR_IMAGE="ghcr.io/${OWNER}/wine-knot-backend"
           IMAGE_REPO="${{ vars.DOCKER_IMAGE_BACKEND }}"
@@ -49,6 +54,9 @@ jobs:
             IMAGE_REPO="${USERNAME}/wine-knot-backend"
           fi
           SHA="$(git rev-parse --short HEAD)"
+          # The production deploy used to tag with the full SHA; keep it so
+          # anything pinned to that form still resolves.
+          FULL_SHA="$(git rev-parse HEAD)"
           DATE_TAG="$(date -u +%Y%m%d)"
 
           docker build -t wine-knot-backend:ci ./backend
@@ -82,8 +90,10 @@ jobs:
           echo "$DOCKERHUB_TOKEN" | docker login -u "$USERNAME" --password-stdin
           docker tag wine-knot-backend:ci "${IMAGE_REPO}:latest"
           docker tag wine-knot-backend:ci "${IMAGE_REPO}:${SHA}"
+          docker tag wine-knot-backend:ci "${IMAGE_REPO}:${FULL_SHA}"
           docker tag wine-knot-backend:ci "${IMAGE_REPO}:${DATE_TAG}"
           docker push "${IMAGE_REPO}:latest"
           docker push "${IMAGE_REPO}:${SHA}"
+          docker push "${IMAGE_REPO}:${FULL_SHA}"
           docker push "${IMAGE_REPO}:${DATE_TAG}"
-          echo "- Docker Hub: **${IMAGE_REPO}:latest**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Docker Hub: **${IMAGE_REPO}:latest** (\`${SHA}\`, \`${FULL_SHA}\`, \`${DATE_TAG}\`)" >> "$GITHUB_STEP_SUMMARY"
