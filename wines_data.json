@@ -643,7 +643,7 @@
       "sale_price": 110.0,
       "notes": "CHALIS DROUHIN",
       "image_url": "/images/wines/דומיין סגינו בורדה - CHABLIS שבלי.jpg",
-      "out_of_stock": true,
+      "out_of_stock": false,
       "image_version": 1788896127710
     },
     {
@@ -2666,7 +2666,7 @@
       "sale_price": 130.0,
       "notes": "FAUSTINO  1",
       "image_url": "/images/wines/ריוחה - פאוסטינו 1 2016.jpg",
-      "out_of_stock": true,
+      "out_of_stock": false,
       "image_version": 1788896127710
     },
     {
@@ -2989,7 +2989,7 @@
       "sale_price": 100.0,
       "notes": "שבלי כשר",
       "image_url": "/images/wines/דומיין שטיון - שבלי CHABLIS שטיון כשר.png",
-      "out_of_stock": true,
+      "out_of_stock": false,
       "image_version": 1788896127710
     },
     {
@@ -3365,6 +3365,74 @@
       "image_url": "/images/wines/בוטגה - בוטגה פרוסקו גולד.jpg",
       "out_of_stock": false,
       "image_version": 1789046029727
+    },
+    {
+      "id": 205,
+      "name": "כמיסה ETA מלבק",
+      "category": "red",
+      "category_he": "אדום",
+      "winery": "כמיסה",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 92.0,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
+      "notes": "מלבק צעיר מעניין שנה בחבית מהיקב המעולה כמיסה ברמת דלתון",
+      "image_url": "/images/wines/כמיסה - כמיסה ETA מלבק.jpg",
+      "out_of_stock": false,
+      "image_version": 1790953966835
+    },
+    {
+      "id": 206,
+      "name": "כמיסה שנין COOL",
+      "category": "white",
+      "category_he": "לבן",
+      "winery": "כמיסה",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 91.0,
+      "shelf_price": 90.0,
+      "sale_price": 80.0,
+      "notes": "שנין בלאן מעניין חצי יבש רענן ופירותי 4 חודשי חבית",
+      "image_url": "/images/wines/כמיסה - כמיסה שנין COOL.webp",
+      "out_of_stock": false,
+      "image_version": 1790954217747
+    },
+    {
+      "id": 207,
+      "name": "גמלא שרדונה",
+      "category": "white",
+      "category_he": "לבן",
+      "winery": "יקבי הגולן",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 92.0,
+      "shelf_price": 65.0,
+      "sale_price": 60.0,
+      "notes": "שרדונה גמלא של יקבי גולן",
+      "image_url": "/images/wines/יקבי הגולן - גמלא שרדונה.jpg",
+      "out_of_stock": false,
+      "image_version": 1790954667526
+    },
+    {
+      "id": 208,
+      "name": "גמלא מרלו",
+      "category": "red",
+      "category_he": "אדום",
+      "winery": "יקבי הגולן",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 91.0,
+      "shelf_price": 65.0,
+      "sale_price": 60.0,
+      "notes": "גמלא מרלו",
+      "image_url": "/images/wines/יקבי הגולן - גמלא מרלו.webp",
+      "out_of_stock": false,
+      "image_version": 1790954842601
     }
   ],
   "recommended_wine_ids": [
