@@ -129,11 +129,11 @@
       "vintage": "",
       "grape": "",
       "rating": 91.0,
-      "shelf_price": 80.0,
-      "sale_price": 70.0,
+      "shelf_price": 75.0,
+      "sale_price": 65.0,
       "notes": "טוב  VFM",
       "image_url": "/images/wines/יקבי הגולן - גמלא שרדונה.jpg",
-      "out_of_stock": true,
+      "out_of_stock": false,
       "image_version": 1788896127710
     },
     {
