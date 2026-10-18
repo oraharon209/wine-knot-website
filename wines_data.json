@@ -3433,6 +3433,40 @@
       "image_url": "/images/wines/יקבי הגולן - גמלא מרלו.webp",
       "out_of_stock": false,
       "image_version": 1790954842601
+    },
+    {
+      "id": 209,
+      "name": "לוריא פטיט סירה",
+      "category": "red",
+      "category_he": "אדום",
+      "winery": "לוריא",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 94.0,
+      "shelf_price": 135.0,
+      "sale_price": 120.0,
+      "notes": "לראשונה לוריא פטיט סירה  2023 סינגל ויניארד 20 חודשי חבית עוד יין מוצלח של לואיר עם הכורם משפחת סיידא",
+      "image_url": "/images/wines/לוריא - לוריא פטיט סירה.png",
+      "out_of_stock": false,
+      "image_version": 1791972519752
+    },
+    {
+      "id": 210,
+      "name": "לוריא פטי וורדו",
+      "category": "red",
+      "category_he": "אדום",
+      "winery": "לוריא",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 94.0,
+      "shelf_price": 135.0,
+      "sale_price": 120.0,
+      "notes": "לראשונה - לוריא פטי וורדו 2024 מהכרמים במירון של משפחת סיידא  16 חודשי חבית",
+      "image_url": "/images/wines/לוריא - לוריא פטי וורדו.png",
+      "out_of_stock": false,
+      "image_version": 1791972663231
     }
   ],
   "recommended_wine_ids": [
