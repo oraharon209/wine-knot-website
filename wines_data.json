@@ -903,7 +903,7 @@
     },
     {
       "id": 52,
-      "name": "וויונייה בציר מאוחר 2018",
+      "name": "וויונייה בציר מאוחר 2020",
       "category": "sweet",
       "category_he": "מתוקים",
       "winery": "טוליפ",
@@ -949,7 +949,7 @@
       "sale_price": 150.0,
       "notes": "ר צ' ו ט ו",
       "image_url": "/images/wines/LA DAMA - RECIOTO.jpg",
-      "out_of_stock": false,
+      "out_of_stock": true,
       "image_version": 1788896127710
     },
     {
@@ -3467,6 +3467,23 @@
       "image_url": "/images/wines/לוריא - לוריא פטי וורדו.png",
       "out_of_stock": false,
       "image_version": 1791972663231
+    },
+    {
+      "id": 211,
+      "name": "טוקאי",
+      "category": "sweet",
+      "category_he": "מתוקים",
+      "winery": "טוקאי",
+      "country": "ישראל",
+      "vintage": "",
+      "grape": "",
+      "rating": 94.0,
+      "shelf_price": 175.0,
+      "sale_price": 150.0,
+      "notes": "היין המתוק המהולל של הונגריה  500 מ\"ל  5 PUTTONYOS",
+      "image_url": "/images/wines/טוקאי - טוקאי.jpg",
+      "out_of_stock": false,
+      "image_version": 1793441505490
     }
   ],
   "recommended_wine_ids": [
@@ -3474,11 +3491,11 @@
     88,
     94,
     77,
+    84,
     101,
     10,
-    27,
+    20,
     130,
-    128,
-    84
+    128
   ]
 }
