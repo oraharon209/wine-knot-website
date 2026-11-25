@@ -228,7 +228,7 @@
       return `
         <div class="cart-line" data-id="${esc(item.id)}">
           <div>
-            <div class="cart-line-name"><a href="/wine/${esc(item.id)}" data-close-cart>${esc(item.name)}</a></div>
+            <div class="cart-line-name"><a href="/wine/${esc(item.id)}" data-wine="${esc(item.id)}" data-close-cart>${esc(item.name)}</a></div>
             ${meta ? `<div class="cart-line-meta">${meta}</div>` : ''}
           </div>
           <div class="cart-line-total num">${fmtPrice(item.sale_price * item.quantity)}</div>
@@ -1173,6 +1173,7 @@
     }
 
     $('heroCount').textContent = winesWord(state.wines.length);
+    $('aboutCount').textContent = winesWord(state.wines.length);
     populateSelects();
     renderStart();
     renderHeroFeatured();
